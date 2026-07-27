@@ -41,8 +41,8 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Restore wasm-tools workload
-        run: dotnet workload restore samples/Material3.Gallery.Browser/Material3.Gallery.Browser.csproj
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
 
       - name: Publish WASM gallery
         run: dotnet publish samples/Material3.Gallery.Browser -c Release -o publish-wasm
