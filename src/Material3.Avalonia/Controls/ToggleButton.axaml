@@ -93,9 +93,12 @@
       <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
       <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
       <Setter Property="BorderBrush" Value="Transparent" />
+      <!-- Use the actual radius of a 40dp pill so the shape transition is visible. -->
+      <Setter Property="CornerRadius" Value="20" />
       <Setter Property="Transitions">
         <Transitions>
           <CornerRadiusTransition Property="CornerRadius" Duration="0:0:0.2" Easing="CubicEaseOut" />
+          <BrushTransition Property="Foreground" Duration="0:0:0.15" />
         </Transitions>
       </Setter>
     </Style>

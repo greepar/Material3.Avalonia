@@ -27,10 +27,11 @@
     <Setter Property="Focusable" Value="True" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Panel>
+        <Panel ClipToBounds="False">
           <Border Name="PART_Container"
                   Background="{TemplateBinding Background}"
-                  CornerRadius="{TemplateBinding CornerRadius}">
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  ClipToBounds="False">
             <Panel>
               <!-- state layer -->
               <Border Name="PART_StateLayer"
@@ -491,9 +492,11 @@
 
   <!-- Chip group: wrapping flow layout with 8dp gaps (the panel gap binds to Spacing in code). -->
   <ControlTheme x:Key="{x:Type m3:ChipGroup}" TargetType="m3:ChipGroup">
+    <Setter Property="ClipToBounds" Value="False" />
     <Setter Property="Template">
       <ControlTemplate>
         <ItemsPresenter Name="PART_ItemsPresenter"
+                        ClipToBounds="False"
                         ItemsPanel="{TemplateBinding ItemsPanel}" />
       </ControlTemplate>
     </Setter>

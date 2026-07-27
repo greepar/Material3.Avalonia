@@ -13,7 +13,7 @@
     <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
     <Setter Property="BorderBrush" Value="Transparent" />
     <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="CornerRadius" Value="20" />
     <Setter Property="FontSize" Value="{StaticResource Md3BodySmallSize}" />
     <Setter Property="ClipToBounds" Value="False" />
     <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -32,7 +32,7 @@
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}"
-                    ClipToBounds="True">
+                    ClipToBounds="False">
               <Panel>
                 <Border Name="PART_StateLayer"
                         Background="{TemplateBinding Foreground}"
@@ -111,6 +111,9 @@
     <!-- keyboard-focused day -->
     <Style Selector="^:dayfocused /template/ Border#PART_FocusRing">
       <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:selected:dayfocused /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="False" />
     </Style>
 
     <!-- disabled -->

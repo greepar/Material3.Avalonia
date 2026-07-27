@@ -5,3 +5,8 @@ Some public component APIs were modeled after m3fx
 (https://github.com/Glavo/m3fx), Copyright Glavo, licensed under Apache-2.0.
 Material3.Avalonia contains an independent Avalonia implementation; relevant
 source files retain explicit attribution comments.
+
+Material Symbols Rounded 400 path data is derived from Google's 24dp icon data,
+distributed by @iconify-json/material-symbols version 1.2.87 under Apache-2.0.
+Source: https://github.com/google/material-design-icons
+Distribution: https://icon-sets.iconify.design/material-symbols/

@@ -3,11 +3,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Input.Platform;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Material3.Avalonia;
 using Material3.Avalonia.Colors;
+using Material3.Avalonia.Icons;
 
 namespace Material3.Gallery.UI;
 
@@ -37,6 +39,8 @@ public partial class MainView : UserControl
 
         SetupTable();
         BuildColorSwatches();
+        IconVariantCombo.SelectedIndex = 0;
+        UpdateIconItems();
 
         SectionsList.SelectedIndex = 0;
         VariantCombo.SelectedIndex = 0;
@@ -158,7 +162,7 @@ public partial class MainView : UserControl
             SelectionSection, TextInputsSection, ComboSection, ListsSection,
             TabsSection, RangeSection, LoadingSection, MenusSection,
             DateTimeSection, TableSection, OverlaysSection,
-            TypographySection, ColorsSection, MiscSection,
+            TypographySection, ColorsSection, MiscSection, IconsSection,
         };
 
         var index = SectionsList.SelectedIndex;
@@ -170,6 +174,40 @@ public partial class MainView : UserControl
         // On narrow screens the overlay pane auto-closes after picking a section.
         if (_isCompact)
             NavSplit.IsPaneOpen = false;
+    }
+
+    // ---- Material Symbols section ----
+
+    private void OnIconSearchChanged(object? sender, TextChangedEventArgs e) => UpdateIconItems();
+
+    private void OnIconVariantChanged(object? sender, SelectionChangedEventArgs e) => UpdateIconItems();
+
+    private void UpdateIconItems()
+    {
+        if (IconRepeater is null || IconCountText is null)
+            return;
+
+        var query = IconSearchBox?.Text?.Trim();
+        var filled = IconVariantCombo?.SelectedIndex == 1;
+        var symbols = string.IsNullOrEmpty(query)
+            ? MaterialSymbolCatalog.All
+            : MaterialSymbolCatalog.All
+                .Where(symbol => symbol.Name.Contains(query, StringComparison.OrdinalIgnoreCase)
+                                 || symbol.PropertyName.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+        var items = symbols.Select(symbol => new MaterialSymbolGalleryItem(symbol, filled)).ToArray();
+
+        IconRepeater.ItemsSource = items;
+        IconCountText.Text = $"{items.Length:N0} of {MaterialSymbolCatalog.All.Count:N0} icons";
+    }
+
+    private async void OnCopyIconNameClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: string apiName }
+            && TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
+        {
+            await clipboard.SetTextAsync(apiName);
+        }
     }
 
     // ---- Buttons section ----

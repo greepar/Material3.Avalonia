@@ -37,9 +37,11 @@
                               RippleOpacity="{StaticResource Md3StatePressedOpacity}"
                               RippleClipRadius="{TemplateBinding CornerRadius}" />
               <ContentPresenter Name="PART_ContentPresenter"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 Content="{TemplateBinding Content}"
+                                 ContentTemplate="{TemplateBinding ContentTemplate}"
+                                 Width="24"
+                                 Height="24"
+                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
             </Panel>
           </Border>
@@ -155,9 +157,11 @@
                               RippleOpacity="{StaticResource Md3StatePressedOpacity}"
                               RippleClipRadius="{TemplateBinding CornerRadius}" />
               <ContentPresenter Name="PART_ContentPresenter"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 Content="{TemplateBinding Content}"
+                                 ContentTemplate="{TemplateBinding ContentTemplate}"
+                                 Width="24"
+                                 Height="24"
+                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
             </Panel>
           </Border>

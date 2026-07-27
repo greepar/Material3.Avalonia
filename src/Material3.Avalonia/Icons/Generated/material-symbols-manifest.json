@@ -1,0 +1,11 @@
+{
+  "source": "@iconify-json/material-symbols@1.2.87",
+  "family": "rounded",
+  "weight": 400,
+  "opticalSize": 24,
+  "count": 4007,
+  "variants": [
+    "regular",
+    "filled"
+  ]
+}

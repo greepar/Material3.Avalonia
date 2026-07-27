@@ -1,6 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:m3c="using:Material3.Avalonia.Controls"
+             xmlns:icons="using:Material3.Avalonia.Icons"
+             xmlns:local="using:Material3.Gallery.UI"
              x:Class="Material3.Gallery.UI.MainView"
              Background="{DynamicResource Md3SurfaceBrush}">
 
@@ -83,6 +85,7 @@
           <ListBoxItem Content="Typography" />
           <ListBoxItem Content="Colors" />
           <ListBoxItem Content="Misc" />
+          <ListBoxItem Content="Material Symbols" />
         </ListBox>
       </SplitView.Pane>
 
@@ -93,6 +96,20 @@
           <!-- ======================= Buttons ======================= -->
           <StackPanel Name="ButtonsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left">
             <TextBlock Classes="headline-small" Text="Buttons" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+
+            <TextBlock Classes="title-small" Text="Material Symbols Geometry" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="20" LineSpacing="12" VerticalAlignment="Center">
+              <PathIcon Data="{x:Static icons:MaterialSymbols.Home}" />
+              <PathIcon Data="{x:Static icons:MaterialSymbols.Search}" />
+              <PathIcon Data="{x:Static icons:MaterialSymbols.Settings}" />
+              <PathIcon Data="{x:Static icons:MaterialSymbolsFilled.Favorite}" />
+              <Path Width="24" Height="24" Stretch="Uniform"
+                    Data="{x:Static icons:MaterialSymbolsFilled.Star}"
+                    Fill="{DynamicResource Md3PrimaryBrush}" />
+            </WrapPanel>
+            <TextBlock Classes="body-medium"
+                       Text="Strongly typed Rounded 400 icons return cached Avalonia Geometry objects."
+                       Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
 
             <TextBlock Classes="title-small" Text="Material 3 Expressive button family" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <WrapPanel ItemSpacing="16" LineSpacing="16" VerticalAlignment="Center">
@@ -105,7 +122,7 @@
               <ToggleButton Classes="expressive" Content="Unselected" />
               <ToggleButton Name="ExpressiveSelectedButton" Classes="expressive" Content="Selected" IsChecked="True" />
               <m3c:IconButton Variant="Tonal">
-                <PathIcon Data="M19.43,12.98C19.47,12.66 19.5,12.34 19.5,12C19.5,11.66 19.47,11.34 19.43,11.02L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.97 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.02C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.66 4.57,12.98L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.98M12,15.5A3.5,3.5 0 1,1 12,8A3.5,3.5 0 0,1 12,15.5Z" />
+                <PathIcon Name="TonalSettingsIcon" Data="M19.43,12.98C19.47,12.66 19.5,12.34 19.5,12C19.5,11.66 19.47,11.34 19.43,11.02L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.97 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.02C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.66 4.57,12.98L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.98M12,15.5A3.5,3.5 0 1,1 12,8A3.5,3.5 0 0,1 12,15.5Z" />
               </m3c:IconButton>
               <m3c:IconToggleButton Variant="Tonal" IsChecked="True">
                 <PathIcon Data="M19.43,12.98C19.47,12.66 19.5,12.34 19.5,12C19.5,11.66 19.47,11.34 19.43,11.02L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.97 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11.02C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.66 4.57,12.98L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.95C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.98M12,15.5A3.5,3.5 0 1,1 12,8A3.5,3.5 0 0,1 12,15.5Z" />
@@ -135,7 +152,7 @@
                 <m3c:SegmentedButton Content="Third" />
               </m3c:SegmentedButtonGroup>
               <m3c:FloatingActionButton Size="Small">
-                <PathIcon Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                <PathIcon Name="SmallExpressiveFabIcon" Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
               </m3c:FloatingActionButton>
               <m3c:ExtendedFloatingActionButton Content="Label" Color="Secondary">
                 <m3c:ExtendedFloatingActionButton.Icon>
@@ -233,8 +250,8 @@
             <TextBlock Classes="headline-small" Text="Selection" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="CheckBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <StackPanel Spacing="8">
-              <CheckBox Content="Unchecked" />
+            <StackPanel Spacing="8" Width="360" HorizontalAlignment="Left">
+              <CheckBox Name="SelectionUncheckedBox" Content="Unchecked" />
               <CheckBox Content="Checked" IsChecked="True" />
               <CheckBox Content="Three state (indeterminate)" IsThreeState="True" IsChecked="{x:Null}" />
               <CheckBox Content="Disabled" IsEnabled="False" />
@@ -242,7 +259,7 @@
             </StackPanel>
 
             <TextBlock Classes="title-small" Text="RadioButton" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <StackPanel Spacing="8">
+            <StackPanel Spacing="8" Width="360" HorizontalAlignment="Left">
               <RadioButton GroupName="Fruit" Content="Apple" IsChecked="True" />
               <RadioButton GroupName="Fruit" Content="Banana" />
               <RadioButton GroupName="Fruit" Content="Cherry" />
@@ -441,7 +458,7 @@
                                Minimum="-100" Maximum="100"
                                LowerValue="-25" UpperValue="40"
                                TickFrequency="5" IsSnapToTickEnabled="True"
-                               ValueIndicatorMode="Always" ValueFormat="0" />
+                                ValueFormat="0" />
               <m3c:RangeSlider Minimum="0" Maximum="10" LowerValue="2" UpperValue="7"
                                SmallChange="0.5" LargeChange="2" TickFrequency="0.5"
                                IsSnapToTickEnabled="True" IsDirectionReversed="True" />
@@ -499,8 +516,8 @@
             <TextBlock Classes="headline-small" Text="Menus" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Menu bar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <Menu HorizontalAlignment="Left">
-              <MenuItem Header="File">
+            <m3c:Menu Name="DemoMenuBar" HorizontalAlignment="Left">
+              <MenuItem Name="FileMenuItem" Header="File">
                 <MenuItem Header="New" InputGesture="Ctrl+N">
                   <MenuItem.Icon>
                     <PathIcon Width="16" Height="16" Data="M6,2 L14,2 18,6 18,22 6,22 Z" />
@@ -511,16 +528,16 @@
                   <MenuItem Header="report.pdf" />
                   <MenuItem Header="notes.txt" />
                 </MenuItem>
-                <Separator />
+                <Separator Classes="menu" />
                 <MenuItem Header="Exit" InputGesture="Ctrl+Q" />
               </MenuItem>
-              <MenuItem Header="Edit">
+              <MenuItem Name="EditMenuItem" Header="Edit">
                 <MenuItem Header="Undo" InputGesture="Ctrl+Z" />
                 <MenuItem Header="Redo" InputGesture="Ctrl+Y" />
-                <Separator />
+                <Separator Classes="menu" />
                 <MenuItem Header="Word wrap" ToggleType="CheckBox" IsChecked="True" />
                 <MenuItem Header="Show whitespace" ToggleType="CheckBox" />
-                <Separator />
+                <Separator Classes="menu" />
                 <MenuItem Header="Left" ToggleType="Radio" GroupName="Align" IsChecked="True" />
                 <MenuItem Header="Center" ToggleType="Radio" GroupName="Align" />
                 <MenuItem Header="Right" ToggleType="Radio" GroupName="Align" />
@@ -529,7 +546,7 @@
                 <MenuItem Header="About" />
                 <MenuItem Header="Disabled item" IsEnabled="False" />
               </MenuItem>
-            </Menu>
+            </m3c:Menu>
 
             <TextBlock Classes="title-small" Text="ContextMenu (right-click)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <Border Width="320" Height="80" HorizontalAlignment="Left"
@@ -540,7 +557,7 @@
                   <MenuItem Header="Cut" InputGesture="Ctrl+X" />
                   <MenuItem Header="Copy" InputGesture="Ctrl+C" />
                   <MenuItem Header="Paste" InputGesture="Ctrl+V" />
-                  <Separator />
+                  <Separator Classes="menu" />
                   <MenuItem Header="Delete" />
                 </ContextMenu>
               </Border.ContextMenu>
@@ -593,7 +610,7 @@
             </StackPanel>
 
             <TextBlock Classes="title-small" Text="Calendar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <Calendar HorizontalAlignment="Left" />
+            <Calendar Name="DemoCalendar" HorizontalAlignment="Left" />
 
             <TextBlock Classes="title-small" Text="TimePickerPane (dial + AM/PM)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="32">
@@ -690,13 +707,13 @@
             <TextBlock Classes="headline-small" Text="M3 Components" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Chips" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <m3c:ChipGroup Spacing="8">
+            <m3c:ChipGroup Name="MainChipGroup" Spacing="8">
               <m3c:AssistChip Content="Assist chip">
                 <m3c:AssistChip.Icon>
                   <PathIcon Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z" />
                 </m3c:AssistChip.Icon>
               </m3c:AssistChip>
-              <m3c:AssistChip Content="Elevated assist" IsElevated="True" />
+              <m3c:AssistChip Name="ElevatedAssistChip" Content="Elevated assist" IsElevated="True" />
               <m3c:FilterChip Content="Filter on" IsChecked="True" />
               <m3c:FilterChip Content="Filter off" />
               <m3c:InputChip Content="Input chip" IsRemovable="True" Removed="OnInputChipRemoved" />
@@ -859,7 +876,7 @@
             </m3c:TopAppBar>
 
             <TextBlock Classes="title-small" Text="Toolbar (Floating)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
-            <m3c:Toolbar Variant="Floating" HorizontalAlignment="Left">
+            <m3c:Toolbar Name="FloatingToolbar" Variant="Floating" HorizontalAlignment="Left">
               <StackPanel Orientation="Horizontal" Spacing="4">
                 <m3c:IconButton>
                   <PathIcon Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -1071,6 +1088,62 @@
             <TextBlock Classes="headline-small" Text="Color roles" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <WrapPanel Name="ColorsPanel" ItemSpacing="8" LineSpacing="8" />
           </StackPanel>
+
+          <!-- ======================= Material Symbols ======================= -->
+          <Grid Name="IconsSection" RowDefinitions="Auto,Auto,Auto" RowSpacing="16"
+                MaxWidth="1200" HorizontalAlignment="Stretch" IsVisible="False">
+            <StackPanel Grid.Row="0" Spacing="4">
+              <TextBlock Classes="headline-small" Text="Material Symbols" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+              <TextBlock Classes="body-medium"
+                         Text="4,007 Rounded 400 icons, optically sized for 24dp. ItemsRepeater realizes only cards inside the current viewport."
+                         Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            </StackPanel>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBox Name="IconSearchBox" PlaceholderText="Search icons or C# property names"
+                       TextChanged="OnIconSearchChanged" />
+              <ComboBox Grid.Column="1" Name="IconVariantCombo" Width="132"
+                        SelectionChanged="OnIconVariantChanged">
+                <ComboBoxItem Content="Regular" />
+                <ComboBoxItem Content="Filled" />
+              </ComboBox>
+            </Grid>
+
+            <StackPanel Grid.Row="2" Spacing="12">
+              <TextBlock Name="IconCountText" Classes="label-large"
+                         Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+              <ItemsRepeater Name="IconRepeater">
+                <ItemsRepeater.Layout>
+                  <UniformGridLayout Orientation="Horizontal"
+                                     MinItemWidth="164" MinItemHeight="132"
+                                     MinColumnSpacing="12" MinRowSpacing="12"
+                                     ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                  <DataTemplate x:DataType="local:MaterialSymbolGalleryItem">
+                    <Border Padding="12" MinHeight="132"
+                            Background="{DynamicResource Md3SurfaceContainerLowBrush}"
+                            CornerRadius="{StaticResource Md3CornerMedium}">
+                      <Grid RowDefinitions="*,Auto,Auto" RowSpacing="6">
+                        <PathIcon HorizontalAlignment="Center"
+                                  Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                                  Data="{Binding Geometry}" />
+                        <TextBlock Grid.Row="1" Text="{Binding Name}"
+                                   TextAlignment="Center" TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+                        <Button Grid.Row="2" Classes="text" Padding="4,2"
+                                HorizontalContentAlignment="Center"
+                                Tag="{Binding ApiName}" Click="OnCopyIconNameClick">
+                          <TextBlock Text="{Binding ApiName}" FontSize="10"
+                                     TextTrimming="CharacterEllipsis" />
+                        </Button>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+              </ItemsRepeater>
+            </StackPanel>
+          </Grid>
 
         </Panel>
       </ScrollViewer>

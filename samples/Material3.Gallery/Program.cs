@@ -6,8 +6,11 @@ namespace Material3.Gallery;
 internal static class Program
 {
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args)
+    {
+        App.EnableDesktopTray = true;
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    }
 
     public static AppBuilder BuildAvaloniaApp()
     {
@@ -15,7 +18,7 @@ internal static class Program
             .UsePlatformDetect()
             .WithInterFont();
 #if DEBUG
-        builder = builder.WithDeveloperTools().LogToTrace();
+        // builder = builder.WithDeveloperTools().LogToTrace();
 #endif
         return builder;
     }

@@ -17,7 +17,7 @@ internal static class Program
     {
         var builder = AppBuilder.Configure<App>();
 #if DEBUG
-        builder = builder.WithDeveloperTools();
+        // builder = builder.WithDeveloperTools();
 #endif
         return builder;
     }

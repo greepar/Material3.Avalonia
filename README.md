@@ -9,7 +9,9 @@ A standalone Material Design 3 theme and component library for Avalonia 12.1 on 
 - HCT/MCU dynamic color with light/dark schemes, contrast levels, and nine scheme variants.
 - Material 3 themes for 80+ built-in Avalonia controls.
 - Material-specific controls including chips, FAB menus, button groups, sheets, search, time picker, wavy progress, loading morphs, and range sliders.
+- 4,007 Google Material Symbols Rounded 400 icons, optically sized for 24dp, in regular and filled variants as cached Avalonia `Geometry` objects.
 - Pointer-centered ripples, state layers, elevation, expressive shape transitions, and responsive Gallery layouts.
+- Desktop Gallery tray integration with a native tray entry and a custom Material background panel.
 - AOT/trim analyzers enabled in the library and shared Gallery UI.
 
 ## Requirements
@@ -48,6 +50,26 @@ Until the NuGet package is published, reference `src/Material3.Avalonia/Material
 ```
 
 See the [slider documentation](https://greepar.github.io/Material3.Avalonia/controls/sliders.html) for the complete API.
+
+## Material Symbols
+
+Use the strongly typed regular or filled icon catalogs directly with `PathIcon.Data` or `Path.Data`:
+
+```xml
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:icons="using:Material3.Avalonia.Icons">
+  <StackPanel Orientation="Horizontal" Spacing="12">
+    <PathIcon Data="{x:Static icons:MaterialSymbols.Home}" />
+    <PathIcon Data="{x:Static icons:MaterialSymbolsFilled.Favorite}" />
+    <Path Data="{x:Static icons:MaterialSymbols.Search}"
+          Fill="Black"
+          Stretch="Uniform" />
+  </StackPanel>
+</UserControl>
+```
+
+The properties return lazily parsed, cached Avalonia `Geometry` instances, so unused icons have no parsing cost. See the [icon documentation](https://greepar.github.io/Material3.Avalonia/guide/icons.html) for C# usage and naming rules.
 
 ## Run
 

@@ -1,6 +1,8 @@
 // API modeled after m3fx (https://github.com/Glavo/m3fx), Apache-2.0; implementation follows the Material 3 spec.
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
@@ -21,8 +23,9 @@ public enum ButtonGroupVariant
 /// Material 3 button group: arranges buttons in a horizontal row. The
 /// <see cref="ButtonGroupVariant.Connected"/> variant tightens the gap to 2dp and
 /// reshapes the child buttons so only the outer edges keep the full rounding while
-/// inner corners use 8dp. The <see cref="ButtonGroupVariant.Standard"/> variant adds
-/// the M3 Expressive press interaction: a pressed (or checked) button grows 15% wider
+/// inner corners use 8dp and the pressed item becomes fully rounded. The
+/// <see cref="ButtonGroupVariant.Standard"/> variant uses the M3 Expressive press
+/// interaction: a pressed (or checked) button grows 15% wider
 /// while its direct neighbours are squeezed to absorb the growth, animated with a
 /// springy overshoot.
 /// </summary>
@@ -31,8 +34,6 @@ public class ButtonGroup : ItemsControl
     public static readonly StyledProperty<ButtonGroupVariant> VariantProperty =
         AvaloniaProperty.Register<ButtonGroup, ButtonGroupVariant>(nameof(Variant));
 
-    // Full corner token matching Md3CornerFull; Avalonia clamps oversized radii to fit.
-    private const double FullCorner = 9999;
     private const double InnerCorner = 8;
 
     // M3 Expressive press interaction (spec ported from m3fx): the pressed button's
@@ -59,6 +60,7 @@ public class ButtonGroup : ItemsControl
     // values. Driving Width (instead of custom arrange math) lets the regular measure
     // pass re-flow the button content, so labels stay centered while squeezing.
     private readonly Dictionary<Control, double> _naturalWidths = new();
+    private readonly Dictionary<Control, Thickness> _naturalPaddings = new();
     private bool _widthsForced;
     private bool _frameRequested;
     private StackPanel? _itemsPanel;
@@ -107,6 +109,7 @@ public class ButtonGroup : ItemsControl
             // AOT-safe: strongly typed property-change subscription, no reflection.
             button.PropertyChanged += OnChildPropertyChanged;
             UpdatePressTarget(button);
+            ApplyShape(button, e.Index, ItemCount);
         }
 
         UpdateShapes();
@@ -123,6 +126,7 @@ public class ButtonGroup : ItemsControl
 
         _anims.Remove(e.Container);
         _naturalWidths.Remove(e.Container);
+        _naturalPaddings.Remove(e.Container);
         UpdateShapes();
     }
 
@@ -132,13 +136,41 @@ public class ButtonGroup : ItemsControl
             sender is Button button)
         {
             UpdatePressTarget(button);
+            EnsureCornerTransition(button);
+            UpdateShapes();
         }
+    }
+
+    private static void EnsureCornerTransition(Button button)
+    {
+        if (button.Transitions?.OfType<CornerRadiusTransition>()
+            .Any(transition => transition.Property == Button.CornerRadiusProperty) == true)
+        {
+            return;
+        }
+
+        var transitions = new Transitions();
+        if (button.Transitions is { } existing)
+        {
+            foreach (var transition in existing)
+            {
+                transitions.Add(transition);
+            }
+        }
+
+        transitions.Add(new CornerRadiusTransition
+        {
+            Property = Button.CornerRadiusProperty,
+            Duration = TimeSpan.FromMilliseconds(200),
+            Easing = new CubicEaseOut(),
+        });
+        button.Transitions = transitions;
     }
 
     private void UpdatePressTarget(Button button)
     {
-        // m3fx behaviour: armed (pressed) or selected (checked toggle) keeps the
-        // button expanded. Connected groups do not morph widths.
+        // Width morphing is for Standard groups. Connected groups keep stable widths
+        // and express the active item by changing its inner corners instead.
         var expanded = Variant == ButtonGroupVariant.Standard &&
                        (button.IsPressed || button is ToggleButton { IsChecked: true });
         var target = expanded ? 1.0 : 0.0;
@@ -187,6 +219,7 @@ public class ButtonGroup : ItemsControl
                 }
 
                 _naturalWidths[child] = w;
+                _naturalPaddings[child] = child is Button button ? button.Padding : default;
             }
         }
     }
@@ -242,7 +275,8 @@ public class ButtonGroup : ItemsControl
         ApplyWidths();
         if (anyAnimating)
         {
-            RequestFrame();
+            _frameRequested = true;
+            DispatcherTimer.RunOnce(OnFrame, TimeSpan.FromMilliseconds(16));
         }
     }
 
@@ -276,10 +310,16 @@ public class ButtonGroup : ItemsControl
                 for (var i = 0; i < count; i++)
                 {
                     ContainerFromIndex(i)?.ClearValue(WidthProperty);
+                    if (ContainerFromIndex(i) is Button button
+                        && _naturalPaddings.TryGetValue(button, out var padding))
+                    {
+                        button.SetCurrentValue(Button.PaddingProperty, padding);
+                    }
                 }
 
                 _widthsForced = false;
                 _naturalWidths.Clear();
+                _naturalPaddings.Clear();
             }
 
             return;
@@ -333,6 +373,15 @@ public class ButtonGroup : ItemsControl
             var baseWidth = _naturalWidths.TryGetValue(children[i], out var nat) ? nat : widths[i];
             var w = Math.Max(widths[i], Math.Min(baseWidth, MinSqueezedWidth));
             children[i].SetCurrentValue(WidthProperty, w);
+            if (children[i] is Button button
+                && _naturalPaddings.TryGetValue(button, out var padding))
+            {
+                var shrink = Math.Max(0, baseWidth - w);
+                var left = Math.Max(8, padding.Left - shrink / 2);
+                var right = Math.Max(8, padding.Right - shrink / 2);
+                button.SetCurrentValue(Button.PaddingProperty,
+                    new Thickness(left, padding.Top, right, padding.Bottom));
+            }
         }
 
         _widthsForced = true;
@@ -395,7 +444,6 @@ public class ButtonGroup : ItemsControl
 
     private void UpdateShapes()
     {
-        var connected = Variant == ButtonGroupVariant.Connected;
         var count = ItemCount;
         for (var i = 0; i < count; i++)
         {
@@ -404,15 +452,31 @@ public class ButtonGroup : ItemsControl
                 continue;
             }
 
-            if (!connected)
-            {
-                button.ClearValue(Button.CornerRadiusProperty);
-                continue;
-            }
-
-            var left = i == 0 ? FullCorner : InnerCorner;
-            var right = i == count - 1 ? FullCorner : InnerCorner;
-            button.SetCurrentValue(Button.CornerRadiusProperty, new CornerRadius(left, right, right, left));
+            ApplyShape(button, i, count);
         }
     }
+
+    private void ApplyShape(Button button, int index, int count)
+    {
+        if (Variant != ButtonGroupVariant.Connected)
+        {
+            button.ClearValue(Button.CornerRadiusProperty);
+            return;
+        }
+
+        if (button.IsPressed || button is ToggleButton { IsChecked: true })
+        {
+            var activeRadius = GetFullRadius(button);
+            button.CornerRadius = new CornerRadius(activeRadius);
+            return;
+        }
+
+        var fullRadius = GetFullRadius(button);
+        var left = index == 0 ? fullRadius : InnerCorner;
+        var right = index == count - 1 ? fullRadius : InnerCorner;
+        button.CornerRadius = new CornerRadius(left, right, right, left);
+    }
+
+    private static double GetFullRadius(Button button) =>
+        button.Bounds.Height > 0 ? button.Bounds.Height / 2 : 20;
 }

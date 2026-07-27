@@ -11,6 +11,8 @@
   <ControlTheme x:Key="{x:Type TableViewRow}" TargetType="TableViewRow">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Padding" Value="{StaticResource Md3TableViewRowPadding}" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
     <Setter Property="Template">
       <ControlTemplate>
         <Border Name="PART_RowBorder"
@@ -18,8 +20,8 @@
                 BorderBrush="{DynamicResource Md3OutlineVariantBrush}"
                 BorderThickness="0,0,0,1"
                 CornerRadius="{TemplateBinding CornerRadius}"
-                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch">
           <Panel>
             <!-- state layer -->
             <Border Name="PART_StateLayer"

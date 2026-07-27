@@ -26,6 +26,7 @@ export default defineConfig({
             { text: 'Theme Configuration', link: '/guide/theme-configuration' },
             { text: 'Color System', link: '/guide/color-system' },
             { text: 'Typography & Tokens', link: '/guide/tokens' },
+            { text: 'Material Symbols', link: '/guide/icons' },
             { text: 'Platforms (Desktop / Mobile / WASM)', link: '/guide/platforms' },
           ],
         },

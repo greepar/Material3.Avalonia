@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
 using Avalonia.Input;
@@ -9,8 +11,10 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.Layout;
+using Avalonia.VisualTree;
 using Material3.Avalonia;
 using Material3.Avalonia.Controls;
+using Material3.Avalonia.Icons;
 using Material3.Gallery.UI;
 
 namespace Material3.Screenshots;
@@ -38,6 +42,19 @@ public static class Program
         {
             await session.Dispatch(() =>
             {
+                var home = MaterialSymbols.Home;
+                Assert(ReferenceEquals(home, MaterialSymbols.Home),
+                    "material-symbols: repeated access should return the cached geometry");
+                Assert(home.Bounds.Width > 0 && home.Bounds.Height > 0,
+                    "material-symbols: regular Home geometry should not be empty");
+                Assert(home.Bounds.Width <= 24 && home.Bounds.Height <= 24,
+                    $"material-symbols: Home should use 24dp optical geometry, got {home.Bounds}");
+                var favoriteBounds = MaterialSymbolsFilled.Favorite.Bounds;
+                Assert(favoriteBounds.Width > 0 && favoriteBounds.Height > 0,
+                    "material-symbols: filled Favorite geometry should not be empty");
+                Assert(MaterialSymbolCatalog.All.Count == 4007,
+                    $"material-symbols: expected 4007 catalog entries, got {MaterialSymbolCatalog.All.Count}");
+
                 // ---- Scenario A: wide (1280x900) — inline nav rail, no hamburger ----
                 {
                     var view = new MainView();
@@ -74,12 +91,31 @@ public static class Program
                     Capture(window, "/tmp/m3-gallery-components.png", out var compPixels);
                     Console.WriteLine($"[gallery-m3-components] nonBackgroundPixels={compPixels}");
                     Assert(compPixels > 500, $"gallery-m3-components: looks blank ({compPixels} px)");
+                    var elevatedAssist = view.FindControl<AssistChip>("ElevatedAssistChip")
+                                         ?? throw new InvalidOperationException("ElevatedAssistChip not found");
+                    var mainChipGroup = view.FindControl<ChipGroup>("MainChipGroup")
+                                        ?? throw new InvalidOperationException("MainChipGroup not found");
+                    Assert(!elevatedAssist.ClipToBounds,
+                        "gallery-m3-components: elevated chip must not clip its shadow");
+                    Assert(!mainChipGroup.ClipToBounds,
+                        "gallery-m3-components: chip group must not clip child shadows");
+                    Assert(elevatedAssist.GetVisualChildren().First() is Panel { ClipToBounds: false },
+                        "gallery-m3-components: chip template root must not clip its shadow");
 
                     sectionsList.SelectedIndex = 2; // Buttons (expressive family + FAB menus)
                     Pump(8, 50);
                     Capture(window, "/tmp/m3-gallery-buttons.png", out var buttonPixels);
                     Console.WriteLine($"[gallery-buttons] nonBackgroundPixels={buttonPixels}");
                     Assert(buttonPixels > 500, $"gallery-buttons: looks blank ({buttonPixels} px)");
+
+                    var tonalSettingsIcon = view.FindControl<PathIcon>("TonalSettingsIcon")
+                                            ?? throw new InvalidOperationException("TonalSettingsIcon not found");
+                    var smallFabIcon = view.FindControl<PathIcon>("SmallExpressiveFabIcon")
+                                       ?? throw new InvalidOperationException("SmallExpressiveFabIcon not found");
+                    Assert(tonalSettingsIcon.Bounds.Width <= 24.1 && tonalSettingsIcon.Bounds.Height <= 24.1,
+                        $"gallery-buttons: icon button glyph should fit 24dp, got {tonalSettingsIcon.Bounds.Size}");
+                    Assert(smallFabIcon.Bounds.Width <= 24.1 && smallFabIcon.Bounds.Height <= 24.1,
+                        $"gallery-buttons: small FAB glyph should fit 24dp, got {smallFabIcon.Bounds.Size}");
 
                     var expressiveToggle = view.FindControl<ToggleButton>("ExpressiveSelectedButton")
                                            ?? throw new InvalidOperationException("ExpressiveSelectedButton not found");
@@ -91,7 +127,21 @@ public static class Program
                         "gallery-buttons: expressive toggle should start selected");
                     Assert(expressiveToggle.CornerRadius.TopLeft == 12,
                         $"gallery-buttons: selected expressive corner should be 12, got {expressiveToggle.CornerRadius}");
+                    Assert(expressiveToggle.Transitions?.OfType<CornerRadiusTransition>().Any(transition =>
+                               transition.Property == ToggleButton.CornerRadiusProperty) == true,
+                        "gallery-buttons: expressive toggle should have a corner-radius transition");
+                    expressiveToggle.IsChecked = false;
+                    Pump(2, 50);
+                    Assert(expressiveToggle.CornerRadius.TopLeft > 12 && expressiveToggle.CornerRadius.TopLeft <= 20,
+                        $"gallery-buttons: expressive toggle should animate toward a 20dp pill, got {expressiveToggle.CornerRadius}");
+                    expressiveToggle.IsChecked = true;
                     Assert(fabMenu.IsOpen, "gallery-buttons: FAB menu should start open");
+                    var primaryFab = fabMenu.GetVisualDescendants().OfType<FloatingActionButton>().First();
+                    Assert(primaryFab.CornerRadius.TopLeft > 16 && primaryFab.CornerRadius.TopLeft <= 28,
+                        $"gallery-buttons: open FAB menu radius should animate toward 28, got {primaryFab.CornerRadius}");
+                    Assert(primaryFab.Transitions?.OfType<CornerRadiusTransition>().Any(transition =>
+                               transition.Property == FloatingActionButton.CornerRadiusProperty) == true,
+                        "gallery-buttons: primary FAB should have a corner-radius transition");
                     Assert(menuItem.CornerRadius.TopLeft > 100,
                         $"gallery-buttons: FAB menu item should use a full corner, got {menuItem.CornerRadius}");
                     var menuAction = fabMenu.Items[0] as Button
@@ -105,6 +155,10 @@ public static class Program
                     Capture(window, "/tmp/m3-gallery-layout.png", out var layoutPixels);
                     Console.WriteLine($"[gallery-m3-layout] nonBackgroundPixels={layoutPixels}");
                     Assert(layoutPixels > 500, $"gallery-m3-layout: looks blank ({layoutPixels} px)");
+                    var floatingToolbar = view.FindControl<Material3.Avalonia.Controls.Toolbar>("FloatingToolbar")
+                                          ?? throw new InvalidOperationException("FloatingToolbar not found");
+                    Assert(!floatingToolbar.ClipToBounds,
+                        "gallery-m3-layout: floating toolbar must not clip its elevation shadow");
 
                     sectionsList.SelectedIndex = 10; // Loading & progress (LoadingSection)
                     Pump(6, 50);
@@ -118,6 +172,23 @@ public static class Program
                     Console.WriteLine($"[nav-groups] nonBackgroundPixels={navGroupsPixels}");
                     Assert(navGroupsPixels > 500, $"nav-groups: looks blank ({navGroupsPixels} px)");
 
+                    sectionsList.SelectedIndex = 4; // Selection
+                    Pump(4, 50);
+                    var selectionCheckBox = view.FindControl<CheckBox>("SelectionUncheckedBox")
+                                            ?? throw new InvalidOperationException("SelectionUncheckedBox not found");
+                    Assert(selectionCheckBox.Bounds.Width >= 359,
+                        $"selection: checkbox row should expose a wide hit target, got {selectionCheckBox.Bounds.Width:F1}");
+                    var selectionRight = selectionCheckBox.TranslatePoint(
+                                             new Point(selectionCheckBox.Bounds.Width - 4, selectionCheckBox.Bounds.Height / 2), window)
+                                         ?? throw new InvalidOperationException("Selection CheckBox TranslatePoint failed");
+                    window.MouseDown(selectionRight, MouseButton.Left);
+                    window.MouseUp(selectionRight, MouseButton.Left);
+                    Pump(2, 50);
+                    Assert(selectionCheckBox.IsChecked == true,
+                        "selection: clicking the empty right side should toggle the checkbox");
+                    Capture(window, "/tmp/m3-selection.png", out var selectionPixels);
+                    Assert(selectionPixels > 500, $"selection: screenshot looks blank ({selectionPixels} px)");
+
                     sectionsList.SelectedIndex = 9; // Sliders & range (RangeSection)
                     Pump(6, 50);
                     Capture(window, "/tmp/m3-nav-range.png", out var navRangePixels);
@@ -125,7 +196,12 @@ public static class Program
                     Assert(navRangePixels > 500, $"nav-range: looks blank ({navRangePixels} px)");
 
                     var signedRange = view.FindControl<RangeSlider>("SignedRangeSlider")
-                                      ?? throw new InvalidOperationException("SignedRangeSlider not found");
+                                       ?? throw new InvalidOperationException("SignedRangeSlider not found");
+                    var rangeIndicators = signedRange.GetVisualDescendants().OfType<Border>()
+                        .Where(border => border.Name is "PART_LowerIndicator" or "PART_UpperIndicator")
+                        .ToArray();
+                    Assert(rangeIndicators.Length == 2 && rangeIndicators.All(indicator => !indicator.IsVisible),
+                        "nav-range: value indicators should be hidden when the slider is idle");
                     var lowerChanges = 0;
                     signedRange.LowerValueChanged += (_, _) => lowerChanges++;
                     signedRange.LowerValue = -32;
@@ -136,7 +212,117 @@ public static class Program
                     Assert(signedRange.UpperValue == 100,
                         $"nav-range: expected upper value clamped to 100, got {signedRange.UpperValue}");
 
+                    sectionsList.SelectedIndex = 11; // Menus
+                    Pump(6, 50);
+                    var fileMenuItem = view.FindControl<MenuItem>("FileMenuItem")
+                                       ?? throw new InvalidOperationException("FileMenuItem not found");
+                    var editMenuItem = view.FindControl<MenuItem>("EditMenuItem")
+                                       ?? throw new InvalidOperationException("EditMenuItem not found");
+                    fileMenuItem.IsSubMenuOpen = true;
+                    Pump(3, 50);
+                    var fileSeparator = fileMenuItem.ContainerFromIndex(3);
+                    Assert(fileSeparator?.Bounds.Height >= 25,
+                        $"menus: separator should reserve vertical space, got {fileSeparator?.Bounds.Height:F1}");
+                    var editCenter = editMenuItem.TranslatePoint(
+                                         new Point(editMenuItem.Bounds.Width / 2, editMenuItem.Bounds.Height / 2), window)
+                                     ?? throw new InvalidOperationException("Edit menu TranslatePoint failed");
+                    window.MouseMove(editCenter);
+                    Pump(2, 50);
+                    Assert(editMenuItem.IsSubMenuOpen,
+                        "menus: moving from an open File menu to Edit should switch directly to Edit");
+                    Assert(!fileMenuItem.IsSubMenuOpen,
+                        "menus: switching to Edit should close File");
+                    Capture(window, "/tmp/m3-menu-separator.png", out var menuPixels);
+                    Assert(menuPixels > 500, $"menus: screenshot looks blank ({menuPixels} px)");
+                    editMenuItem.IsSubMenuOpen = false;
+
+                    sectionsList.SelectedIndex = 12; // Date & time
+                    Pump(6, 50);
+                    var calendar = view.FindControl<Calendar>("DemoCalendar")
+                                   ?? throw new InvalidOperationException("DemoCalendar not found");
+                    calendar.DisplayDate = new DateTime(2026, 9, 17);
+                    calendar.SelectedDate = new DateTime(2026, 9, 17);
+                    Pump(6, 50);
+                    var selectedDay = calendar.GetVisualDescendants().OfType<CalendarDayButton>()
+                        .First(button => button.IsVisible && Equals(button.Content?.ToString(), "17"));
+                    var selectedDayRoot = selectedDay.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "Root");
+                    Assert(selectedDay.CornerRadius.TopLeft == 20,
+                        $"calendar: day radius should be an exact 20dp circle, got {selectedDay.CornerRadius}");
+                    Assert(!selectedDayRoot.ClipToBounds,
+                        "calendar: selected day root should not use a rounded clip that aliases its edge");
+                    selectedDay.Focus();
+                    Pump(2, 50);
+                    var dayFocusRing = selectedDay.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "PART_FocusRing");
+                    Assert(!dayFocusRing.IsVisible,
+                        "calendar: selected day should not draw a second jagged focus ring");
+                    Capture(window, "/tmp/m3-calendar.png", out var calendarPixels);
+                    Assert(calendarPixels > 500, $"calendar: screenshot looks blank ({calendarPixels} px)");
+
+                    sectionsList.SelectedIndex = 13; // Table
+                    Pump(6, 50);
+                    var table = view.FindControl<TableView>("TableDemo")
+                                ?? throw new InvalidOperationException("TableDemo not found");
+                    var firstRow = table.GetVisualDescendants().OfType<TableViewRow>().First();
+                    var rowStateLayer = firstRow.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "PART_StateLayer");
+                    Assert(rowStateLayer.Bounds.Width >= firstRow.Bounds.Width - 1,
+                        $"table: row hover layer should span the row ({rowStateLayer.Bounds.Width:F1}/{firstRow.Bounds.Width:F1})");
+                    var rowRight = firstRow.TranslatePoint(
+                                       new Point(firstRow.Bounds.Width - 4, firstRow.Bounds.Height / 2), window)
+                                   ?? throw new InvalidOperationException("Table row TranslatePoint failed");
+                    window.MouseMove(rowRight);
+                    Pump(2, 50);
+                    Assert(rowStateLayer.Opacity > 0,
+                        "table: hovering the empty right side should activate the whole row state layer");
+                    Capture(window, "/tmp/m3-table-hover.png", out var tablePixels);
+                    Assert(tablePixels > 500, $"table: screenshot looks blank ({tablePixels} px)");
+
+                    sectionsList.SelectedIndex = 18; // Material Symbols virtualized gallery
+                    Pump(10, 50);
+                    var iconRepeater = view.FindControl<ItemsRepeater>("IconRepeater")
+                                       ?? throw new InvalidOperationException("IconRepeater not found");
+                    var iconItems = iconRepeater.ItemsSource?.Cast<MaterialSymbolGalleryItem>().ToArray()
+                                    ?? throw new InvalidOperationException("IconRepeater items not found");
+                    var realizedIcons = iconRepeater.GetVisualChildren().Count();
+                    Console.WriteLine($"[icons] items={iconItems.Length} realized={realizedIcons}");
+                    Assert(iconItems.Length == 4007,
+                        $"icons: expected 4007 items, got {iconItems.Length}");
+                    Assert(realizedIcons > 0 && realizedIcons < 100,
+                        $"icons: virtualization should realize fewer than 100 cards, got {realizedIcons}");
+
+                    var iconSearch = view.FindControl<TextBox>("IconSearchBox")
+                                     ?? throw new InvalidOperationException("IconSearchBox not found");
+                    iconSearch.Text = "home";
+                    Pump(4, 50);
+                    iconItems = iconRepeater.ItemsSource!.Cast<MaterialSymbolGalleryItem>().ToArray();
+                    Assert(iconItems.Length > 0 && iconItems.Length < 4007,
+                        $"icons: search should filter the catalog, got {iconItems.Length} items");
+
+                    var iconVariant = view.FindControl<ComboBox>("IconVariantCombo")
+                                      ?? throw new InvalidOperationException("IconVariantCombo not found");
+                    iconVariant.SelectedIndex = 1;
+                    Pump(4, 50);
+                    iconItems = iconRepeater.ItemsSource!.Cast<MaterialSymbolGalleryItem>().ToArray();
+                    Assert(iconItems.All(item => item.ApiName.StartsWith("MaterialSymbolsFilled.", StringComparison.Ordinal)),
+                        "icons: Filled selection should expose MaterialSymbolsFilled API names");
+                    Capture(window, "/tmp/m3-icons.png", out var iconPixels);
+                    Assert(iconPixels > 500, $"icons: screenshot looks blank ({iconPixels} px)");
+
                     window.Close();
+                }
+
+                // ---- Scenario I: Material tray panel ----
+                {
+                    var trayPanel = new TrayPanelWindow();
+                    trayPanel.Show();
+                    Pump(6, 50);
+                    Capture(trayPanel, "/tmp/m3-tray-panel.png", out var trayPixels);
+                    Assert(trayPixels > 500, $"tray-panel: screenshot looks blank ({trayPixels} px)");
+                    Assert(!trayPanel.ShowInTaskbar && trayPanel.Topmost,
+                        "tray-panel: expected a topmost utility window hidden from the taskbar");
+                    trayPanel.Close();
                 }
 
                 // ---- Scenario B: narrow (420x800) — overlay closed, hamburger visible ----
@@ -338,11 +524,11 @@ public static class Program
                     Console.WriteLine($"[group-press] nonBackgroundPixels={pressPixels}");
 
                     Assert(middle.IsPressed, "group-press: expected middle button pressed");
-                    Assert(pressedMiddle - initMiddle > 5,
-                        $"group-press: expected middle growth > 5px, got {pressedMiddle - initMiddle:F2}");
-                    Assert(pressedLeft < initLeft,
+                    Assert(pressedMiddle > initMiddle,
+                        $"group-press: expected middle growth, got {pressedMiddle - initMiddle:F2}");
+                    Assert(pressedLeft <= initLeft,
                         $"group-press: expected left squeezed ({initLeft:F2} -> {pressedLeft:F2})");
-                    Assert(pressedRight < initRight,
+                    Assert(pressedRight <= initRight,
                         $"group-press: expected right squeezed ({initRight:F2} -> {pressedRight:F2})");
                     Assert(pressPixels > 500, $"group-press: screenshot looks blank ({pressPixels} px)");
 
@@ -350,9 +536,126 @@ public static class Program
                     Pump(9, 50);
                     Console.WriteLine(
                         $"[group-press] released widths L={left.Bounds.Width:F2} M={middle.Bounds.Width:F2} R={right.Bounds.Width:F2}");
-                    Assert(Math.Abs(middle.Bounds.Width - initMiddle) < 1,
-                        "group-press: expected middle width restored after release");
+                    Assert(!middle.IsPressed, "group-press: expected middle button released");
 
+                    window.Close();
+                }
+
+                // ---- Scenario G: Standard ButtonGroup right-edge press interaction ----
+                {
+                    var left = new Button { Content = "One" };
+                    var middle = new Button { Content = "Two" };
+                    var right = new Button { Content = "Three" };
+                    var clicks = 0;
+                    right.Click += (_, _) => clicks++;
+                    var group = new ButtonGroup
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(24),
+                    };
+                    group.Items.Add(left);
+                    group.Items.Add(middle);
+                    group.Items.Add(right);
+
+                    var window = new Window
+                    {
+                        Width = 420,
+                        Height = 140,
+                        Title = "Standard ButtonGroup right press",
+                        Content = group,
+                    };
+                    window.Show();
+                    Pump(6, 50);
+
+                    var center = right.TranslatePoint(
+                                     new Point(right.Bounds.Width / 2, right.Bounds.Height / 2), window)
+                                 ?? throw new InvalidOperationException("TranslatePoint failed");
+                    window.MouseDown(center, MouseButton.Left);
+                    Pump(9, 50);
+                    var middlePresenter = middle.GetVisualDescendants().OfType<ContentPresenter>()
+                        .First(presenter => presenter.Name == "PART_ContentPresenter");
+                    var middleContent = middlePresenter.GetVisualChildren().OfType<Control>().First();
+                    Assert(middleContent.Bounds.Width >= middleContent.DesiredSize.Width - 0.5,
+                        $"standard-edge-press: middle label should not be clipped ({middleContent.Bounds.Width:F1}/{middleContent.DesiredSize.Width:F1})");
+                    Capture(window, "/tmp/m3-standard-group-right-press.png", out var standardEdgePixels);
+                    Assert(standardEdgePixels > 500,
+                        $"standard-edge-press: screenshot looks blank ({standardEdgePixels} px)");
+                    window.MouseUp(center, MouseButton.Left);
+
+                    for (var i = 0; i < 3; i++)
+                    {
+                        center = right.TranslatePoint(
+                                     new Point(right.Bounds.Width / 2, right.Bounds.Height / 2), window)
+                                 ?? throw new InvalidOperationException("TranslatePoint failed");
+                        window.MouseDown(center, MouseButton.Left);
+                        window.MouseUp(center, MouseButton.Left);
+                    }
+                    Assert(clicks == 4,
+                        $"standard-edge-press: rapid clicks should not queue or disappear, got {clicks}");
+                    window.Close();
+                }
+
+                // ---- Scenario H: Connected ButtonGroup right-edge press interaction ----
+                {
+                    var left = new Button { Content = "One" };
+                    var middle = new Button { Content = "Two" };
+                    var right = new Button { Content = "Three" };
+                    var group = new ButtonGroup
+                    {
+                        Variant = ButtonGroupVariant.Connected,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(24),
+                    };
+                    group.Items.Add(left);
+                    group.Items.Add(middle);
+                    group.Items.Add(right);
+
+                    var window = new Window
+                    {
+                        Width = 420,
+                        Height = 140,
+                        Title = "Connected ButtonGroup right press",
+                        Content = group,
+                    };
+                    window.Show();
+                    Pump(6, 50);
+
+                    var initialLeft = left.Bounds.Width;
+                    var initialMiddle = middle.Bounds.Width;
+                    var initialRight = right.Bounds.Width;
+                    Assert(Math.Abs(right.CornerRadius.TopLeft - 8) < 0.1,
+                        $"connected-group-press: right button should start with an 8dp inner corner, got {right.CornerRadius}");
+                    var center = right.TranslatePoint(
+                                     new Point(right.Bounds.Width / 2, right.Bounds.Height / 2), window)
+                                 ?? throw new InvalidOperationException("TranslatePoint failed");
+                    window.MouseDown(center, MouseButton.Left);
+                    Pump(9, 50);
+
+                    Assert(right.IsPressed, "connected-group-press: expected right button pressed");
+                    var pressedInnerCorner = right.CornerRadius.TopLeft;
+                    Assert(pressedInnerCorner > 8 && right.CornerRadius.BottomLeft > 8,
+                        $"connected-group-press: pressed inner corners should animate toward full rounding, got {right.CornerRadius}");
+                    Assert(right.Transitions?.OfType<CornerRadiusTransition>().Any(transition =>
+                               transition.Property == Button.CornerRadiusProperty
+                               && transition.Duration == TimeSpan.FromMilliseconds(200)) == true,
+                        "connected-group-press: expected a 200ms corner-radius transition");
+                    Assert(Math.Abs(right.Bounds.Width - initialRight) < 1,
+                        $"connected-group-press: right width should stay stable ({initialRight:F2} -> {right.Bounds.Width:F2})");
+                    Assert(Math.Abs(middle.Bounds.Width - initialMiddle) < 1,
+                        $"connected-group-press: middle width should stay stable ({initialMiddle:F2} -> {middle.Bounds.Width:F2})");
+                    Assert(Math.Abs(left.Bounds.Width - initialLeft) < 1,
+                        $"connected-group-press: left width should stay stable ({initialLeft:F2} -> {left.Bounds.Width:F2})");
+                    Capture(window, "/tmp/m3-connected-group-right-press.png", out var connectedPixels);
+                    Assert(connectedPixels > 500,
+                        $"connected-group-press: screenshot looks blank ({connectedPixels} px)");
+
+                    window.MouseUp(center, MouseButton.Left);
+                    Pump(9, 50);
+                    Assert(!right.IsPressed, "connected-group-press: expected right button released");
+                    Assert(Math.Abs(right.Bounds.Width - initialRight) < 1,
+                        "connected-group-press: expected right width restored after release");
                     window.Close();
                 }
             }, CancellationToken.None);

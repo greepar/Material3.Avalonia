@@ -16,6 +16,7 @@ public class ChipGroup : ItemsControl
 
     public ChipGroup()
     {
+        ClipToBounds = false;
         ItemsPanel = new FuncTemplate<Panel?>(CreateItemsPanel);
     }
 
@@ -28,7 +29,7 @@ public class ChipGroup : ItemsControl
 
     private Panel CreateItemsPanel()
     {
-        var panel = new WrapPanel();
+        var panel = new WrapPanel { ClipToBounds = false };
         panel.Bind(WrapPanel.ItemSpacingProperty, this.GetObservable(SpacingProperty));
         panel.Bind(WrapPanel.LineSpacingProperty, this.GetObservable(SpacingProperty));
         return panel;

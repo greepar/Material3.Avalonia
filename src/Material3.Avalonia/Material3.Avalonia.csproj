@@ -25,6 +25,9 @@
         <EnableAotAnalyzer>true</EnableAotAnalyzer>
         <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+        <!-- Material Symbols are generated from the official Google SVG package. -->
+        <MaterialSymbolsSource>$(MSBuildProjectDirectory)\..\..\tools\generate-material-symbols.mjs</MaterialSymbolsSource>
     </PropertyGroup>
 
     <ItemGroup>

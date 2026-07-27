@@ -177,7 +177,7 @@
       <Setter Property="Template">
         <ControlTemplate>
           <Border Height="1"
-                  Margin="0,8"
+                  Margin="16,12"
                   HorizontalAlignment="Stretch"
                   Background="{DynamicResource Md3OutlineVariantBrush}" />
         </ControlTemplate>

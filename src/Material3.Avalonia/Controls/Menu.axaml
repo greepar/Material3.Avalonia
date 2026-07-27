@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
                     xmlns:m3p="using:Material3.Avalonia.Primitives">
 
   <!-- Top-level (menu bar) item: 40dp tall, 12dp horizontal padding, opens submenu below. -->
@@ -124,4 +125,8 @@
       </ControlTemplate>
     </Setter>
   </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type m3:Menu}"
+                TargetType="m3:Menu"
+                BasedOn="{StaticResource {x:Type Menu}}" />
 </ResourceDictionary>

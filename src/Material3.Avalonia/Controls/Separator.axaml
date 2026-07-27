@@ -25,5 +25,17 @@
       <Setter Property="HorizontalAlignment" Value="Center" />
       <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
+
+    <Style Selector="^.menu">
+      <Setter Property="Height" Value="25" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Height="1" Margin="16,0"
+                  VerticalAlignment="Center"
+                  Background="{DynamicResource Md3OutlineVariantBrush}" />
+        </ControlTemplate>
+      </Setter>
+    </Style>
   </ControlTheme>
 </ResourceDictionary>

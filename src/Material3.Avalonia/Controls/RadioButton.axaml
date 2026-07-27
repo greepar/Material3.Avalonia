@@ -8,7 +8,7 @@
     <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
     <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
     <Setter Property="Padding" Value="4,0,0,0" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -16,7 +16,7 @@
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid ColumnDefinitions="Auto,*">
+        <Grid ColumnDefinitions="Auto,*" Background="Transparent">
           <Panel Name="PART_RadioArea"
                  Grid.Column="0"
                  Width="40"
