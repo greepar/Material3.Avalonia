@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ControlTheme x:Key="{x:Type SelectableTextBlock}" TargetType="SelectableTextBlock">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+
+    <Style Selector="^[IsEnabled=True]">
+      <Setter Property="Cursor" Value="IBeam" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

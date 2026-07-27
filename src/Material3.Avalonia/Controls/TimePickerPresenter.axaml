@@ -1,0 +1,289 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Looping selector item (40 high, centered). Self-contained copy so this file
+       does not depend on merge order with DatePickerPresenter.axaml. -->
+  <ControlTheme x:Key="Md3TimePickerItem" TargetType="ListBoxItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{StaticResource Md3CornerFull}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    CornerRadius="{StaticResource Md3CornerFull}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:selected">
+      <Setter Property="IsHitTestVisible" Value="False" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Accept / dismiss text-style buttons. -->
+  <ControlTheme x:Key="Md3TimePickerActionButton" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Margin" Value="4" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Hover-revealed spin repeat buttons. -->
+  <ControlTheme x:Key="Md3TimePickerUpButton" TargetType="RepeatButton">
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="IsVisible" Value="False" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container" Background="{TemplateBinding Background}">
+          <Path Stroke="{TemplateBinding Foreground}"
+                StrokeThickness="1.5"
+                StrokeLineCap="Round"
+                StrokeJoin="Round"
+                Data="M 0,9 L 9,0 L 18,9"
+                Width="12"
+                Height="6"
+                Stretch="Uniform"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="Md3TimePickerDownButton"
+                TargetType="RepeatButton"
+                BasedOn="{StaticResource Md3TimePickerUpButton}">
+    <Setter Property="VerticalAlignment" Value="Bottom" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container" Background="{TemplateBinding Background}">
+          <Path Stroke="{TemplateBinding Foreground}"
+                StrokeThickness="1.5"
+                StrokeLineCap="Round"
+                StrokeJoin="Round"
+                Data="M 0,0 L 9,9 L 18,0"
+                Width="12"
+                Height="6"
+                Stretch="Uniform"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Material 3 TimePickerPresenter -->
+  <ControlTheme x:Key="{x:Type TimePickerPresenter}" TargetType="TimePickerPresenter">
+    <Setter Property="Width" Value="258" />
+    <Setter Property="MinWidth" Value="258" />
+    <Setter Property="MaxHeight" Value="414" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerExtraLarge}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+          <Border Name="Background"
+                  m3p:Entrance.Animation="GrowDown"
+                  RenderTransformOrigin="50%,0%"
+                  Margin="12,8,12,16"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  BoxShadow="{StaticResource Md3Elevation3}"
+                  Padding="8"
+                  MaxHeight="398"
+                  ClipToBounds="False">
+            <Grid Name="ContentPanel" RowDefinitions="*,Auto">
+              <Grid Name="PART_PickerContainer">
+                <Grid.Styles>
+                  <Style Selector="DateTimePickerPanel > ListBoxItem">
+                    <Setter Property="Theme" Value="{StaticResource Md3TimePickerItem}" />
+                  </Style>
+                </Grid.Styles>
+                <!-- Column definitions are set in code. -->
+                <Panel Name="PART_HourHost" Grid.Column="0">
+                  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                    <DateTimePickerPanel Name="PART_HourSelector"
+                                         PanelType="Hour"
+                                         ShouldLoop="True"
+                                         ItemHeight="40" />
+                  </ScrollViewer>
+                  <RepeatButton Name="PART_HourUpButton" Theme="{StaticResource Md3TimePickerUpButton}" />
+                  <RepeatButton Name="PART_HourDownButton" Theme="{StaticResource Md3TimePickerDownButton}" />
+                </Panel>
+
+                <Panel Name="PART_MinuteHost" Grid.Column="2">
+                  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                    <DateTimePickerPanel Name="PART_MinuteSelector"
+                                         PanelType="Minute"
+                                         ShouldLoop="True"
+                                         ItemHeight="40" />
+                  </ScrollViewer>
+                  <RepeatButton Name="PART_MinuteUpButton" Theme="{StaticResource Md3TimePickerUpButton}" />
+                  <RepeatButton Name="PART_MinuteDownButton" Theme="{StaticResource Md3TimePickerDownButton}" />
+                </Panel>
+
+                <Panel Name="PART_SecondHost" Grid.Column="4">
+                  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                    <DateTimePickerPanel Name="PART_SecondSelector"
+                                         PanelType="Second"
+                                         ShouldLoop="True"
+                                         ItemHeight="40" />
+                  </ScrollViewer>
+                  <RepeatButton Name="PART_SecondUpButton" Theme="{StaticResource Md3TimePickerUpButton}" />
+                  <RepeatButton Name="PART_SecondDownButton" Theme="{StaticResource Md3TimePickerDownButton}" />
+                </Panel>
+
+                <Panel Name="PART_PeriodHost" Grid.Column="6">
+                  <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Hidden">
+                    <DateTimePickerPanel Name="PART_PeriodSelector"
+                                         PanelType="TimePeriod"
+                                         ShouldLoop="False"
+                                         ItemHeight="40" />
+                  </ScrollViewer>
+                  <RepeatButton Name="PART_PeriodUpButton" Theme="{StaticResource Md3TimePickerUpButton}" />
+                  <RepeatButton Name="PART_PeriodDownButton" Theme="{StaticResource Md3TimePickerDownButton}" />
+                </Panel>
+
+                <!-- center-row highlight -->
+                <Border Name="HighlightRect"
+                        IsHitTestVisible="False"
+                        ZIndex="-1"
+                        Background="{DynamicResource Md3SecondaryContainerBrush}"
+                        CornerRadius="{StaticResource Md3CornerFull}"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="7"
+                        VerticalAlignment="Center"
+                        Height="40" />
+                <Rectangle Name="PART_FirstSpacer"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           HorizontalAlignment="Center"
+                           Width="1"
+                           Grid.Column="1" />
+                <Rectangle Name="PART_SecondSpacer"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           HorizontalAlignment="Center"
+                           Width="1"
+                           Grid.Column="3" />
+                <Rectangle Name="PART_ThirdSpacer"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           HorizontalAlignment="Center"
+                           Width="1"
+                           Grid.Column="5" />
+              </Grid>
+
+              <Grid Name="AcceptDismissGrid"
+                    Grid.Row="1"
+                    ColumnDefinitions="*,*">
+                <Rectangle Height="1"
+                           VerticalAlignment="Top"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           Grid.ColumnSpan="2" />
+                <Button Name="PART_AcceptButton"
+                        Grid.Column="0"
+                        Theme="{StaticResource Md3TimePickerActionButton}"
+                        Height="40"
+                        Margin="4,8,4,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                  <Path Stroke="{Binding $parent[Button].Foreground}"
+                        StrokeLineCap="Round"
+                        StrokeJoin="Round"
+                        StrokeThickness="2"
+                        Data="M0.5,8.5 5,13.5 15.5,3" />
+                </Button>
+                <Button Name="PART_DismissButton"
+                        Grid.Column="1"
+                        Theme="{StaticResource Md3TimePickerActionButton}"
+                        Height="40"
+                        Margin="4,8,4,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                  <Path Stroke="{Binding $parent[Button].Foreground}"
+                        StrokeLineCap="Round"
+                        StrokeThickness="2"
+                        Data="M2,2 14,14 M2,14 14,2" />
+                </Button>
+              </Grid>
+            </Grid>
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Panel">
+      <Style Selector="^:pointerover RepeatButton">
+        <Setter Property="IsVisible" Value="True" />
+      </Style>
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

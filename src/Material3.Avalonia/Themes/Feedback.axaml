@@ -1,0 +1,197 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Snackbar text action button: InversePrimary label on a transparent container. -->
+  <ControlTheme x:Key="M3SnackbarActionButtonTheme" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3InversePrimaryBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="MinHeight" Value="36" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 snackbar. API modeled after m3fx (https://github.com/Glavo/m3fx),
+       Apache-2.0; implementation follows the Material 3 spec: InverseSurface container,
+       4dp corners, level-3 shadow, InverseOnSurface body-medium message and an optional
+       InversePrimary text action. -->
+  <ControlTheme x:Key="{x:Type m3:Snackbar}" TargetType="m3:Snackbar">
+    <Setter Property="Background" Value="{DynamicResource Md3InverseSurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3InverseOnSurfaceBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerExtraSmall}" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                MinHeight="{TemplateBinding MinHeight}"
+                BoxShadow="{StaticResource Md3Elevation3}">
+          <Grid ColumnDefinitions="*,Auto" Margin="{TemplateBinding Padding}">
+            <TextBlock Name="PART_MessageText"
+                       Grid.Column="0"
+                       Text="{TemplateBinding Message}"
+                       Foreground="{TemplateBinding Foreground}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+            <Button Name="PART_ActionButton"
+                    Grid.Column="1"
+                    Theme="{StaticResource M3SnackbarActionButtonTheme}"
+                    Content="{TemplateBinding ActionText}"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    IsVisible="False" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:has-action /template/ Button#PART_ActionButton">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Snackbar host: overlays a bottom-centered snackbar slot on the hosted UI.
+       The slot animates in when the host applies the "open" class. -->
+  <ControlTheme x:Key="{x:Type m3:SnackbarHost}" TargetType="m3:SnackbarHost">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+          <ContentControl Name="PART_SnackbarSlot"
+                          Margin="24"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Bottom"
+                          IsHitTestVisible="False"
+                          Opacity="0" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ ContentControl#PART_SnackbarSlot">
+      <Setter Property="RenderTransform" Value="translateY(16px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+          <TransformOperationsTransition Property="RenderTransform"
+                                         Duration="0:0:0.25"
+                                         Easing="0.05,0.7,0.1,1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ ContentControl#PART_SnackbarSlot.open">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+      <Setter Property="IsHitTestVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 basic dialog surface: SurfaceContainerHigh, 28dp corners, 24dp padding,
+       level-3 shadow; icon → headline-small title → body-medium content → actions. -->
+  <ControlTheme x:Key="{x:Type m3:DialogPane}" TargetType="m3:DialogPane">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerExtraLarge}" />
+    <Setter Property="Padding" Value="24" />
+    <Setter Property="MinWidth" Value="280" />
+    <Setter Property="MaxWidth" Value="560" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                BoxShadow="{StaticResource Md3Elevation3}">
+          <StackPanel Margin="{TemplateBinding Padding}">
+            <ContentPresenter Name="PART_IconPresenter"
+                              Content="{TemplateBinding Icon}"
+                              Width="24"
+                              Height="24"
+                              Margin="0,0,0,16"
+                              HorizontalAlignment="Center"
+                              TextElement.Foreground="{DynamicResource Md3SecondaryBrush}"
+                              IsVisible="False" />
+            <TextBlock Name="PART_TitleText"
+                       Text="{TemplateBinding Title}"
+                       Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                       FontSize="{StaticResource Md3HeadlineSmallSize}"
+                       FontFamily="{DynamicResource Md3FontFamilyBrand}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,16"
+                       IsVisible="False" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              TextElement.Foreground="{TemplateBinding Foreground}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            <ContentPresenter Name="PART_ButtonsPresenter"
+                              Content="{TemplateBinding Buttons}"
+                              Margin="0,24,0,0"
+                              HorizontalAlignment="Right"
+                              IsVisible="False" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:with-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:with-icon /template/ TextBlock#PART_TitleText">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="^:with-title /template/ TextBlock#PART_TitleText">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:with-buttons /template/ ContentPresenter#PART_ButtonsPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

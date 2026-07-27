@@ -1,0 +1,121 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <!-- Buttons and commands -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Button.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/RepeatButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ToggleButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CheckBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/RadioButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/HyperlinkButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/DropDownButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/SplitButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ToggleSwitch.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ButtonSpinner.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CommandBar.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CommandBarButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CommandBarToggleButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CommandBarSeparator.axaml" />
+
+    <!-- Text and content -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TextBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/SelectableTextBlock.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Label.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/GroupBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/HeaderedContentControl.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ItemsControl.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/PathIcon.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Separator.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/GridSplitter.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/DataValidationErrors.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TransitioningContentControl.axaml" />
+
+    <!-- Collections and navigation -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ListBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ListBoxItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ComboBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ComboBoxItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/AutoCompleteBox.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Carousel.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/PipsPager.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Expander.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TabControl.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TabItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TabStrip.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TabStripItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TreeView.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TreeViewItem.axaml" />
+
+    <!-- Tables -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TableView.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TableViewRow.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TableViewCell.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TableViewColumnHeader.axaml" />
+
+    <!-- Scrolling and range -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ScrollViewer.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ScrollBar.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Slider.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ProgressBar.axaml" />
+
+    <!-- Menus, popups, overlays (MenuScrollViewer must precede Menu/MenuItem/ContextMenu) -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/MenuScrollViewer.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Menu.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/MenuItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ContextMenu.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/MenuFlyoutPresenter.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/FlyoutPresenter.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ToolTip.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/PopupRoot.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/OverlayPopupHost.axaml" />
+
+    <!-- Calendar, date, time, value -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Calendar.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CalendarItem.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CalendarButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CalendarDayButton.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CalendarDatePicker.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/DatePicker.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/DatePickerPresenter.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TimePicker.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TimePickerPresenter.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/NumericUpDown.axaml" />
+
+    <!-- Pages and app structure -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ContentPage.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/NavigationPage.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/DrawerPage.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/CarouselPage.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TabbedPage.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/SplitView.axaml" />
+
+    <!-- Refresh, notifications, roots -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/RefreshContainer.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/RefreshVisualizer.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/NotificationCard.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/WindowNotificationManager.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/Window.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/WindowDrawnDecorations.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/EmbeddableControlRoot.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/AdornerLayer.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/ThemeVariantScope.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Controls/TextSelectionHandle.axaml" />
+
+    <!-- Material-specific components -->
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/ProgressIndicators.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/TimePickerDial.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Chips.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Badges.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/IconButtons.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Fabs.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/SegmentedButtons.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/AppBars.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Navigation.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Cards.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Sheets.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Feedback.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Search.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/RangeSlider.axaml" />
+    <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Settings.axaml" />
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

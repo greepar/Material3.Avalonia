@@ -1,0 +1,342 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <StreamGeometry x:Key="Md3DrawerPaneButtonIcon">M3 17h18a1 1 0 0 1 .117 1.993L21 19H3a1 1 0 0 1-.117-1.993L3 17h18H3Zm0-6 18-.002a1 1 0 0 1 .117 1.993l-.117.007L3 13a1 1 0 0 1-.117-1.993L3 11l18-.002L3 11Zm0-6h18a1 1 0 0 1 .117 1.993L21 7H3a1 1 0 0 1-.117-1.993L3 5h18H3Z</StreamGeometry>
+
+  <x:Double x:Key="Md3DrawerPageBarHeight">64</x:Double>
+
+  <!-- Hamburger / compact toggle: M3 icon-button look — 40dp circle, state layer + ripple. -->
+  <ControlTheme x:Key="Md3DrawerPaneToggleTheme" TargetType="ToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent"
+               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+               VerticalAlignment="{TemplateBinding VerticalAlignment}">
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Width="40"
+                  Height="40"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center" />
+            </Panel>
+          </Border>
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Width="46"
+                  Height="46"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 DrawerPage: navigation drawer on SurfaceContainerLow with rounded trailing edge. -->
+  <ControlTheme x:Key="{x:Type DrawerPage}" TargetType="DrawerPage">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <!-- DrawerBackground intentionally left unset: control code copies it to the square
+         SplitView pane, which would paint over the rounded trailing edge below. -->
+    <Setter Property="BackdropBrush" Value="{DynamicResource Md3ScrimBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <SplitView Name="PART_SplitView"
+                   DisplayMode="{TemplateBinding DisplayMode}"
+                   OpenPaneLength="{TemplateBinding DrawerLength}"
+                   CompactPaneLength="{TemplateBinding CompactDrawerLength}"
+                   PaneBackground="Transparent"
+                   IsPaneOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+          <SplitView.Pane>
+            <!-- M3 drawer container: rounded trailing (right) edge -->
+            <Border Name="PART_DrawerContainer"
+                    Background="{DynamicResource Md3SurfaceContainerLowBrush}"
+                    CornerRadius="0,16,16,0"
+                    ClipToBounds="True">
+              <DockPanel>
+                <!-- Compact-mode toggle: visible only in CompactOverlay/CompactInline. -->
+                <ToggleButton Name="PART_CompactPaneToggle"
+                              Theme="{StaticResource Md3DrawerPaneToggleTheme}"
+                              DockPanel.Dock="Top"
+                              IsChecked="{Binding #PART_SplitView.IsPaneOpen, Mode=TwoWay}"
+                              IsVisible="False"
+                              HorizontalAlignment="Left"
+                              Width="{TemplateBinding CompactDrawerLength}"
+                              Height="{TemplateBinding CompactDrawerLength}"
+                              AutomationProperties.Name="Toggle navigation drawer"
+                              ToolTip.Tip="Toggle navigation drawer">
+                  <Panel>
+                    <PathIcon
+                      IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNull}}"
+                      Data="{StaticResource Md3DrawerPaneButtonIcon}"
+                      Width="24"
+                      Height="24"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+                    <ContentPresenter
+                      Name="PART_CompactPaneIconPresenter"
+                      Content="{TemplateBinding DrawerIcon}"
+                      ContentTemplate="{TemplateBinding DrawerIconTemplate}"
+                      IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+                  </Panel>
+                </ToggleButton>
+                <ContentPresenter Name="PART_DrawerHeader"
+                                  DockPanel.Dock="Top"
+                                  Content="{TemplateBinding DrawerHeader}"
+                                  ContentTemplate="{TemplateBinding DrawerHeaderTemplate}"
+                                  Background="{TemplateBinding DrawerHeaderBackground}"
+                                  IsVisible="{TemplateBinding DrawerHeader, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                <ContentPresenter Name="PART_DrawerFooter"
+                                  DockPanel.Dock="Bottom"
+                                  Content="{TemplateBinding DrawerFooter}"
+                                  ContentTemplate="{TemplateBinding DrawerFooterTemplate}"
+                                  Background="{TemplateBinding DrawerFooterBackground}"
+                                  IsVisible="{TemplateBinding DrawerFooter, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                <ContentPresenter Name="PART_DrawerPresenter"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Stretch"
+                                  Content="{TemplateBinding Drawer}"
+                                  ContentTemplate="{TemplateBinding DrawerTemplate}" />
+              </DockPanel>
+            </Border>
+          </SplitView.Pane>
+          <Grid HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch">
+            <DockPanel Name="PART_ContentDock">
+              <Border
+                Name="PART_TopBar"
+                Padding="4,0"
+                Height="{StaticResource Md3DrawerPageBarHeight}"
+                Background="{DynamicResource Md3SurfaceBrush}"
+                DockPanel.Dock="Top">
+                <DockPanel HorizontalAlignment="Stretch">
+                  <ToggleButton x:Name="PART_PaneButton"
+                                Theme="{StaticResource Md3DrawerPaneToggleTheme}"
+                                IsChecked="{Binding #PART_SplitView.IsPaneOpen, Mode=TwoWay}"
+                                DockPanel.Dock="Left"
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="Toggle navigation drawer"
+                                ToolTip.Tip="Toggle navigation drawer">
+                    <Panel>
+                      <PathIcon
+                        IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNull}}"
+                        Data="{StaticResource Md3DrawerPaneButtonIcon}"
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                      <ContentPresenter
+                        Name="PART_PaneIconPresenter"
+                        Content="{TemplateBinding DrawerIcon}"
+                        ContentTemplate="{TemplateBinding DrawerIconTemplate}"
+                        IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                    </Panel>
+                  </ToggleButton>
+                  <ContentPresenter x:Name="PART_TitlePresenter"
+                                    Content="{TemplateBinding Header}"
+                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    FontSize="{StaticResource Md3TitleLargeSize}"
+                                    FontFamily="{DynamicResource Md3FontFamilyPlain}"
+                                    Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                                    Margin="8,0,0,0"
+                                    IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                </DockPanel>
+              </Border>
+              <Border
+                Name="PART_BottomBar"
+                Padding="4,0"
+                Height="{StaticResource Md3DrawerPageBarHeight}"
+                Background="{DynamicResource Md3SurfaceBrush}"
+                DockPanel.Dock="Bottom"
+                IsVisible="False">
+                <DockPanel HorizontalAlignment="Stretch">
+                  <ToggleButton x:Name="PART_BottomPaneButton"
+                                Theme="{StaticResource Md3DrawerPaneToggleTheme}"
+                                IsChecked="{Binding #PART_SplitView.IsPaneOpen, Mode=TwoWay}"
+                                DockPanel.Dock="Left"
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="Toggle navigation drawer"
+                                ToolTip.Tip="Toggle navigation drawer">
+                    <Panel>
+                      <PathIcon
+                        IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNull}}"
+                        Data="{StaticResource Md3DrawerPaneButtonIcon}"
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                      <ContentPresenter
+                        Name="PART_BottomPaneIconPresenter"
+                        Content="{TemplateBinding DrawerIcon}"
+                        ContentTemplate="{TemplateBinding DrawerIconTemplate}"
+                        IsVisible="{Binding DrawerIcon, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                    </Panel>
+                  </ToggleButton>
+                  <ContentPresenter x:Name="PART_BottomTitlePresenter"
+                                    Content="{TemplateBinding Header}"
+                                    ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    FontSize="{StaticResource Md3TitleLargeSize}"
+                                    FontFamily="{DynamicResource Md3FontFamilyPlain}"
+                                    Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                                    Margin="8,0,0,0"
+                                    IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                </DockPanel>
+              </Border>
+              <ContentPresenter Name="PART_ContentPresenter"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+            </DockPanel>
+            <Border Name="PART_Backdrop"
+                    Background="{TemplateBinding BackdropBrush}"
+                    Opacity="0.32"
+                    IsVisible="False"
+                    IsHitTestVisible="False" />
+          </Grid>
+        </SplitView>
+      </ControlTemplate>
+    </Setter>
+
+    <!-- Right placement: mirror the drawer's rounded trailing edge -->
+    <Style Selector="^:placement-right /template/ Border#PART_DrawerContainer">
+      <Setter Property="CornerRadius" Value="16,0,0,16" />
+    </Style>
+    <Style Selector="^:placement-right /template/ ToggleButton#PART_PaneButton">
+      <Setter Property="DockPanel.Dock" Value="Right" />
+    </Style>
+
+    <!-- Top/Bottom placement: no rounded side -->
+    <Style Selector="^:placement-top /template/ Border#PART_DrawerContainer">
+      <Setter Property="CornerRadius" Value="0,0,16,16" />
+    </Style>
+    <Style Selector="^:placement-bottom /template/ Border#PART_DrawerContainer">
+      <Setter Property="CornerRadius" Value="16,16,0,0" />
+    </Style>
+
+    <!-- Bottom placement: swap top bar for bottom bar -->
+    <Style Selector="^:placement-bottom /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:placement-bottom /template/ Border#PART_BottomBar">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Bottom placement + compact modes: pane compact strip provides toggle, hide bottom bar -->
+    <Style Selector="^:placement-bottom[DisplayMode=CompactOverlay] /template/ Border#PART_BottomBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:placement-bottom[DisplayMode=CompactInline] /template/ Border#PART_BottomBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- Horizontal pane (Bottom/Top): compact toggle must dock Left so drawer content can fill the rest -->
+    <Style Selector="^:placement-bottom /template/ ToggleButton#PART_CompactPaneToggle">
+      <Setter Property="DockPanel.Dock" Value="Left" />
+    </Style>
+    <Style Selector="^:placement-top /template/ ToggleButton#PART_CompactPaneToggle">
+      <Setter Property="DockPanel.Dock" Value="Left" />
+    </Style>
+
+    <Style Selector="^[DrawerBehavior=Locked] /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^[DrawerBehavior=Disabled] /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^:detail-is-navpage /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^[DisplayMode=CompactOverlay] /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^[DisplayMode=CompactOverlay] /template/ ToggleButton#PART_CompactPaneToggle">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^[DisplayMode=CompactInline] /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="^[DisplayMode=CompactInline] /template/ ToggleButton#PART_CompactPaneToggle">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^[IsInNavigationPage=True] /template/ Border#PART_TopBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- NavigationPage already hosts a hamburger toggle — suppress the compact pane toggle. -->
+    <Style Selector="^:detail-is-navpage /template/ ToggleButton#PART_CompactPaneToggle">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

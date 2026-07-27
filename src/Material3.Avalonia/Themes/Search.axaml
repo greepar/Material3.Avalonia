@@ -1,0 +1,150 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Borderless inner text box used by the search bar. -->
+  <ControlTheme x:Key="Md3SearchBarTextBoxTheme" TargetType="TextBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="CaretBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ScrollViewer Name="PART_ScrollViewer"
+                      HorizontalScrollBarVisibility="Hidden"
+                      VerticalScrollBarVisibility="Disabled">
+          <Panel>
+            <TextBlock Name="PART_Placeholder"
+                       Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
+                       Text="{TemplateBinding PlaceholderText}"
+                       VerticalAlignment="Center">
+              <TextBlock.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding ElementName="PART_TextPresenter" Path="PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                  <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Text" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                </MultiBinding>
+              </TextBlock.IsVisible>
+            </TextBlock>
+            <TextPresenter Name="PART_TextPresenter"
+                           Text="{TemplateBinding Text, Mode=TwoWay}"
+                           CaretIndex="{TemplateBinding CaretIndex}"
+                           SelectionStart="{TemplateBinding SelectionStart}"
+                           SelectionEnd="{TemplateBinding SelectionEnd}"
+                           TextAlignment="{TemplateBinding TextAlignment}"
+                           TextWrapping="NoWrap"
+                           PasswordChar="{TemplateBinding PasswordChar}"
+                           RevealPassword="{TemplateBinding RevealPassword}"
+                           SelectionBrush="{TemplateBinding SelectionBrush}"
+                           SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                           CaretBrush="{TemplateBinding CaretBrush}"
+                           VerticalAlignment="Center" />
+          </Panel>
+        </ScrollViewer>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Material 3 search bar: 56dp pill, SurfaceContainerHigh. -->
+  <ControlTheme x:Key="{x:Type m3:SearchBar}" TargetType="m3:SearchBar">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="MinHeight" Value="56" />
+    <Setter Property="MinWidth" Value="240" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                ClipToBounds="True">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False">
+              <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                </Transitions>
+              </Border.Transitions>
+            </Border>
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="16,0">
+              <!-- leading: custom icon or default magnifier -->
+              <ContentControl Grid.Column="0"
+                              Content="{TemplateBinding LeadingIcon}"
+                              Width="24" Height="24"
+                              VerticalAlignment="Center"
+                              IsVisible="False"
+                              Name="PART_CustomLeading" />
+              <Path Grid.Column="0"
+                    Name="PART_DefaultLeading"
+                    Data="M15.5,14 L14.71,14 L14.43,13.73 C15.41,12.59 16,11.11 16,9.5 C16,5.91 13.09,3 9.5,3 C5.91,3 3,5.91 3,9.5 C3,13.09 5.91,15.5 9.5,15.5 C11.11,15.5 12.59,15.41 13.73,14.43 L14,14.71 L14,15.5 L19,20.49 L20.49,19 Z M9.5,14 C7.01,14 5,11.99 5,9.5 C5,7.01 7.01,5 9.5,5 C11.99,5 14,7.01 14,9.5 C14,11.99 11.99,14 9.5,14 Z"
+                    Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                    Width="24" Height="24"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center" />
+              <TextBox Grid.Column="1"
+                       Name="PART_TextBox"
+                       Theme="{StaticResource Md3SearchBarTextBoxTheme}"
+                       Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                       PlaceholderText="{TemplateBinding Watermark}"
+                       Margin="16,0,0,0"
+                       VerticalAlignment="Center" />
+              <ContentControl Grid.Column="2"
+                              Content="{TemplateBinding TrailingContent}"
+                              Margin="16,0,0,0"
+                              VerticalAlignment="Center" />
+            </Grid>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:custom-leading /template/ ContentControl#PART_CustomLeading">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:custom-leading /template/ Path#PART_DefaultLeading">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Rich tooltip: SurfaceContainer card with subhead + content + actions.
+       Place inside ToolTip.Tip. -->
+  <ControlTheme x:Key="{x:Type m3:RichTooltip}" TargetType="m3:RichTooltip">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="MaxWidth" Value="320" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                CornerRadius="{StaticResource Md3CornerMedium}"
+                Padding="16,12"
+                BoxShadow="{StaticResource Md3Elevation2}">
+          <StackPanel Spacing="4">
+            <TextBlock Name="PART_Subhead"
+                       Text="{TemplateBinding Subhead}"
+                       FontSize="{StaticResource Md3TitleSmallSize}"
+                       FontWeight="Medium"
+                       Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
+                       IsVisible="{TemplateBinding Subhead, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <ContentPresenter Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              TextBlock.Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                              TextBlock.FontSize="{StaticResource Md3BodyMediumSize}" />
+            <ContentControl Content="{TemplateBinding Actions}"
+                            Margin="0,8,0,0"
+                            IsVisible="{TemplateBinding Actions, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

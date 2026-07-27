@@ -1,0 +1,263 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 drawn window decorations.
+       Template contract (per Avalonia 12.1.0 Chrome/WindowDrawnDecorations.cs):
+       PART_CloseButton, PART_MinimizeButton, PART_MaximizeButton, PART_FullScreenButton,
+       PART_PopoverCloseButton, PART_PopoverFullScreenButton, PART_TitleBar.
+       Pseudo-classes: :normal :maximized :fullscreen :has-shadow :has-border :has-titlebar
+       :has-maximize :has-fullscreen :has-minimize. -->
+
+  <x:Double x:Key="Md3CaptionButtonWidth">45</x:Double>
+  <x:Double x:Key="Md3CaptionButtonHeight">30</x:Double>
+
+  <!-- Caption button: transparent container + OnSurface state layer (hover 8%, pressed 10%). -->
+  <ControlTheme x:Key="Md3DrawnCaptionButton" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="Width" Value="{StaticResource Md3CaptionButtonWidth}" />
+    <Setter Property="Height" Value="{StaticResource Md3CaptionButtonHeight}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="(WindowDecorationProperties.ElementRole)" Value="DecorationsElement" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_ButtonRoot" Background="{TemplateBinding Background}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Background="Transparent"
+                              Content="{TemplateBinding Content}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Close caption button: hover paints solid Error background + OnError glyph
+       (M3 implementation choice replacing Fluent's fixed #ffe81123). -->
+  <ControlTheme x:Key="Md3DrawnCaptionCloseButton"
+                TargetType="Button"
+                BasedOn="{StaticResource Md3DrawnCaptionButton}">
+    <Style Selector="^:pointerover /template/ Border#PART_ButtonRoot">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="0" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_ButtonRoot">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3OnErrorBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+    </Style>
+    <Style Selector="^:pointerover Path">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnErrorBrush}" />
+    </Style>
+    <Style Selector="^:pressed Path">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnErrorBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type WindowDrawnDecorations}" TargetType="WindowDrawnDecorations">
+    <Setter Property="DefaultTitleBarHeight" Value="30" />
+    <Setter Property="DefaultFrameThickness" Value="1" />
+    <Setter Property="DefaultShadowThickness" Value="16" />
+    <Setter Property="Template">
+      <WindowDrawnDecorationsTemplate>
+        <WindowDrawnDecorationsContent>
+
+          <WindowDrawnDecorationsContent.Underlay>
+            <Panel x:Name="PART_UnderlayWrapper">
+              <Border x:Name="PART_WindowBorder"
+                      Background="Transparent"
+                      BorderThickness="{TemplateBinding FrameThickness}"
+                      BorderBrush="{DynamicResource Md3OutlineVariantBrush}"
+                      IsHitTestVisible="False" />
+              <!-- Titlebar: background and drag area live in underlay -->
+              <Panel x:Name="PART_TitleBar" VerticalAlignment="Top"
+                     Height="{TemplateBinding TitleBarHeight}"
+                     Background="{DynamicResource Md3SurfaceContainerBrush}"
+                     IsVisible="{TemplateBinding HasTitleBar}"
+                     WindowDecorationProperties.ElementRole="TitleBar" />
+            </Panel>
+          </WindowDrawnDecorationsContent.Underlay>
+
+          <WindowDrawnDecorationsContent.Overlay>
+            <!-- Overlay: interactive caption buttons + title text above client content -->
+            <Panel x:Name="PART_OverlayWrapper">
+              <Panel x:Name="PART_TitleTextPanel" VerticalAlignment="Top"
+                     Height="{TemplateBinding TitleBarHeight}"
+                     IsHitTestVisible="False"
+                     IsVisible="{TemplateBinding HasTitleBar}">
+                <TextBlock Text="{TemplateBinding Title}"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"
+                           Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                           FontFamily="{DynamicResource Md3FontFamilyPlain}"
+                           FontWeight="Medium"
+                           FontSize="{StaticResource Md3LabelMediumSize}" />
+              </Panel>
+              <StackPanel x:Name="PART_OverlayPanel"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Right"
+                          Height="{TemplateBinding TitleBarHeight}"
+                          IsVisible="{TemplateBinding HasTitleBar}"
+                          Orientation="Horizontal"
+                          Spacing="2"
+                          TextElement.FontSize="10">
+                <Button x:Name="PART_FullScreenButton"
+                        Theme="{StaticResource Md3DrawnCaptionButton}"
+                        WindowDecorationProperties.ElementRole="FullScreenButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Path Name="FullScreenButtonPath"
+                          Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M2048 2048v-819h-205v469l-1493 -1493h469v-205h-819v819h205v-469l1493 1493h-469v205h819z" />
+                  </Viewbox>
+                </Button>
+                <Button x:Name="PART_MinimizeButton"
+                        Theme="{StaticResource Md3DrawnCaptionButton}"
+                        WindowDecorationProperties.ElementRole="MinimizeButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Path Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M2048 1229v-205h-2048v205h2048z" />
+                  </Viewbox>
+                </Button>
+                <Button x:Name="PART_MaximizeButton"
+                        Theme="{StaticResource Md3DrawnCaptionButton}"
+                        WindowDecorationProperties.ElementRole="MaximizeButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Viewbox.RenderTransform>
+                      <RotateTransform Angle="-90" />
+                    </Viewbox.RenderTransform>
+                    <Path Name="RestoreButtonPath"
+                          Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M2048 2048v-2048h-2048v2048h2048zM1843 1843h-1638v-1638h1638v1638z" />
+                  </Viewbox>
+                </Button>
+                <Button x:Name="PART_CloseButton"
+                        Theme="{StaticResource Md3DrawnCaptionCloseButton}"
+                        WindowDecorationProperties.ElementRole="CloseButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Path Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M1169 1024l879 -879l-145 -145l-879 879l-879 -879l-145 145l879 879l-879 879l145 145l879 -879l879 879l145 -145z" />
+                  </Viewbox>
+                </Button>
+              </StackPanel>
+            </Panel>
+          </WindowDrawnDecorationsContent.Overlay>
+
+          <WindowDrawnDecorationsContent.FullscreenPopover>
+            <Panel Height="{TemplateBinding DefaultTitleBarHeight}"
+                   VerticalAlignment="Top"
+                   Background="{DynamicResource Md3SurfaceContainerHighBrush}"
+                   WindowDecorationProperties.ElementRole="TitleBar">
+              <TextBlock Text="{TemplateBinding Title}"
+                         VerticalAlignment="Center"
+                         Margin="12,0,0,0"
+                         Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                         FontFamily="{DynamicResource Md3FontFamilyPlain}"
+                         FontWeight="Medium"
+                         FontSize="{StaticResource Md3LabelMediumSize}" />
+              <StackPanel HorizontalAlignment="Right"
+                          Orientation="Horizontal"
+                          Spacing="2"
+                          TextElement.FontSize="10">
+                <Button x:Name="PART_PopoverFullScreenButton"
+                        Theme="{StaticResource Md3DrawnCaptionButton}"
+                        WindowDecorationProperties.ElementRole="FullScreenButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Path Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M205 1024h819v-819h-205v469l-674 -674l-145 145l674 674h-469v205zM1374 1229h469v-205h-819v819h205v-469l674 674l145 -145z" />
+                  </Viewbox>
+                </Button>
+                <Button x:Name="PART_PopoverCloseButton"
+                        Theme="{StaticResource Md3DrawnCaptionCloseButton}"
+                        WindowDecorationProperties.ElementRole="CloseButton">
+                  <Viewbox Width="11" Margin="2">
+                    <Path Stretch="UniformToFill"
+                          Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          Data="M1169 1024l879 -879l-145 -145l-879 879l-879 -879l-145 145l879 879l-879 879l145 145l879 -879l879 879l145 -145z" />
+                  </Viewbox>
+                </Button>
+              </StackPanel>
+            </Panel>
+          </WindowDrawnDecorationsContent.FullscreenPopover>
+
+        </WindowDrawnDecorationsContent>
+      </WindowDrawnDecorationsTemplate>
+    </Setter>
+
+    <!-- Shadow: inset border and add drop shadow -->
+    <Style Selector="^:has-shadow /template/ Panel#PART_UnderlayWrapper">
+      <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}" />
+    </Style>
+    <Style Selector="^:has-shadow /template/ Border#PART_WindowBorder">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+    </Style>
+    <Style Selector="^:has-shadow /template/ Panel#PART_OverlayWrapper">
+      <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}" />
+    </Style>
+
+    <!-- Border: inset titlebar and buttons inside frame -->
+    <Style Selector="^:has-border /template/ Panel#PART_TitleTextPanel">
+      <Setter Property="Margin" Value="1,1,1,0" />
+    </Style>
+    <Style Selector="^:has-border /template/ Panel#PART_TitleBar">
+      <Setter Property="Margin" Value="1,1,1,0" />
+    </Style>
+    <Style Selector="^:has-border /template/ StackPanel#PART_OverlayPanel">
+      <Setter Property="Margin" Value="0,1,1,0" />
+    </Style>
+
+    <!-- Maximized: restore button path changes -->
+    <Style Selector="^:maximized /template/ Path#RestoreButtonPath">
+      <Setter Property="Data" Value="M2048 410h-410v-410h-1638v1638h410v410h1638v-1638zM1434 1434h-1229v-1229h1229v1229zM1843 1843h-1229v-205h1024v-1024h205v1229z" />
+    </Style>
+
+    <!-- Disabled buttons -->
+    <Style Selector="^ /template/ Button:disabled">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+
+    <!-- Hide caption buttons when the platform does not support the action -->
+    <Style Selector="^:not(:has-minimize) /template/ Button#PART_MinimizeButton">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:not(:has-maximize) /template/ Button#PART_MaximizeButton">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:not(:has-fullscreen) /template/ Button#PART_FullScreenButton">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:not(:has-fullscreen) /template/ Button#PART_PopoverFullScreenButton">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- Fullscreen: hide overlay and titlebar (popover takes over) -->
+    <Style Selector="^:fullscreen /template/ Panel#PART_TitleTextPanel">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:fullscreen /template/ StackPanel#PART_OverlayPanel">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:fullscreen /template/ Panel#PART_TitleBar">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

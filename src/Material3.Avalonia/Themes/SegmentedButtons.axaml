@@ -1,0 +1,233 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 Expressive segmented buttons (connected group). API modeled after
+       m3fx (https://github.com/Glavo/m3fx), Apache-2.0; implementation follows the
+       Material 3 spec: 40dp-high segments, label-large text, each segment drawn with
+       its own full 1px Outline and a 2dp gap between segments, and the
+       SecondaryContainer treatment plus an animated leading checkmark when selected.
+       Corner morph (animated): inner corners resting 8 -> pressed 4 -> checked 20
+       (full pill); outer corners stay 20. The group assigns the "first"/"last"
+       classes. -->
+  <ControlTheme x:Key="{x:Type m3:SegmentedButton}" TargetType="m3:SegmentedButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <CornerRadiusTransition Property="CornerRadius" Duration="0:0:0.2" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+    <Setter Property="Height" Value="40" />
+    <Setter Property="MinWidth" Value="48" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid ColumnDefinitions="Auto,Auto,*"
+                    Margin="{TemplateBinding Padding}"
+                    HorizontalAlignment="Center">
+                <!-- selected checkmark (scale+fade in, replaces the leading icon) -->
+                <Path Name="PART_CheckGlyph"
+                      Grid.Column="0"
+                      Data="M 3,9 L 7.5,13.5 L 15,4.5"
+                      Stroke="{DynamicResource Md3OnSecondaryContainerBrush}"
+                      StrokeThickness="2"
+                      StrokeLineCap="Round"
+                      StrokeJoin="Round"
+                      Stretch="None"
+                      Width="18"
+                      Height="18"
+                      Margin="0,0,8,0"
+                      VerticalAlignment="Center"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0"
+                      IsVisible="False" />
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Grid.Column="1"
+                                  Content="{TemplateBinding Icon}"
+                                  Width="18"
+                                  Height="18"
+                                  Margin="0,0,8,0"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Grid.Column="2"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  RecognizesAccessKey="True"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+              </Grid>
+            </Panel>
+          </Border>
+          <!-- outline overlay: independent opacity so the disabled border does not dim the label -->
+          <Border Name="PART_Outline"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Path#PART_CheckGlyph">
+      <Setter Property="RenderTransform" Value="scale(0.6)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- outer corners assigned by the group (outer 20, inner resting 8) -->
+    <Style Selector="^.first">
+      <Setter Property="CornerRadius" Value="20,8,8,20" />
+    </Style>
+    <Style Selector="^.last">
+      <Setter Property="CornerRadius" Value="8,20,20,8" />
+    </Style>
+    <Style Selector="^.first.last">
+      <Setter Property="CornerRadius" Value="20" />
+    </Style>
+
+    <!-- checked: full pill (inner corners open to 20) -->
+    <Style Selector="^:checked">
+      <Setter Property="CornerRadius" Value="20" />
+    </Style>
+
+    <!-- pressed: inner corners tighten to 4 (declared after :checked so the press
+         morph also applies to a checked segment) -->
+    <Style Selector="^:pressed">
+      <Setter Property="CornerRadius" Value="4" />
+    </Style>
+    <Style Selector="^.first:pressed">
+      <Setter Property="CornerRadius" Value="20,4,4,20" />
+    </Style>
+    <Style Selector="^.last:pressed">
+      <Setter Property="CornerRadius" Value="4,20,20,4" />
+    </Style>
+    <Style Selector="^.first.last:pressed">
+      <Setter Property="CornerRadius" Value="20" />
+    </Style>
+
+    <Style Selector="^:with-icon">
+      <Setter Property="Padding" Value="12,0,16,0" />
+    </Style>
+    <Style Selector="^:with-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- checked: borderless SecondaryContainer fill + checkmark scale+fade in
+         (replaces the icon) -->
+    <Style Selector="^:checked">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Padding" Value="12,0,16,0" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:checked /template/ Path#PART_CheckGlyph">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Outline">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled:checked /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Path#PART_CheckGlyph">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Segmented button group: a connected horizontal row of segments with a 2dp gap
+       (m3fx connected-group spacing; each segment draws its own full outline). -->
+  <ControlTheme x:Key="{x:Type m3:SegmentedButtonGroup}" TargetType="m3:SegmentedButtonGroup">
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <StackPanel Orientation="Horizontal" Spacing="2" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ItemsPresenter Name="PART_ItemsPresenter"
+                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Button group: a horizontal row of buttons (panel spacing and connected corner
+       shapes are managed in code by the control). -->
+  <ControlTheme x:Key="{x:Type m3:ButtonGroup}" TargetType="m3:ButtonGroup">
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ItemsPresenter Name="PART_ItemsPresenter"
+                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

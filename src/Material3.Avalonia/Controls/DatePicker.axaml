@@ -1,0 +1,152 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Inner flyout-open button styled as an outlined field. -->
+  <ControlTheme x:Key="Md3DatePickerFlyoutButton" TargetType="Button">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              Foreground="{TemplateBinding Foreground}"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Center" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_Container">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_Container">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Container">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 DatePicker: outlined field style button with day/month/year segments. -->
+  <ControlTheme x:Key="{x:Type DatePicker}" TargetType="DatePicker">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="{StaticResource Md3TextFieldHeight}" />
+    <Setter Property="MinWidth" Value="296" />
+    <Setter Property="MaxWidth" Value="456" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="FocusAdorner" Value="{x:Null}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <DataValidationErrors>
+          <Grid Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+            <Button Name="PART_FlyoutButton"
+                    Theme="{StaticResource Md3DatePickerFlyoutButton}"
+                    Foreground="{TemplateBinding Foreground}"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
+                    MinHeight="{TemplateBinding MinHeight}"
+                    MinWidth="{TemplateBinding MinWidth}"
+                    MaxWidth="{TemplateBinding MaxWidth}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    TemplatedControl.IsTemplateFocusTarget="True">
+              <Grid Name="PART_ButtonContentGrid" ColumnDefinitions="78*,Auto,132*,Auto,78*">
+                <TextBlock Name="PART_DayTextBlock"
+                           Text="day"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Padding="0,3,0,6" />
+                <TextBlock Name="PART_MonthTextBlock"
+                           Text="month"
+                           TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           Padding="12,3,0,6" />
+                <TextBlock Name="PART_YearTextBlock"
+                           Text="year"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Padding="0,3,0,6" />
+                <Rectangle Name="PART_FirstSpacer"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           HorizontalAlignment="Center"
+                           Width="1"
+                           Grid.Column="1" />
+                <Rectangle Name="PART_SecondSpacer"
+                           Fill="{DynamicResource Md3OutlineVariantBrush}"
+                           HorizontalAlignment="Center"
+                           Width="1"
+                           Grid.Column="3" />
+              </Grid>
+            </Button>
+
+            <Popup Name="PART_Popup"
+                   WindowManagerAddShadowHint="False"
+                   IsLightDismissEnabled="True"
+                   PlacementTarget="{TemplateBinding}"
+                   Placement="Bottom">
+              <DatePickerPresenter Name="PART_PickerPresenter" />
+            </Popup>
+          </Grid>
+        </DataValidationErrors>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:disabled /template/ Rectangle">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+
+    <!-- placeholder color when no date selected -->
+    <Style Selector="^:hasnodate /template/ Button#PART_FlyoutButton TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    </Style>
+
+    <Style Selector="^:error /template/ Button#PART_FlyoutButton">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

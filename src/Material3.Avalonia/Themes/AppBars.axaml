@@ -1,0 +1,170 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Material 3 app bars and toolbar. API modeled after m3fx (https://github.com/Glavo/m3fx),
+       Apache-2.0; implementation follows the Material 3 spec. -->
+
+  <!-- Top app bar: Surface container. Small/CenterAligned = 64dp single row with a
+       title-large (22) inline title; Medium = 112dp, Large = 152dp with the title on a
+       second bottom row (headline-small 24 / headline-medium 28).
+       Implementation choice: the template contains two title presenters - an inline one
+       in the top row and a bottom-row one - and the [Variant=...] styles toggle their
+       IsVisible, which avoids re-templating per variant. -->
+  <ControlTheme x:Key="{x:Type m3:TopAppBar}" TargetType="m3:TopAppBar">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyBrand}" />
+    <Setter Property="Height" Value="64" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                Height="{TemplateBinding Height}">
+          <Grid RowDefinitions="64,*">
+            <!-- top row: nav icon (48dp slot) / inline title / actions -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="4,0">
+              <ContentPresenter Name="PART_NavigationIconPresenter"
+                                Grid.Column="0"
+                                Content="{TemplateBinding NavigationIcon}"
+                                Width="48"
+                                Height="48"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsVisible="False" />
+              <TextBlock Name="PART_InlineTitle"
+                         Grid.Column="1"
+                         Text="{TemplateBinding Title}"
+                         Foreground="{TemplateBinding Foreground}"
+                         FontSize="{StaticResource Md3TitleLargeSize}"
+                         FontFamily="{TemplateBinding FontFamily}"
+                         TextTrimming="CharacterEllipsis"
+                         VerticalAlignment="Center"
+                         Margin="12,0" />
+              <ContentPresenter Name="PART_ActionsPresenter"
+                                Grid.Column="2"
+                                Content="{TemplateBinding Actions}"
+                                VerticalAlignment="Center" />
+            </Grid>
+            <!-- bottom row title used by Medium/Large -->
+            <TextBlock Name="PART_BottomTitle"
+                       Grid.Row="1"
+                       Text="{TemplateBinding Title}"
+                       Foreground="{TemplateBinding Foreground}"
+                       FontSize="{StaticResource Md3HeadlineSmallSize}"
+                       FontFamily="{TemplateBinding FontFamily}"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Bottom"
+                       Margin="16,0,16,24"
+                       IsVisible="False" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:has-navigation-icon /template/ ContentPresenter#PART_NavigationIconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <!-- without a nav icon the title keeps the 16dp edge inset (4 outer + 12 title margin) -->
+
+    <!-- CenterAligned: 64dp, title centered -->
+    <Style Selector="^[Variant=CenterAligned] /template/ TextBlock#PART_InlineTitle">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <!-- Medium: 112dp, headline-small title on the bottom row -->
+    <Style Selector="^[Variant=Medium]">
+      <Setter Property="Height" Value="112" />
+    </Style>
+    <Style Selector="^[Variant=Medium] /template/ TextBlock#PART_InlineTitle">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^[Variant=Medium] /template/ TextBlock#PART_BottomTitle">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Large: 152dp, headline-medium title on the bottom row -->
+    <Style Selector="^[Variant=Large]">
+      <Setter Property="Height" Value="152" />
+    </Style>
+    <Style Selector="^[Variant=Large] /template/ TextBlock#PART_InlineTitle">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^[Variant=Large] /template/ TextBlock#PART_BottomTitle">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="FontSize" Value="{StaticResource Md3HeadlineMediumSize}" />
+      <Setter Property="Margin" Value="16,0,16,28" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Bottom app bar: 80dp SurfaceContainer bar; leading actions row, trailing FAB slot -->
+  <ControlTheme x:Key="{x:Type m3:BottomAppBar}" TargetType="m3:BottomAppBar">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Height" Value="80" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                Height="{TemplateBinding Height}">
+          <Grid ColumnDefinitions="*,Auto">
+            <ContentPresenter Name="PART_ActionsPresenter"
+                              Grid.Column="0"
+                              Content="{TemplateBinding Actions}"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"
+                              Margin="4,0,0,0" />
+            <ContentPresenter Name="PART_FabPresenter"
+                              Grid.Column="1"
+                              Content="{TemplateBinding FloatingActionButton}"
+                              VerticalAlignment="Center"
+                              Margin="16" />
+          </Grid>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Toolbar (M3 Expressive): 64dp SurfaceContainer bar with centered content.
+       Docked = full-width flat bar; Floating = fully rounded, level-2 elevation, 16dp margin. -->
+  <ControlTheme x:Key="{x:Type m3:Toolbar}" TargetType="m3:Toolbar">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Height" Value="64" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerNone}" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Height="{TemplateBinding Height}"
+                Padding="{TemplateBinding Padding}">
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+
+    <Style Selector="^[Variant=Floating]">
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+      <Setter Property="Margin" Value="16" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="^[Variant=Floating] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation2}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

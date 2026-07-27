@@ -1,0 +1,202 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Trailing calendar icon button. -->
+  <ControlTheme x:Key="Md3CalendarDatePickerIconButton" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Width" Value="{StaticResource Md3IconButtonSize}" />
+    <Setter Property="Height" Value="{StaticResource Md3IconButtonSize}" />
+    <Setter Property="Margin" Value="0,0,8,0" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <!-- calendar glyph -->
+            <Path Name="PART_Glyph"
+                  Fill="{TemplateBinding Foreground}"
+                  Stretch="Uniform"
+                  Width="18"
+                  Height="18"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Data="M19,3 L18,3 L18,1 L16,1 L16,3 L8,3 L8,1 L6,1 L6,3 L5,3 C3.9,3 3,3.9 3,5 L3,19 C3,20.1 3.9,21 5,21 L19,21 C20.1,21 21,20.1 21,19 L21,5 C21,3.9 20.1,3 19,3 Z M19,19 L5,19 L5,9 L19,9 Z M19,7 L5,7 L5,5 L19,5 Z M7,11 L12,11 L12,16 L7,16 Z" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Path#PART_Glyph">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 CalendarDatePicker: outlined field + calendar popup. -->
+  <ControlTheme x:Key="{x:Type CalendarDatePicker}" TargetType="CalendarDatePicker">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="PlaceholderForeground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="{StaticResource Md3TextFieldHeight}" />
+    <Setter Property="Padding" Value="16,8" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="FocusAdorner" Value="{x:Null}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <DataValidationErrors>
+          <Panel Name="LayoutRoot"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch">
+            <Border Name="PART_Background"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    MinHeight="{TemplateBinding MinHeight}" />
+            <Grid ColumnDefinitions="*,Auto">
+              <TextBox Name="PART_TextBox"
+                       Grid.Column="0"
+                       Foreground="{TemplateBinding Foreground}"
+                       Background="Transparent"
+                       BorderBrush="Transparent"
+                       BorderThickness="0"
+                       MinHeight="0"
+                       Margin="{TemplateBinding BorderThickness}"
+                       Padding="{TemplateBinding Padding}"
+                       PlaceholderText="{TemplateBinding PlaceholderText}"
+                       PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                       UseFloatingPlaceholder="{TemplateBinding UseFloatingPlaceholder}"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}">
+                <TextBox.Styles>
+                  <!-- host draws the border; suppress inner TextBox chrome -->
+                  <Style Selector="TextBox#PART_TextBox /template/ Border#PART_BorderElement">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                  </Style>
+                  <Style Selector="TextBox#PART_TextBox:focus /template/ Border#PART_BorderElement">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                  </Style>
+                  <Style Selector="TextBox#PART_TextBox:disabled /template/ Border#PART_BorderElement">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                  </Style>
+                </TextBox.Styles>
+              </TextBox>
+              <Button Name="PART_Button"
+                      Grid.Column="1"
+                      Theme="{StaticResource Md3CalendarDatePickerIconButton}"
+                      VerticalAlignment="Center"
+                      Focusable="False" />
+              <Popup Name="PART_Popup"
+                     WindowManagerAddShadowHint="False"
+                     PlacementTarget="{TemplateBinding}"
+                     IsLightDismissEnabled="True"
+                     HorizontalOffset="-12"
+                     VerticalOffset="-4">
+                <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+                <Border Name="PART_PopupBorder"
+                        m3p:Entrance.Animation="GrowDown"
+                        RenderTransformOrigin="50%,0%"
+                        Margin="12,8,12,16"
+                        Background="{DynamicResource Md3SurfaceContainerHighBrush}"
+                        CornerRadius="{StaticResource Md3CornerLarge}"
+                        BoxShadow="{StaticResource Md3Elevation3}">
+                  <Calendar Name="PART_Calendar"
+                            Background="Transparent"
+                            FirstDayOfWeek="{TemplateBinding FirstDayOfWeek}"
+                            IsTodayHighlighted="{TemplateBinding IsTodayHighlighted}"
+                            SelectedDate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedDate, Mode=TwoWay}"
+                            DisplayDate="{TemplateBinding DisplayDate}"
+                            DisplayDateStart="{TemplateBinding DisplayDateStart}"
+                            DisplayDateEnd="{TemplateBinding DisplayDateEnd}" />
+                </Border>
+              </Popup>
+            </Grid>
+          </Panel>
+        </DataValidationErrors>
+      </ControlTemplate>
+    </Setter>
+
+    <!-- hover -->
+    <Style Selector="^:pointerover /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+
+    <!-- pressed -->
+    <Style Selector="^:pressed /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+
+    <!-- flyout open / focused: 2px primary border -->
+    <Style Selector="^:flyout-open /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="^:focus-within /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <!-- placeholder color when empty -->
+    <Style Selector="^:hasnodate /template/ TextBox#PART_TextBox">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    </Style>
+
+    <!-- error -->
+    <Style Selector="^:error /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:error:focus-within /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ TextBox#PART_TextBox">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

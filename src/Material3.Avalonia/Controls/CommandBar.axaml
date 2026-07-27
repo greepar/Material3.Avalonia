@@ -1,0 +1,93 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 CommandBar: Surface bar, 48 high, overflow menu on SurfaceContainer. -->
+  <ControlTheme x:Key="{x:Type CommandBar}" TargetType="CommandBar">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="Padding" Value="4,0" />
+    <Setter Property="ItemWidthBottom" Value="70" />
+    <Setter Property="ItemWidthRight" Value="102" />
+    <Setter Property="ItemWidthCollapsed" Value="42" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Padding="{TemplateBinding Padding}"
+                MinHeight="{TemplateBinding MinHeight}">
+          <Panel>
+            <DockPanel KeyboardNavigation.TabNavigation="Cycle">
+              <!-- Overflow button (docked right): M3 icon button -->
+              <Button x:Name="PART_OverflowButton"
+                      DockPanel.Dock="Right"
+                      Background="Transparent"
+                      Foreground="{TemplateBinding Foreground}"
+                      BorderThickness="0"
+                      CornerRadius="{StaticResource Md3CornerFull}"
+                      Padding="0"
+                      Width="40"
+                      Height="40"
+                      MinWidth="40"
+                      MinHeight="40"
+                      VerticalAlignment="Center"
+                      IsVisible="{TemplateBinding IsOverflowButtonVisible}"
+                      AutomationProperties.Name="More commands">
+                <PathIcon Width="18" Height="18"
+                          Foreground="{TemplateBinding Foreground}"
+                          Data="M6,10A2,2 0 0,0 4,12A2,2 0 0,0 6,14A2,2 0 0,0 8,12A2,2 0 0,0 6,10M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10M18,10A2,2 0 0,0 16,12A2,2 0 0,0 18,14A2,2 0 0,0 20,12A2,2 0 0,0 18,10Z" />
+              </Button>
+
+              <!-- Custom content area (docked left) -->
+              <ContentPresenter x:Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                DockPanel.Dock="Left"
+                                VerticalAlignment="Center" />
+
+              <!-- Primary commands (fills remaining space, right-aligned) -->
+              <ItemsControl x:Name="PART_PrimaryCommands"
+                            ItemsSource="{Binding VisiblePrimaryCommands, RelativeSource={RelativeSource TemplatedParent}}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="4" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+            </DockPanel>
+
+            <!-- Overflow popup: M3 menu surface -->
+            <Popup x:Name="PART_OverflowPopup"
+                   IsOpen="{TemplateBinding IsOpen, Mode=TwoWay}"
+                   PlacementTarget="{Binding #PART_OverflowButton}"
+                   Placement="Bottom"
+                   IsLightDismissEnabled="True"
+                   WindowManagerAddShadowHint="False">
+              <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+              <Border Background="{DynamicResource Md3SurfaceContainerBrush}"
+                      CornerRadius="{StaticResource Md3CornerSmall}"
+                      BoxShadow="{StaticResource Md3Elevation2}"
+                      Padding="4,8"
+                      Margin="10,8,10,14"
+                      MinWidth="180">
+                <ItemsControl x:Name="PART_OverflowPresenter"
+                              ItemsSource="{Binding OverflowItems, RelativeSource={RelativeSource TemplatedParent}}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Spacing="0" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                </ItemsControl>
+              </Border>
+            </Popup>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,331 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 floating action buttons. API modeled after m3fx
+       (https://github.com/Glavo/m3fx), Apache-2.0; implementation follows the Material
+       3 spec: 40/56/96dp containers with 12/16/28dp corners, elevation 3 at rest
+       raising to 4 on hover, and variant color schemes. Shadows are drawn outside the
+       control bounds (ClipToBounds=False). -->
+  <ControlTheme x:Key="{x:Type m3:FloatingActionButton}" TargetType="m3:FloatingActionButton">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryContainerBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerLarge}" />
+    <Setter Property="Width" Value="56" />
+    <Setter Property="Height" Value="56" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Panel>
+          </Border>
+          <!-- focus ring -->
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation4}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- sizes: Small 40/12, Medium 56/16 (default), Large 96/28 -->
+    <Style Selector="^[Size=Small]">
+      <Setter Property="Width" Value="40" />
+      <Setter Property="Height" Value="40" />
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerMedium}" />
+    </Style>
+    <Style Selector="^[Size=Large]">
+      <Setter Property="Width" Value="96" />
+      <Setter Property="Height" Value="96" />
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerExtraLarge}" />
+    </Style>
+
+    <!-- colors -->
+    <Style Selector="^[Color=Surface]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^[Color=Secondary]">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^[Color=Tertiary]">
+      <Setter Property="Background" Value="{DynamicResource Md3TertiaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnTertiaryContainerBrush}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Extended FAB: 56dp high, 16dp corners, 16dp horizontal padding; optional leading
+       24dp icon followed by a label with an 8dp gap. PrimaryContainer color scheme. -->
+  <ControlTheme x:Key="{x:Type m3:ExtendedFloatingActionButton}" TargetType="m3:ExtendedFloatingActionButton">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryContainerBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerLarge}" />
+    <Setter Property="Height" Value="56" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <StackPanel Orientation="Horizontal"
+                          Spacing="8"
+                          Margin="{TemplateBinding Padding}"
+                          VerticalAlignment="Center">
+                <ContentControl Name="PART_IconPresenter"
+                                Content="{TemplateBinding Icon}"
+                                Width="24"
+                                Height="24"
+                                VerticalAlignment="Center"
+                                IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  RecognizesAccessKey="True"
+                                  VerticalAlignment="Center"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+              </StackPanel>
+            </Panel>
+          </Border>
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:with-icon /template/ ContentControl#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation4}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^.fab-menu-item">
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    </Style>
+
+    <Style Selector="^[Color=Surface]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^[Color=Secondary]">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^[Color=Tertiary]">
+      <Setter Property="Background" Value="{DynamicResource Md3TertiaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnTertiaryContainerBrush}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentControl#PART_IconPresenter">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- FAB menu: a column of action items above a primary FAB, bottom-right aligned.
+       The primary FAB's icon container rotates 45deg while open (a "+" icon reads as
+       an X); the items fade/slide in. Entrance animation choice: the ItemsPresenter
+       stays in the tree (IsVisible toggling would not re-attach children, so
+       m3p:Entrance does not apply); instead Opacity (DoubleTransition 0.2s) and a
+       16px TranslateY (TransformOperationsTransition 0.2s CubicEaseOut) transition
+       between the closed and open values. -->
+  <ControlTheme x:Key="{x:Type m3:FabMenu}" TargetType="m3:FabMenu">
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="VerticalAlignment" Value="Bottom" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <StackPanel Orientation="Vertical" Spacing="8" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid RowDefinitions="Auto,Auto" HorizontalAlignment="Right">
+          <ItemsPresenter Name="PART_ItemsPresenter"
+                          Grid.Row="0"
+                           Margin="0,0,0,8"
+                           HorizontalAlignment="Right"
+                           ItemsPanel="{TemplateBinding ItemsPanel}" />
+          <m3:FloatingActionButton Name="PART_PrimaryFab"
+                                   Grid.Row="1"
+                                   HorizontalAlignment="Right">
+            <ContentControl Name="PART_PrimaryIcon"
+                            Content="{TemplateBinding Icon}"
+                            RenderTransformOrigin="50%,50%" />
+          </m3:FloatingActionButton>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter">
+      <Setter Property="Opacity" Value="0" />
+      <Setter Property="IsHitTestVisible" Value="False" />
+      <Setter Property="RenderTransform" Value="translateY(16px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ ContentControl#PART_PrimaryIcon">
+      <Setter Property="RenderTransform" Value="rotate(0deg)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ m3|FloatingActionButton#PART_PrimaryFab">
+      <Setter Property="Transitions">
+        <Transitions>
+          <CornerRadiusTransition Property="CornerRadius" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^[IsOpen=True] /template/ ItemsPresenter#PART_ItemsPresenter">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="IsHitTestVisible" Value="True" />
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ ContentControl#PART_PrimaryIcon">
+      <Setter Property="RenderTransform" Value="rotate(45deg)" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ m3|FloatingActionButton#PART_PrimaryFab">
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,106 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 month/year cell: pill shape. -->
+  <ControlTheme x:Key="{x:Type CalendarButton}" TargetType="CalendarButton">
+    <Setter Property="ClickMode" Value="Release" />
+    <Setter Property="MinWidth" Value="72" />
+    <Setter Property="MinHeight" Value="36" />
+    <Setter Property="Margin" Value="1" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <!-- The month/year grid stretches cells; keep the visual pill at a fixed 72x36
+             centered inside the cell instead of letting it fill the whole cell. -->
+        <Panel Background="Transparent">
+          <Panel Width="72" Height="36"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center">
+            <Border Name="Root"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    ClipToBounds="True">
+              <Panel>
+                <Border Name="PART_StateLayer"
+                        Background="{TemplateBinding Foreground}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Opacity="0"
+                        IsHitTestVisible="False" />
+                <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                                RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                                RippleClipRadius="{TemplateBinding CornerRadius}" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}" />
+              </Panel>
+            </Border>
+            <!-- focus ring -->
+            <Border Name="PART_FocusRing"
+                    BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                    BorderThickness="{StaticResource Md3FocusRingThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Margin="-2"
+                    IsVisible="False"
+                    IsHitTestVisible="False" />
+          </Panel>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+    </Style>
+
+    <!-- selected: filled primary pill -->
+    <Style Selector="^:selected">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    </Style>
+
+    <!-- inactive (out of range) -->
+    <Style Selector="^:inactive /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+
+    <!-- keyboard-focused cell -->
+    <Style Selector="^:btnfocused /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

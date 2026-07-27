@@ -1,0 +1,365 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 navigation bar / rail / drawer items. API modeled after m3fx
+       (https://github.com/Glavo/m3fx), Apache-2.0; implementation follows the
+       Material 3 spec. -->
+
+  <!-- Navigation bar: 80dp SurfaceContainer bar, items equalized horizontally.
+       Own template (no ScrollViewer) since 3-5 destinations never scroll. -->
+  <ControlTheme x:Key="{x:Type m3:NavigationBar}" TargetType="m3:NavigationBar">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Height" Value="80" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <UniformGrid Rows="1" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                Height="{TemplateBinding Height}">
+          <ItemsPresenter Name="PART_ItemsPresenter"
+                          ItemsPanel="{TemplateBinding ItemsPanel}"
+                          Margin="{TemplateBinding Padding}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Navigation bar item: icon in a 64x32 pill indicator + label-medium text below.
+       Selected: SecondaryContainer pill (scaleX 0.6 -> 1 + fade entrance, same pattern
+       as the TabItem active indicator), OnSecondaryContainer icon, OnSurface label. -->
+  <ControlTheme x:Key="{x:Type m3:NavigationBarItem}" TargetType="m3:NavigationBarItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelMediumSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent">
+          <StackPanel Orientation="Vertical"
+                      Spacing="4"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+            <!-- 64x32 pill target: indicator + ripple + icon -->
+            <Panel Width="64" Height="32" HorizontalAlignment="Center">
+              <Border Name="PART_Indicator"
+                      Background="{DynamicResource Md3SecondaryContainerBrush}"
+                      CornerRadius="{StaticResource Md3CornerLarge}"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{StaticResource Md3CornerLarge}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{StaticResource Md3CornerLarge}" />
+              <ContentPresenter Name="PART_IconPresenter"
+                                Content="{TemplateBinding Icon}"
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Panel>
+            <TextBlock Name="PART_Label"
+                       Text="{TemplateBinding Label}"
+                       FontSize="{TemplateBinding FontSize}"
+                       FontWeight="{TemplateBinding FontWeight}"
+                       Foreground="{TemplateBinding Foreground}"
+                       HorizontalAlignment="Center" />
+          </StackPanel>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- pill entrance: scaleX 0.6 -> 1 with fade (cf. TabItem indicator) -->
+    <Style Selector="^ /template/ Border#PART_Indicator">
+      <Setter Property="RenderTransform" Value="scaleX(0.6)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_Indicator">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scaleX(1)" />
+    </Style>
+    <Style Selector="^:selected /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ TextBlock#PART_Label">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Navigation rail: 80dp-wide Surface column; optional Header slot on top, items
+       stacked vertically (spacing 12) below a 44dp top inset. -->
+  <ControlTheme x:Key="{x:Type m3:NavigationRail}" TargetType="m3:NavigationRail">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Width" Value="80" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="ItemsPanel">
+      <ItemsPanelTemplate>
+        <StackPanel Orientation="Vertical" Spacing="12" />
+      </ItemsPanelTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                Width="{TemplateBinding Width}">
+          <DockPanel>
+            <ContentPresenter Name="PART_HeaderPresenter"
+                              DockPanel.Dock="Top"
+                              Content="{TemplateBinding Header}"
+                              HorizontalAlignment="Center"
+                              Margin="0,8,0,0" />
+            <ItemsPresenter Name="PART_ItemsPresenter"
+                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                            VerticalAlignment="Top"
+                            Margin="0,44,0,0" />
+          </DockPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Navigation rail item: 56dp target, icon in a 56x32 pill + label below -->
+  <ControlTheme x:Key="{x:Type m3:NavigationRailItem}" TargetType="m3:NavigationRailItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelMediumSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="Height" Value="56" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent" Height="{TemplateBinding Height}">
+          <StackPanel Orientation="Vertical"
+                      Spacing="4"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+            <!-- 56x32 pill target: indicator + ripple + icon -->
+            <Panel Width="56" Height="32" HorizontalAlignment="Center">
+              <Border Name="PART_Indicator"
+                      Background="{DynamicResource Md3SecondaryContainerBrush}"
+                      CornerRadius="{StaticResource Md3CornerLarge}"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{StaticResource Md3CornerLarge}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{StaticResource Md3CornerLarge}" />
+              <ContentPresenter Name="PART_IconPresenter"
+                                Content="{TemplateBinding Icon}"
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Panel>
+            <TextBlock Name="PART_Label"
+                       Text="{TemplateBinding Label}"
+                       FontSize="{TemplateBinding FontSize}"
+                       FontWeight="{TemplateBinding FontWeight}"
+                       Foreground="{TemplateBinding Foreground}"
+                       HorizontalAlignment="Center" />
+          </StackPanel>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- pill entrance: scaleX 0.6 -> 1 with fade (cf. TabItem indicator) -->
+    <Style Selector="^ /template/ Border#PART_Indicator">
+      <Setter Property="RenderTransform" Value="scaleX(0.6)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_Indicator">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scaleX(1)" />
+    </Style>
+    <Style Selector="^:selected /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ TextBlock#PART_Label">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Navigation drawer item: 56dp full-pill row with a 24dp leading icon slot and an
+       optional trailing badge label. Selected uses SecondaryContainer. Host these inside
+       a plain ListBox (e.g. in a SplitView pane) to build a drawer; no dedicated
+       NavigationDrawer container is provided. -->
+  <ControlTheme x:Key="{x:Type m3:NavigationDrawerItem}" TargetType="m3:NavigationDrawerItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Height" Value="56" />
+    <Setter Property="Padding" Value="16,0,24,0" />
+    <Setter Property="Margin" Value="12,0" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{DynamicResource Md3OnSurfaceBrush}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid ColumnDefinitions="Auto,*,Auto" Margin="{TemplateBinding Padding}">
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Grid.Column="0"
+                                  Content="{TemplateBinding Icon}"
+                                  Width="24"
+                                  Height="24"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Grid.Column="1"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <TextBlock Name="PART_Badge"
+                           Grid.Column="2"
+                           Text="{TemplateBinding BadgeText}"
+                           FontSize="{TemplateBinding FontSize}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           Foreground="{TemplateBinding Foreground}"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"
+                           IsVisible="False" />
+              </Grid>
+            </Panel>
+          </Border>
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="2"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:has-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:has-badge /template/ TextBlock#PART_Badge">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Selected -->
+    <Style Selector="^:selected /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

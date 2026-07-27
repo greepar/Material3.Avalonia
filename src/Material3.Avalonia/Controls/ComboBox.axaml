@@ -1,0 +1,173 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 ComboBox: outlined field style -->
+  <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="PlaceholderForeground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="{StaticResource Md3TextFieldHeight}" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="MaxDropDownHeight" Value="504" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="FocusAdorner" Value="{x:Null}" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <DataValidationErrors>
+          <Grid ColumnDefinitions="*,48">
+            <Border Name="PART_Background"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    MinWidth="112"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}" />
+            <TextBlock Name="PART_PlaceholderTextBlock"
+                       Grid.Column="0"
+                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                       Margin="{TemplateBinding Padding}"
+                       Text="{TemplateBinding PlaceholderText}"
+                       Foreground="{TemplateBinding PlaceholderForeground}"
+                       IsHitTestVisible="False">
+              <TextBlock.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="SelectionBoxItem" RelativeSource="{RelativeSource TemplatedParent}" Converter="{x:Static ObjectConverters.IsNull}" />
+                  <Binding Path="!IsEditable" RelativeSource="{RelativeSource TemplatedParent}" />
+                </MultiBinding>
+              </TextBlock.IsVisible>
+            </TextBlock>
+            <ContentControl Name="PART_SelectionBoxPresenter"
+                            Grid.Column="0"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            IsVisible="{TemplateBinding IsEditable, Converter={x:Static BoolConverters.Not}}" />
+            <TextBox Name="PART_EditableTextBox"
+                     Grid.Column="0"
+                     Padding="{TemplateBinding Padding}"
+                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                     VerticalContentAlignment="Center"
+                     Foreground="{TemplateBinding Foreground}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     MinHeight="0"
+                     Text="{TemplateBinding Text, Mode=TwoWay}"
+                     PlaceholderText="{TemplateBinding PlaceholderText}"
+                     IsVisible="{TemplateBinding IsEditable}" />
+            <!-- trailing chevron -->
+            <Path Name="PART_DropDownGlyph"
+                  Grid.Column="1"
+                  Width="12"
+                  Height="8"
+                  Margin="0,0,16,0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  IsHitTestVisible="False"
+                  Stretch="Uniform"
+                  Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                  RenderTransformOrigin="50%,50%"
+                  RenderTransform="rotate(0deg)"
+                  Data="M 0,0 L 6,6 L 12,0 L 10.6,-1.4 L 6,3.2 L 1.4,-1.4 Z">
+              <Path.Transitions>
+                <Transitions>
+                  <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+                </Transitions>
+              </Path.Transitions>
+            </Path>
+            <Popup Name="PART_Popup"
+                   WindowManagerAddShadowHint="False"
+                   IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                   MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                   PlacementTarget="PART_Background"
+                   IsLightDismissEnabled="True"
+                   HorizontalOffset="-12"
+                   VerticalOffset="-4"
+                   InheritsTransform="True">
+              <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+              <Border Name="PART_PopupBorder"
+                      m3p:Entrance.Animation="GrowDown"
+                      RenderTransformOrigin="50%,0%"
+                      Margin="12,8,12,16"
+                      Background="{DynamicResource Md3SurfaceContainerBrush}"
+                      CornerRadius="{StaticResource Md3CornerSmall}"
+                      BoxShadow="{StaticResource Md3Elevation2}"
+                      HorizontalAlignment="Stretch">
+                <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                              VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                              IsScrollChainingEnabled="False"
+                              IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}">
+                  <ItemsPresenter Name="PART_ItemsPresenter"
+                                  Margin="0,8"
+                                  ItemsPanel="{TemplateBinding ItemsPanel}" />
+                </ScrollViewer>
+              </Border>
+            </Popup>
+          </Grid>
+        </DataValidationErrors>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+
+    <!-- dropdown open: 2px primary border + rotated chevron -->
+    <Style Selector="^:dropdownopen /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="^:dropdownopen /template/ Path#PART_DropDownGlyph">
+      <Setter Property="RenderTransform" Value="rotate(180deg)" />
+      <Setter Property="Fill" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+
+    <Style Selector="^:focus-visible /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="^:error /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled /template/ Border#PART_Background">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentControl#PART_SelectionBoxPresenter">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ TextBlock#PART_PlaceholderTextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Path#PART_DropDownGlyph">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+
+    <Style Selector="^[IsEditable=true]">
+      <Setter Property="IsTabStop" Value="False" />
+      <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

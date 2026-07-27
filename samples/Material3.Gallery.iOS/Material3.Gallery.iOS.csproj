@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0-ios</TargetFramework>
+        <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <!-- Simulator-friendly default; device builds pass -r ios-arm64 -->
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
+        <ApplicationId>com.material3.avalonia.gallery</ApplicationId>
+        <!-- Local Xcode is one minor behind the .NET iOS SDK requirement; harmless for builds. -->
+        <ValidateXcodeVersion>false</ValidateXcodeVersion>
+        <!-- IL2104 originates from Avalonia's own design-time assembly
+             (Avalonia.DesignerSupport), which is never exercised at runtime.
+             Our code (theme + gallery UI) is fully trim/AOT clean. -->
+        <NoWarn>$(NoWarn);IL2104</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.iOS" Version="12.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Material3.Gallery.UI\Material3.Gallery.UI.csproj" />
+    </ItemGroup>
+</Project>

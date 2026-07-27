@@ -1,0 +1,207 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Inner component button used by SplitButton primary/secondary parts. -->
+  <ControlTheme x:Key="Md3SplitButtonComponent" TargetType="Button">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <!-- M3 Expressive: the inner corners of the two parts animate with state
+         (resting 4 -> hover/pressed 12 -> flyout open 20/full pill). -->
+    <Setter Property="Transitions">
+      <Transitions>
+        <CornerRadiusTransition Property="CornerRadius" Duration="0:0:0.2" Easing="CubicEaseOut" />
+      </Transitions>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <!-- state layer -->
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Padding="{TemplateBinding Padding}"
+                              RecognizesAccessKey="True"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- flyout open on secondary: keep state layer visible -->
+    <Style Selector="^[Tag=flyout-open] /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateFocusOpacity}" />
+    </Style>
+
+    <!-- checked (ToggleSplitButton): tonal look -->
+    <Style Selector="^[Tag=checked]">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^[Tag=checked-flyout-open]">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^[Tag=checked-flyout-open] /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateFocusOpacity}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="0.12" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 SplitButton: filled primary segment + chevron secondary segment.
+       ToggleSplitButton shares this key (StyleKeyOverride) and adds :checked tonal look. -->
+  <ControlTheme x:Key="{x:Type SplitButton}" TargetType="SplitButton">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Padding" Value="{StaticResource Md3ButtonPadding}" />
+    <Setter Property="MinHeight" Value="{StaticResource Md3ButtonHeight}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="KeyboardNavigation.IsTabStop" Value="True" />
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Grid ColumnDefinitions="*,1,Auto">
+            <Button Name="PART_PrimaryButton"
+                    Grid.Column="0"
+                    Theme="{StaticResource Md3SplitButtonComponent}"
+                    Background="{TemplateBinding Background}"
+                    Foreground="{TemplateBinding Foreground}"
+                    Content="{TemplateBinding Content}"
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                    Command="{TemplateBinding Command}"
+                    CommandParameter="{TemplateBinding CommandParameter}"
+                    Padding="{TemplateBinding Padding}"
+                    MinHeight="{TemplateBinding MinHeight}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                    Focusable="False"
+                    KeyboardNavigation.IsTabStop="False" />
+
+            <Button Name="PART_SecondaryButton"
+                    Grid.Column="2"
+                    Theme="{StaticResource Md3SplitButtonComponent}"
+                    Background="{TemplateBinding Background}"
+                    Foreground="{TemplateBinding Foreground}"
+                    MinWidth="36"
+                    MinHeight="{TemplateBinding MinHeight}"
+                    Padding="6,0,10,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Focusable="False"
+                    KeyboardNavigation.IsTabStop="False">
+              <Path Data="M 3.5,6.5 L 9,12 L 14.5,6.5"
+                    Stroke="{TemplateBinding Foreground}"
+                    StrokeThickness="2"
+                    StrokeLineCap="Round"
+                    StrokeJoin="Round"
+                    Stretch="None"
+                    Width="18"
+                    Height="18" />
+            </Button>
+          </Grid>
+          <!-- focus ring -->
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- M3 Expressive inner-corner morph: outer corners stay Full; the adjacent inner
+         corners animate resting 4 -> hover/pressed 12 -> flyout open 20 (full pill).
+         CornerRadius order is TopLeft,TopRight,BottomRight,BottomLeft: the primary
+         part's inner corners are on the right, the secondary part's on the left. -->
+    <Style Selector="^ /template/ Button#PART_PrimaryButton">
+      <Setter Property="CornerRadius" Value="9999,4,4,9999" />
+    </Style>
+    <Style Selector="^ /template/ Button#PART_PrimaryButton:pointerover">
+      <Setter Property="CornerRadius" Value="9999,12,12,9999" />
+    </Style>
+    <Style Selector="^ /template/ Button#PART_PrimaryButton:pressed">
+      <Setter Property="CornerRadius" Value="9999,12,12,9999" />
+    </Style>
+    <Style Selector="^ /template/ Button#PART_SecondaryButton">
+      <Setter Property="CornerRadius" Value="4,9999,9999,4" />
+    </Style>
+    <Style Selector="^ /template/ Button#PART_SecondaryButton:pointerover">
+      <Setter Property="CornerRadius" Value="12,9999,9999,12" />
+    </Style>
+    <Style Selector="^ /template/ Button#PART_SecondaryButton:pressed">
+      <Setter Property="CornerRadius" Value="12,9999,9999,12" />
+    </Style>
+    <Style Selector="^:flyout-open /template/ Button#PART_SecondaryButton">
+      <Setter Property="CornerRadius" Value="20,9999,9999,20" />
+    </Style>
+
+    <Style Selector="^:flyout-open /template/ Button">
+      <Setter Property="Tag" Value="flyout-open" />
+    </Style>
+    <Style Selector="^:checked /template/ Button">
+      <Setter Property="Tag" Value="checked" />
+    </Style>
+    <Style Selector="^:checked:flyout-open /template/ Button">
+      <Setter Property="Tag" Value="checked-flyout-open" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

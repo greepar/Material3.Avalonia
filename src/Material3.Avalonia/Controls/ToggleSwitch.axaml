@@ -1,0 +1,214 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 ToggleSwitch: 52x32 track (corner Full).
+       Knob travel = PART_SwitchKnob width (20): unchecked knob panel at x=4, checked at x=24. -->
+  <ControlTheme x:Key="{x:Type ToggleSwitch}" TargetType="ToggleSwitch">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="KnobTransitions">
+      <Transitions>
+        <DoubleTransition Easing="CubicEaseOut"
+                          Property="Canvas.Left"
+                          Duration="0:0:0.2" />
+      </Transitions>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid RowDefinitions="Auto,*">
+          <!-- header content -->
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Grid.Row="0"
+                            VerticalAlignment="Top"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            RecognizesAccessKey="True"
+                            Margin="0,0,0,6" />
+          <Grid Grid.Row="1"
+                ColumnDefinitions="Auto,12,Auto"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+            <Panel Grid.Column="0"
+                   Width="52"
+                   Height="32"
+                   TemplatedControl.IsTemplateFocusTarget="True">
+              <!-- track -->
+              <Border Name="PART_Track"
+                      Width="52"
+                      Height="32"
+                      CornerRadius="{StaticResource Md3CornerFull}"
+                      Background="{DynamicResource Md3SurfaceContainerHighestBrush}"
+                      BorderBrush="{DynamicResource Md3OutlineBrush}"
+                      BorderThickness="2" />
+              <!-- knob travel canvas: width = travel distance -->
+              <Canvas Name="PART_SwitchKnob"
+                      Width="20"
+                      Height="24"
+                      Margin="4,0,0,0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center">
+                <Panel Name="PART_MovingKnobs"
+                       Width="24"
+                       Height="24">
+                  <!-- circular hover state layer centered on knob -->
+                  <Ellipse Name="PART_KnobStateLayer"
+                           Width="40"
+                           Height="40"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Fill="{DynamicResource Md3OnSurfaceBrush}"
+                           Opacity="0"
+                           IsHitTestVisible="False" />
+                  <m3p:RippleHost Width="40"
+                                  Height="40"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                                  RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                                  RippleClipRadius="9999" />
+                  <Ellipse Name="PART_Knob"
+                           Width="16"
+                           Height="16"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Fill="{DynamicResource Md3OutlineBrush}"
+                           RenderTransformOrigin="50%,50%" />
+                </Panel>
+              </Canvas>
+              <!-- focus ring -->
+              <Border Name="PART_FocusRing"
+                      BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                      BorderThickness="{StaticResource Md3FocusRingThickness}"
+                      CornerRadius="{StaticResource Md3CornerFull}"
+                      Margin="-3"
+                      IsVisible="False"
+                      IsHitTestVisible="False" />
+            </Panel>
+            <!-- on/off labels -->
+            <ContentPresenter Name="PART_OffContentPresenter"
+                              Grid.Column="2"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Content="{TemplateBinding OffContent}"
+                              ContentTemplate="{TemplateBinding OffContentTemplate}" />
+            <ContentPresenter Name="PART_OnContentPresenter"
+                              Grid.Column="2"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Content="{TemplateBinding OnContent}"
+                              ContentTemplate="{TemplateBinding OnContentTemplate}"
+                              IsVisible="False" />
+          </Grid>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+      <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="^ /template/ Ellipse#PART_KnobStateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Ellipse#PART_Knob">
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+          <DoubleTransition Property="Width" Duration="0:0:0.2" Easing="CubicEaseOut" />
+          <DoubleTransition Property="Height" Duration="0:0:0.2" Easing="CubicEaseOut" />
+          <BrushTransition Property="Fill" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Track">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.2" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Ellipse#PART_KnobStateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- dragging: knob slightly enlarged -->
+    <Style Selector="^:dragging /template/ Ellipse#PART_Knob">
+      <Setter Property="RenderTransform" Value="scale(1.15)" />
+    </Style>
+
+    <!-- checked -->
+    <Style Selector="^:checked /template/ Border#PART_Track">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="^:checked /template/ Ellipse#PART_Knob">
+      <Setter Property="Width" Value="24" />
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Fill" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Ellipse#PART_KnobStateLayer">
+      <Setter Property="Fill" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ ContentPresenter#PART_OffContentPresenter">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:checked /template/ ContentPresenter#PART_OnContentPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- unchecked -->
+    <Style Selector="^:unchecked /template/ ContentPresenter#PART_OffContentPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:unchecked /template/ ContentPresenter#PART_OnContentPresenter">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Track">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="Opacity" Value="0.12" />
+    </Style>
+    <Style Selector="^:disabled /template/ Ellipse#PART_Knob">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled:checked /template/ Ellipse#PART_Knob">
+      <Setter Property="Fill" Value="{DynamicResource Md3SurfaceBrush}" />
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_OffContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_OnContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

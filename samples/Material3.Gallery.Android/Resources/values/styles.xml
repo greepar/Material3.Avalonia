@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <!-- AvaloniaActivity derives from AppCompatActivity and requires an AppCompat theme. -->
+  <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowBackground">#FEF7FF</item>
+  </style>
+</resources>

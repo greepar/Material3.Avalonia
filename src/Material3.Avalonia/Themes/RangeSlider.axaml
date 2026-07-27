@@ -1,0 +1,130 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Range slider handle: 4x44 vertical bar, narrows to 2 when pressed (per M3 spec). -->
+  <ControlTheme x:Key="Md3RangeSliderThumb" TargetType="Thumb">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent" Width="20" Height="44">
+          <Border Name="Knob"
+                  Background="{TemplateBinding Background}"
+                  Width="4"
+                  Height="44"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  CornerRadius="{StaticResource Md3CornerFull}">
+            <Border.Transitions>
+              <Transitions>
+                <DoubleTransition Property="Width" Duration="0:0:0.1" Easing="CubicEaseOut" />
+              </Transitions>
+            </Border.Transitions>
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pressed /template/ Border#Knob">
+      <Setter Property="Width" Value="2" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 (2024) range slider: 16dp tracks with gaps around two 4x44 bar handles.
+       Segment/handle positions are computed in RangeSlider.UpdateVisuals (canvas layout). -->
+  <ControlTheme x:Key="{x:Type m3:RangeSlider}" TargetType="m3:RangeSlider">
+    <Setter Property="MinHeight" Value="44" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Track" Background="Transparent" Height="44">
+          <Canvas Name="PART_Canvas" Height="44" ClipToBounds="False">
+            <!-- outer segments: SecondaryContainer; middle (selected range): Primary -->
+            <Border Name="PART_StartSegment"
+                    Canvas.Top="14"
+                    Height="16"
+                    Background="{DynamicResource Md3SecondaryContainerBrush}"
+                    CornerRadius="8,2,2,8">
+              <Ellipse Width="4" Height="4"
+                       Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Margin="6,0,0,0" />
+            </Border>
+            <Border Name="PART_MidSegment"
+                    Canvas.Top="14"
+                    Height="16"
+                    Background="{DynamicResource Md3PrimaryBrush}"
+                    CornerRadius="2"
+                    IsHitTestVisible="False" />
+            <Border Name="PART_EndSegment"
+                    Canvas.Top="14"
+                    Height="16"
+                    Background="{DynamicResource Md3SecondaryContainerBrush}"
+                    CornerRadius="2,8,8,2">
+              <Ellipse Width="4" Height="4"
+                       Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0" />
+            </Border>
+            <Thumb Name="PART_LowerThumb"
+                   Canvas.Top="0"
+                   Theme="{StaticResource Md3RangeSliderThumb}"
+                   Focusable="True"
+                   AutomationProperties.Name="Lower value" />
+            <Thumb Name="PART_UpperThumb"
+                   Canvas.Top="0"
+                   Theme="{StaticResource Md3RangeSliderThumb}"
+                   Focusable="True"
+                   AutomationProperties.Name="Upper value" />
+            <Border Name="PART_LowerIndicator"
+                    Canvas.Top="-56"
+                    Width="56" Height="48"
+                    Background="{DynamicResource Md3InverseSurfaceBrush}"
+                    CornerRadius="{StaticResource Md3CornerFull}"
+                    IsHitTestVisible="False"
+                    IsVisible="False">
+              <TextBlock Name="PART_LowerIndicatorText"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         FontSize="{StaticResource Md3LabelLargeSize}"
+                         Foreground="{DynamicResource Md3InverseOnSurfaceBrush}" />
+            </Border>
+            <Border Name="PART_UpperIndicator"
+                    Canvas.Top="-56"
+                    Width="56" Height="48"
+                    Background="{DynamicResource Md3InverseSurfaceBrush}"
+                    CornerRadius="{StaticResource Md3CornerFull}"
+                    IsHitTestVisible="False"
+                    IsVisible="False">
+              <TextBlock Name="PART_UpperIndicatorText"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         FontSize="{StaticResource Md3LabelLargeSize}"
+                         Foreground="{DynamicResource Md3InverseOnSurfaceBrush}" />
+            </Border>
+          </Canvas>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:disabled /template/ Border#PART_StartSegment">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_EndSegment">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_MidSegment">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Thumb">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

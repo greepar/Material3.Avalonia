@@ -1,0 +1,163 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 ScrollBar. Contract per Avalonia 12.1.0 Primitives/ScrollBar.cs:
+       PART_LineUpButton, PART_LineDownButton, PART_PageUpButton, PART_PageDownButton.
+       M3 look: transparent track, thin thumb (4px) expanding to 8px when IsExpanded. -->
+
+  <ControlTheme x:Key="Md3ScrollBarThumb" TargetType="Thumb">
+    <Setter Property="Background" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="Opacity" Value="0.5" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                CornerRadius="{StaticResource Md3CornerFull}" />
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+      </Transitions>
+    </Setter>
+    <Style Selector="^:pointerover">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+      <Setter Property="Opacity" Value="0.9" />
+    </Style>
+    <Style Selector="^:pressed">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Invisible page-scroll buttons (still clickable to page up/down). -->
+  <ControlTheme x:Key="Md3ScrollBarPageButton" TargetType="RepeatButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}" />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Line buttons exist for the template contract but are collapsed (M3 has no arrows). -->
+  <ControlTheme x:Key="Md3ScrollBarLineButton" TargetType="RepeatButton">
+    <Setter Property="IsVisible" Value="False" />
+    <Setter Property="Width" Value="0" />
+    <Setter Property="Height" Value="0" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="Transparent" />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type ScrollBar}" TargetType="ScrollBar">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Cursor" Value="Arrow" />
+
+    <Style Selector="^:vertical">
+      <Setter Property="Width" Value="12" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Root" Background="{TemplateBinding Background}">
+            <Grid RowDefinitions="Auto,*,Auto">
+              <RepeatButton Name="PART_LineUpButton"
+                            Grid.Row="0"
+                            Focusable="False"
+                            Theme="{StaticResource Md3ScrollBarLineButton}" />
+              <Track Name="PART_Track"
+                     Grid.Row="1"
+                     Minimum="{TemplateBinding Minimum}"
+                     Maximum="{TemplateBinding Maximum}"
+                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                     DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                     ViewportSize="{TemplateBinding ViewportSize}"
+                     Orientation="{TemplateBinding Orientation}"
+                     IsDirectionReversed="True">
+                <Track.DecreaseButton>
+                  <RepeatButton Name="PART_PageUpButton"
+                                Focusable="False"
+                                Theme="{StaticResource Md3ScrollBarPageButton}" />
+                </Track.DecreaseButton>
+                <Track.IncreaseButton>
+                  <RepeatButton Name="PART_PageDownButton"
+                                Focusable="False"
+                                Theme="{StaticResource Md3ScrollBarPageButton}" />
+                </Track.IncreaseButton>
+                <Thumb Theme="{StaticResource Md3ScrollBarThumb}"
+                       Width="8"
+                       MinHeight="24"
+                       Margin="0,0,2,0"
+                       HorizontalAlignment="Right"
+                       RenderTransform="scaleX(0.5)"
+                       RenderTransformOrigin="100%,50%" />
+              </Track>
+              <RepeatButton Name="PART_LineDownButton"
+                            Grid.Row="2"
+                            Focusable="False"
+                            Theme="{StaticResource Md3ScrollBarLineButton}" />
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:horizontal">
+      <Setter Property="Height" Value="12" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border x:Name="Root" Background="{TemplateBinding Background}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <RepeatButton Name="PART_LineUpButton"
+                            Grid.Column="0"
+                            Focusable="False"
+                            Theme="{StaticResource Md3ScrollBarLineButton}" />
+              <Track Name="PART_Track"
+                     Grid.Column="1"
+                     Minimum="{TemplateBinding Minimum}"
+                     Maximum="{TemplateBinding Maximum}"
+                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                     DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                     ViewportSize="{TemplateBinding ViewportSize}"
+                     Orientation="{TemplateBinding Orientation}">
+                <Track.DecreaseButton>
+                  <RepeatButton Name="PART_PageUpButton"
+                                Focusable="False"
+                                Theme="{StaticResource Md3ScrollBarPageButton}" />
+                </Track.DecreaseButton>
+                <Track.IncreaseButton>
+                  <RepeatButton Name="PART_PageDownButton"
+                                Focusable="False"
+                                Theme="{StaticResource Md3ScrollBarPageButton}" />
+                </Track.IncreaseButton>
+                <Thumb Theme="{StaticResource Md3ScrollBarThumb}"
+                       Height="8"
+                       MinWidth="24"
+                       Margin="0,0,0,2"
+                       VerticalAlignment="Bottom"
+                       RenderTransform="scaleY(0.5)"
+                       RenderTransformOrigin="50%,100%" />
+              </Track>
+              <RepeatButton Name="PART_LineDownButton"
+                            Grid.Column="2"
+                            Focusable="False"
+                            Theme="{StaticResource Md3ScrollBarLineButton}" />
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <!-- Expanded (pointer over / no auto-hide): thumb grows from 4px to 8px. -->
+    <Style Selector="^[IsExpanded=true] /template/ Thumb">
+      <Setter Property="RenderTransform" Value="none" />
+    </Style>
+
+    <Style Selector="^:disabled /template/ Thumb">
+      <Setter Property="Opacity" Value="0.2" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,48 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ControlTheme x:Key="{x:Type GridSplitter}" TargetType="GridSplitter">
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="MinWidth" Value="8" />
+    <Setter Property="MinHeight" Value="8" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="PreviewContent">
+      <Template>
+        <Rectangle Fill="{DynamicResource Md3PrimaryBrush}" Opacity="0.4" />
+      </Template>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Background="{TemplateBinding Background}">
+          <!-- centered grip pill: adapts to splitter orientation via Max constraints -->
+          <Border Name="PART_Grip"
+                  Background="{DynamicResource Md3OutlineVariantBrush}"
+                  CornerRadius="{StaticResource Md3CornerFull}"
+                  MaxWidth="32"
+                  MaxHeight="32"
+                  Margin="2"
+                  Opacity="0"
+                  IsHitTestVisible="False" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Grip">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_Grip">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_Grip">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

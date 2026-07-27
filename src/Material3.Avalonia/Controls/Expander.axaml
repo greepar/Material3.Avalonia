@@ -1,0 +1,192 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Header toggle button (48 high, chevron rotates 180 when checked) -->
+  <ControlTheme x:Key="Md3ExpanderToggleButtonTheme" TargetType="ToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Padding" Value="16,0,0,0" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="FontSize" Value="{StaticResource Md3TitleSmallSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <Grid ColumnDefinitions="*,Auto">
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Margin="{TemplateBinding Padding}" />
+              <Path Name="PART_Chevron"
+                    Grid.Column="1"
+                    Margin="16,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Stretch="None"
+                    Stroke="{DynamicResource Md3OnSurfaceVariantBrush}"
+                    StrokeThickness="2"
+                    StrokeJoin="Round"
+                    StrokeLineCap="Round"
+                    RenderTransformOrigin="50%,50%"
+                    RenderTransform="rotate(0deg)">
+                <Path.Transitions>
+                  <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" />
+                  </Transitions>
+                </Path.Transitions>
+              </Path>
+            </Grid>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:checked /template/ Path#PART_Chevron">
+      <Setter Property="RenderTransform" Value="rotate(180deg)" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Path#PART_Chevron">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="Md3ExpanderToggleButtonUpTheme" TargetType="ToggleButton" BasedOn="{StaticResource Md3ExpanderToggleButtonTheme}">
+    <Style Selector="^ /template/ Path#PART_Chevron">
+      <Setter Property="Data" Value="M 0 6 L 6 0 L 12 6" />
+    </Style>
+  </ControlTheme>
+  <ControlTheme x:Key="Md3ExpanderToggleButtonDownTheme" TargetType="ToggleButton" BasedOn="{StaticResource Md3ExpanderToggleButtonTheme}">
+    <Style Selector="^ /template/ Path#PART_Chevron">
+      <Setter Property="Data" Value="M 0 0 L 6 6 L 12 0" />
+    </Style>
+  </ControlTheme>
+  <ControlTheme x:Key="Md3ExpanderToggleButtonLeftTheme" TargetType="ToggleButton" BasedOn="{StaticResource Md3ExpanderToggleButtonTheme}">
+    <Style Selector="^ /template/ Path#PART_Chevron">
+      <Setter Property="Data" Value="M 6 0 L 0 6 L 6 12" />
+    </Style>
+  </ControlTheme>
+  <ControlTheme x:Key="Md3ExpanderToggleButtonRightTheme" TargetType="ToggleButton" BasedOn="{StaticResource Md3ExpanderToggleButtonTheme}">
+    <Style Selector="^ /template/ Path#PART_Chevron">
+      <Setter Property="Data" Value="M 0 0 L 6 6 L 0 12" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 Expander: SurfaceContainerLow container, Medium corners -->
+  <ControlTheme x:Key="{x:Type Expander}" TargetType="Expander">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="MinWidth" Value="120" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerMedium}" />
+    <Setter Property="Padding" Value="16" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                ClipToBounds="True"
+                MinWidth="{TemplateBinding MinWidth}"
+                MaxWidth="{TemplateBinding MaxWidth}">
+          <DockPanel>
+            <ToggleButton x:Name="ExpanderHeader"
+                          MinHeight="{TemplateBinding MinHeight}"
+                          CornerRadius="{TemplateBinding CornerRadius}"
+                          IsEnabled="{TemplateBinding IsEnabled}"
+                          Content="{TemplateBinding Header}"
+                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                          IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
+            <Border x:Name="ExpanderContent"
+                    IsVisible="{TemplateBinding IsExpanded}"
+                    Opacity="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Padding="{TemplateBinding Padding}">
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Border>
+          </DockPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <!-- Content fade-in on expand (height itself is not animated) -->
+    <Style Selector="^ /template/ Border#ExpanderContent">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:expanded /template/ Border#ExpanderContent">
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <!-- Docking + chevron per direction -->
+    <Style Selector="^:up /template/ ToggleButton#ExpanderHeader">
+      <Setter Property="DockPanel.Dock" Value="Bottom" />
+      <Setter Property="Theme" Value="{StaticResource Md3ExpanderToggleButtonUpTheme}" />
+    </Style>
+    <Style Selector="^:down /template/ ToggleButton#ExpanderHeader">
+      <Setter Property="DockPanel.Dock" Value="Top" />
+      <Setter Property="Theme" Value="{StaticResource Md3ExpanderToggleButtonDownTheme}" />
+    </Style>
+    <Style Selector="^:left /template/ ToggleButton#ExpanderHeader">
+      <Setter Property="DockPanel.Dock" Value="Right" />
+      <Setter Property="Theme" Value="{StaticResource Md3ExpanderToggleButtonLeftTheme}" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^:right /template/ ToggleButton#ExpanderHeader">
+      <Setter Property="DockPanel.Dock" Value="Left" />
+      <Setter Property="Theme" Value="{StaticResource Md3ExpanderToggleButtonRightTheme}" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="^:disabled /template/ Border#PART_Root">
+      <Setter Property="Opacity" Value="0.64" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

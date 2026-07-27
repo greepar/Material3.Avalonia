@@ -1,0 +1,169 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 Button: default is "filled". Style classes: elevated, tonal, outlined, text.
+       Note: the elevated variant draws its BoxShadow outside the control bounds; do not place
+       elevated buttons inside ClipToBounds containers or the shadow will be clipped. -->
+  <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Padding" Value="{StaticResource Md3ButtonPadding}" />
+    <Setter Property="MinHeight" Value="{StaticResource Md3ButtonHeight}" />
+    <Setter Property="MinWidth" Value="48" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <!-- Button defaults to ClipToBounds=True in Avalonia 12, which would clip the
+         interaction elevation shadows drawn outside the bounds. -->
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Padding="{TemplateBinding Padding}"
+                                RecognizesAccessKey="True"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Panel>
+          </Border>
+          <!-- focus ring -->
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+          <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <!-- Interaction elevation (per Material Web md-filled-button):
+         filled/tonal/danger rest at level 0, raise to level 1 on hover, drop back on press. -->
+    <Style Selector="^:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+    </Style>
+    <Style Selector="^:pressed /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="0.12" />
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+
+    <!-- elevated variant: rest 1, hover 2, pressed back to 1 (per Material Web md-elevated-button) -->
+    <Style Selector="^.elevated">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^.elevated /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+    </Style>
+    <Style Selector="^.elevated:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation2}" />
+    </Style>
+    <Style Selector="^.elevated:pressed /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+    </Style>
+    <Style Selector="^.elevated:disabled /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+
+    <!-- tonal variant -->
+    <Style Selector="^.tonal">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+
+    <!-- outlined variant: never elevated (per Material Web md-outlined-button) -->
+    <Style Selector="^.outlined">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="^.outlined:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^.outlined:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="0.38" />
+    </Style>
+
+    <!-- text variant: never elevated (per Material Web md-text-button) -->
+    <Style Selector="^.text">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="MinWidth" Value="48" />
+    </Style>
+    <Style Selector="^.text:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^.text:disabled /template/ Border#PART_Container">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <!-- danger accent -->
+    <Style Selector="^.danger">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnErrorBrush}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

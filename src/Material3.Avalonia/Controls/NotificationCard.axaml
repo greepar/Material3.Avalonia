@@ -1,0 +1,181 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 notification card.
+       Close mechanism (per Avalonia 12.1.0 Notifications/NotificationCard.cs): there is no
+       close-button template part; any Button with the attached property
+       NotificationCard.CloseOnClick="True" inside the card calls Close().
+       Pseudo-classes: :error :information :success :warning (set from NotificationType). -->
+  <ControlTheme x:Key="{x:Type NotificationCard}" TargetType="NotificationCard">
+    <Setter Property="UseLayoutRounding" Value="True" />
+    <Setter Property="Width" Value="344" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="RenderTransformOrigin" Value="50%,75%" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerMedium}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <LayoutTransformControl Name="PART_LayoutTransformControl" UseRenderTransform="True">
+          <Border Name="PART_ShadowBorder"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  BoxShadow="{StaticResource Md3Elevation1}"
+                  Margin="12,8,12,16">
+            <Border Name="PART_CardBorder"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    ClipToBounds="True">
+              <DockPanel>
+                <!-- Close button; wired via NotificationCard.CloseOnClick attached behavior -->
+                <Button Name="PART_CloseButton"
+                        DockPanel.Dock="Right"
+                        NotificationCard.CloseOnClick="True"
+                        Theme="{x:Null}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        Width="32" Height="32"
+                        Margin="0,8,8,0"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Cursor="Hand">
+                  <Button.Template>
+                    <ControlTemplate>
+                      <Border Name="PART_CloseButtonRoot"
+                              Background="Transparent"
+                              CornerRadius="{StaticResource Md3CornerFull}">
+                        <Panel>
+                          <Border Name="PART_CloseStateLayer"
+                                  Background="{DynamicResource Md3OnSurfaceVariantBrush}"
+                                  CornerRadius="{StaticResource Md3CornerFull}"
+                                  Opacity="0"
+                                  IsHitTestVisible="False" />
+                          <Path Width="10" Height="10"
+                                Stretch="Uniform"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                                Data="M1169 1024l879 -879l-145 -145l-879 879l-879 -879l-145 145l879 879l-879 879l145 145l879 -879l879 879l145 -145z" />
+                        </Panel>
+                      </Border>
+                    </ControlTemplate>
+                  </Button.Template>
+                  <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ Border#PART_CloseStateLayer">
+                      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+                    </Style>
+                    <Style Selector="Button:pressed /template/ Border#PART_CloseStateLayer">
+                      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+                    </Style>
+                  </Button.Styles>
+                </Button>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  MinHeight="64"
+                                  Content="{TemplateBinding Content}" />
+              </DockPanel>
+            </Border>
+          </Border>
+        </LayoutTransformControl>
+      </ControlTemplate>
+    </Setter>
+
+    <!-- Entrance: M3 decelerate slide-up + fade (no bounce). -->
+    <ControlTheme.Animations>
+      <Animation Duration="0:0:0.35" FillMode="Forward">
+        <Animation.Easing>
+          <SplineEasing X1="0.05" Y1="0.7" X2="0.1" Y2="1" />
+        </Animation.Easing>
+        <KeyFrame Cue="0%">
+          <Setter Property="Opacity" Value="0" />
+          <Setter Property="TranslateTransform.Y" Value="24" />
+          <Setter Property="ScaleTransform.ScaleX" Value="0.98" />
+          <Setter Property="ScaleTransform.ScaleY" Value="0.98" />
+        </KeyFrame>
+        <KeyFrame Cue="100%">
+          <Setter Property="Opacity" Value="1" />
+          <Setter Property="TranslateTransform.Y" Value="0" />
+          <Setter Property="ScaleTransform.ScaleX" Value="1" />
+          <Setter Property="ScaleTransform.ScaleY" Value="1" />
+        </KeyFrame>
+      </Animation>
+    </ControlTheme.Animations>
+
+    <!-- Exit: mirror of the entrance — accelerate sink-down + fade, then collapse
+         the reserved height so remaining notifications reflow. -->
+    <Style Selector="^[IsClosing=true] /template/ LayoutTransformControl#PART_LayoutTransformControl">
+      <Setter Property="RenderTransformOrigin" Value="50%,0%" />
+      <Style.Animations>
+        <Animation Duration="0:0:0.4" FillMode="Forward">
+          <Animation.Easing>
+            <SplineEasing X1="0.3" Y1="0" X2="0.8" Y2="0.15" />
+          </Animation.Easing>
+          <KeyFrame Cue="0%">
+            <Setter Property="TranslateTransform.Y" Value="0" />
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+          </KeyFrame>
+          <KeyFrame Cue="65%">
+            <Setter Property="TranslateTransform.Y" Value="24" />
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="ScaleTransform.ScaleY" Value="1" />
+          </KeyFrame>
+          <KeyFrame Cue="100%">
+            <Setter Property="TranslateTransform.Y" Value="24" />
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="ScaleTransform.ScaleY" Value="0" />
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+
+    <Style Selector="^[IsClosing=true]">
+      <Style.Animations>
+        <Animation Duration="0:0:0.45" FillMode="Forward">
+          <KeyFrame Cue="100%">
+            <Setter Property="IsClosed" Value="True" />
+          </KeyFrame>
+        </Animation>
+      </Style.Animations>
+    </Style>
+
+    <!-- Implementation choice: M3 has no notification-type color tokens, so the whole
+         card container is tinted with the closest M3 role container:
+         information -> PrimaryContainer, success -> TertiaryContainer,
+         error -> ErrorContainer, warning -> ErrorContainer variant (Error border accent),
+         instead of Fluent's colored header strip. -->
+    <Style Selector="^:information /template/ Border#PART_CardBorder">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:information">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryContainerBrush}" />
+    </Style>
+
+    <Style Selector="^:success /template/ Border#PART_CardBorder">
+      <Setter Property="Background" Value="{DynamicResource Md3TertiaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:success">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnTertiaryContainerBrush}" />
+    </Style>
+
+    <Style Selector="^:error /template/ Border#PART_CardBorder">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorContainerBrush}" />
+    </Style>
+    <Style Selector="^:error">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnErrorContainerBrush}" />
+    </Style>
+
+    <!-- warning: ErrorContainer variant, distinguished from :error by a 1px Error border -->
+    <Style Selector="^:warning /template/ Border#PART_CardBorder">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorContainerBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="^:warning">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnErrorContainerBrush}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

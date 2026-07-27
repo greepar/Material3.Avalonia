@@ -1,0 +1,76 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 TableViewRow. Template contract (per Avalonia 12.1.0 TableViewRow.cs):
+       PART_CellsPresenter (TableViewCellsPresenter).
+       Hover: OnSurface 8% state layer; :selected: SecondaryContainer;
+       1px OutlineVariant bottom divider. -->
+
+  <Thickness x:Key="Md3TableViewRowPadding">6,9,6,12</Thickness>
+
+  <ControlTheme x:Key="{x:Type TableViewRow}" TargetType="TableViewRow">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="{StaticResource Md3TableViewRowPadding}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_RowBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{DynamicResource Md3OutlineVariantBrush}"
+                BorderThickness="0,0,0,1"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+          <Panel>
+            <!-- state layer -->
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <Border Padding="{TemplateBinding Padding}">
+              <TableViewCellsPresenter Name="PART_CellsPresenter" />
+            </Border>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- PointerOver -->
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- Pressed -->
+    <Style Selector="^:pressed /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+    </Style>
+
+    <!-- Selected -->
+    <Style Selector="^:selected /template/ Border#PART_RowBorder">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:selected:pressed /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StatePressedOpacity}" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled /template/ Border#PART_RowBorder">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

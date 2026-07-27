@@ -1,0 +1,118 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 primary tab -->
+  <ControlTheme x:Key="{x:Type TabItem}" TargetType="TabItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_LayoutRoot"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <!-- state layer -->
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="{TemplateBinding CornerRadius}" />
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Header}"
+                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                              Margin="{TemplateBinding Padding}"
+                              RecognizesAccessKey="True"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            <!-- active indicator: 3px, rounded top corners -->
+            <Border Name="PART_SelectedIndicator"
+                    Background="{DynamicResource Md3PrimaryBrush}"
+                    Height="3"
+                    CornerRadius="3,3,0,0"
+                    Margin="16,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    RenderTransformOrigin="50%,50%"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^ /template/ Border#PART_SelectedIndicator">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="scaleX(0.6)" />
+    </Style>
+
+    <!-- Selected -->
+    <Style Selector="^:selected">
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_SelectedIndicator">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scaleX(1)" />
+    </Style>
+
+    <!-- Vertical placements: indicator on the inner edge -->
+    <Style Selector="^[TabStripPlacement=Left] /template/ Border#PART_SelectedIndicator">
+      <Setter Property="Width" Value="3" />
+      <Setter Property="Height" Value="NaN" />
+      <Setter Property="CornerRadius" Value="3,0,0,3" />
+      <Setter Property="Margin" Value="0,12" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^[TabStripPlacement=Right] /template/ Border#PART_SelectedIndicator">
+      <Setter Property="Width" Value="3" />
+      <Setter Property="Height" Value="NaN" />
+      <Setter Property="CornerRadius" Value="0,3,3,0" />
+      <Setter Property="Margin" Value="0,12" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^[TabStripPlacement=Bottom] /template/ Border#PART_SelectedIndicator">
+      <Setter Property="CornerRadius" Value="0,0,3,3" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

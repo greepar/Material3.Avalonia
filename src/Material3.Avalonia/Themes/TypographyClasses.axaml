@@ -1,0 +1,88 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Global text defaults: Body Large on OnSurface -->
+  <Style Selector="TextBlock">
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+  </Style>
+
+  <!-- Material 3 type scale as style classes -->
+  <Style Selector="TextBlock.display-large">
+    <Setter Property="FontSize" Value="{StaticResource Md3DisplayLargeSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3DisplayLargeLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.display-medium">
+    <Setter Property="FontSize" Value="{StaticResource Md3DisplayMediumSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3DisplayMediumLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.display-small">
+    <Setter Property="FontSize" Value="{StaticResource Md3DisplaySmallSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3DisplaySmallLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.headline-large">
+    <Setter Property="FontSize" Value="{StaticResource Md3HeadlineLargeSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3HeadlineLargeLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.headline-medium">
+    <Setter Property="FontSize" Value="{StaticResource Md3HeadlineMediumSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3HeadlineMediumLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.headline-small">
+    <Setter Property="FontSize" Value="{StaticResource Md3HeadlineSmallSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3HeadlineSmallLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.title-large">
+    <Setter Property="FontSize" Value="{StaticResource Md3TitleLargeSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3TitleLargeLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.title-medium">
+    <Setter Property="FontSize" Value="{StaticResource Md3TitleMediumSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3TitleMediumLineHeight}" />
+    <Setter Property="FontWeight" Value="Medium" />
+  </Style>
+  <Style Selector="TextBlock.title-small">
+    <Setter Property="FontSize" Value="{StaticResource Md3TitleSmallSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3TitleSmallLineHeight}" />
+    <Setter Property="FontWeight" Value="Medium" />
+  </Style>
+  <Style Selector="TextBlock.body-large">
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3BodyLargeLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.body-medium">
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3BodyMediumLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+  </Style>
+  <Style Selector="TextBlock.body-small">
+    <Setter Property="FontSize" Value="{StaticResource Md3BodySmallSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3BodySmallLineHeight}" />
+    <Setter Property="FontWeight" Value="Normal" />
+    <Setter Property="LetterSpacing" Value="0.1" />
+  </Style>
+  <Style Selector="TextBlock.label-large">
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3LabelLargeLineHeight}" />
+    <Setter Property="FontWeight" Value="Medium" />
+  </Style>
+  <Style Selector="TextBlock.label-medium">
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelMediumSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3LabelMediumLineHeight}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="LetterSpacing" Value="0.1" />
+  </Style>
+  <Style Selector="TextBlock.label-small">
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelSmallSize}" />
+    <Setter Property="LineHeight" Value="{StaticResource Md3LabelSmallLineHeight}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="LetterSpacing" Value="0.1" />
+  </Style>
+</Styles>

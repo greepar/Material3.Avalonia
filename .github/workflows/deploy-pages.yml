@@ -1,0 +1,83 @@
+name: Deploy Docs & WASM Demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+
+      # ---------- VitePress docs ----------
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Build docs
+        working-directory: docs
+        env:
+          DOCS_BASE: /${{ github.event.repository.name }}/
+        run: |
+          npm ci
+          npm run docs:build
+
+      # ---------- WASM gallery demo ----------
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore wasm-tools workload
+        run: dotnet workload restore samples/Material3.Gallery.Browser/Material3.Gallery.Browser.csproj
+
+      - name: Publish WASM gallery
+        run: dotnet publish samples/Material3.Gallery.Browser -c Release -o publish-wasm
+
+      # ---------- Assemble site: docs at root, demo under /demo ----------
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp -r docs/.vitepress/dist/* site/
+          mkdir -p site/demo
+          cp -r publish-wasm/wwwroot/* site/demo/
+          # GitHub Pages serves .dat/.wasm etc fine, but Jekyll would drop _framework
+          touch site/.nojekyll
+
+      - name: Validate Pages output and Brotli assets
+        run: |
+          test -f site/index.html
+          test -f site/demo/index.html
+          test -f site/demo/main.js
+          test -d site/demo/_framework
+          test "$(find site/demo/_framework -name '*.br' -type f | wc -l)" -gt 0
+          ! grep -q '<base href="/"' site/demo/index.html
+          grep -q "DecompressionStream('brotli')" site/demo/main.js
+          du -sh site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

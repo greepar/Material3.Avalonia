@@ -1,0 +1,93 @@
+name: Release NativeAOT Gallery
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, for example v0.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet run --project tests/Material3.Screenshots -c Release
+
+  publish:
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            rid: win-x64
+            archive: Material3.Gallery-win-x64.zip
+          - os: ubuntu-22.04
+            rid: linux-x64
+            archive: Material3.Gallery-linux-x64.tar.gz
+          - os: macos-15
+            rid: osx-arm64
+            archive: Material3.Gallery-osx-arm64.tar.gz
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install Linux NativeAOT prerequisites
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Publish NativeAOT
+        run: >-
+          dotnet publish samples/Material3.Gallery/Material3.Gallery.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishAot=true
+          -o publish/${{ matrix.rid }}
+
+      - name: Archive Windows artifact
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Copy-Item README.md, LICENSE, NOTICE "publish/${{ matrix.rid }}"
+          Compress-Archive -Path "publish/${{ matrix.rid }}/*" -DestinationPath "${{ matrix.archive }}"
+
+      - name: Archive Unix artifact
+        if: runner.os != 'Windows'
+        run: |
+          cp README.md LICENSE NOTICE "publish/${{ matrix.rid }}"
+          tar -C "publish/${{ matrix.rid }}" -czf "${{ matrix.archive }}" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: ${{ matrix.archive }}
+          if-no-files-found: error
+
+  release:
+    needs: publish
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          files: artifacts/*

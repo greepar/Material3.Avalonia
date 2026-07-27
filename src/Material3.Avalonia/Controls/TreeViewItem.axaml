@@ -1,0 +1,148 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="using:Avalonia.Controls.Converters"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <x:Double x:Key="Md3TreeViewItemIndent">16</x:Double>
+
+  <!-- Expand/collapse chevron toggle (rotates 90 when checked) -->
+  <ControlTheme x:Key="Md3TreeViewExpandCollapseChevron" TargetType="ToggleButton">
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="24" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="Transparent"
+                Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+          <Path Name="PART_ChevronPath"
+                Data="M 0 0 L 6 6 L 0 12"
+                Stroke="{DynamicResource Md3OnSurfaceVariantBrush}"
+                StrokeThickness="2"
+                StrokeJoin="Round"
+                StrokeLineCap="Round"
+                Stretch="None"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="50%,50%"
+                RenderTransform="rotate(0deg)">
+            <Path.Transitions>
+              <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" />
+              </Transitions>
+            </Path.Transitions>
+          </Path>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:checked /template/ Path#PART_ChevronPath">
+      <Setter Property="RenderTransform" Value="rotate(90deg)" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 TreeViewItem: pill-shaped selection -->
+  <ControlTheme x:Key="{x:Type TreeViewItem}" TargetType="TreeViewItem">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel>
+          <Border Name="PART_LayoutRoot"
+                  Focusable="True"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  MinHeight="{TemplateBinding MinHeight}"
+                  TemplatedControl.IsTemplateFocusTarget="True">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{DynamicResource Md3OnSurfaceBrush}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid Name="PART_Header"
+                    ColumnDefinitions="Auto, *">
+                <Grid.Margin>
+                  <MultiBinding Converter="{x:Static converters:TreeViewItemIndentConverter.Instance}">
+                    <Binding Path="Level" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <DynamicResource ResourceKey="Md3TreeViewItemIndent" />
+                  </MultiBinding>
+                </Grid.Margin>
+                <Panel Name="PART_ExpandCollapseChevronContainer"
+                       Margin="8,0,4,0">
+                  <ToggleButton Name="PART_ExpandCollapseChevron"
+                                Theme="{StaticResource Md3TreeViewExpandCollapseChevron}"
+                                Focusable="False"
+                                IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
+                </Panel>
+                <ContentPresenter Name="PART_HeaderPresenter"
+                                  Grid.Column="1"
+                                  Focusable="False"
+                                  Background="Transparent"
+                                  Content="{TemplateBinding Header}"
+                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,16,0"
+                                  Padding="{TemplateBinding Padding}" />
+              </Grid>
+            </Panel>
+          </Border>
+          <ItemsPresenter Name="PART_ItemsPresenter"
+                          IsVisible="{TemplateBinding IsExpanded}"
+                          ItemsPanel="{TemplateBinding ItemsPanel}" />
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_LayoutRoot:pointerover > Panel > Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- Selected: pill of SecondaryContainer -->
+    <Style Selector="^:selected /template/ Border#PART_LayoutRoot">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ ContentPresenter#PART_HeaderPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_HeaderPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+
+    <!-- Leaf nodes: hide chevron, keep alignment -->
+    <Style Selector="^:empty /template/ ToggleButton#PART_ExpandCollapseChevron">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:empty /template/ Panel#PART_ExpandCollapseChevronContainer">
+      <Setter Property="Width" Value="24" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

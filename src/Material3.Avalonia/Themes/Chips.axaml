@@ -1,0 +1,501 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 chips. API modeled after m3fx (https://github.com/Glavo/m3fx), Apache-2.0;
+       implementation follows the Material 3 spec: 32dp container, 8dp corners,
+       label-large text, 1px Outline border (flat) or SurfaceContainerLow + level-1
+       shadow (elevated). The outline is drawn by a separate overlay border so its
+       disabled opacity does not dim the label. -->
+  <ControlTheme x:Key="{x:Type m3:Chip}" TargetType="m3:Chip">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid ColumnDefinitions="Auto,*" Margin="{TemplateBinding Padding}">
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Grid.Column="0"
+                                  Content="{TemplateBinding Icon}"
+                                  Width="18"
+                                  Height="18"
+                                  Margin="0,0,8,0"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Grid.Column="1"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  RecognizesAccessKey="True"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+              </Grid>
+            </Panel>
+          </Border>
+          <!-- outline overlay: independent opacity so the disabled border (12%) does not dim the label -->
+          <Border Name="PART_Outline"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  IsHitTestVisible="False" />
+          <!-- focus ring -->
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Outline">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:with-icon">
+      <Setter Property="Padding" Value="8,0,16,0" />
+    </Style>
+    <Style Selector="^:with-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- elevated container: no outline, SurfaceContainerLow background, level-1 shadow -->
+    <Style Selector="^[IsElevated=True] /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+    </Style>
+    <Style Selector="^[IsElevated=True] /template/ Border#PART_Outline">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <!-- disabled: 38% content, 12% outline/container -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Outline">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled[IsElevated=True] /template/ Border#PART_Container">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Assist and suggestion chips only differ semantically; they share the base chip visuals. -->
+  <ControlTheme x:Key="{x:Type m3:AssistChip}"
+                TargetType="m3:AssistChip"
+                BasedOn="{StaticResource {x:Type m3:Chip}}" />
+
+  <ControlTheme x:Key="{x:Type m3:SuggestionChip}"
+                TargetType="m3:SuggestionChip"
+                BasedOn="{StaticResource {x:Type m3:Chip}}" />
+
+  <!-- Filter chip: outlined when unselected; SecondaryContainer + animated leading
+       checkmark when selected (the checkmark replaces the leading icon). -->
+  <ControlTheme x:Key="{x:Type m3:FilterChip}" TargetType="m3:FilterChip">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid ColumnDefinitions="Auto,Auto,*" Margin="{TemplateBinding Padding}">
+                <!-- selected checkmark -->
+                <Path Name="PART_CheckGlyph"
+                      Grid.Column="0"
+                      Data="M 3,9 L 7.5,13.5 L 15,4.5"
+                      Stroke="{DynamicResource Md3OnSecondaryContainerBrush}"
+                      StrokeThickness="2"
+                      StrokeLineCap="Round"
+                      StrokeJoin="Round"
+                      Stretch="None"
+                      Width="18"
+                      Height="18"
+                      Margin="0,0,8,0"
+                      VerticalAlignment="Center"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0"
+                      IsVisible="False" />
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Grid.Column="1"
+                                  Content="{TemplateBinding Icon}"
+                                  Width="18"
+                                  Height="18"
+                                  Margin="0,0,8,0"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Grid.Column="2"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  RecognizesAccessKey="True"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+              </Grid>
+            </Panel>
+          </Border>
+          <Border Name="PART_Outline"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  IsHitTestVisible="False" />
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Outline">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Path#PART_CheckGlyph">
+      <Setter Property="RenderTransform" Value="scale(0.6)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:with-icon">
+      <Setter Property="Padding" Value="8,0,16,0" />
+    </Style>
+    <Style Selector="^:with-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- checked: tonal container, no outline, checkmark scale+fade in (replaces the icon) -->
+    <Style Selector="^:checked">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSecondaryContainerBrush}" />
+      <Setter Property="Padding" Value="8,0,16,0" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_Outline">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:checked /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+    <Style Selector="^:checked /template/ Path#PART_CheckGlyph">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Outline">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled:checked /template/ Border#PART_Container">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Path#PART_CheckGlyph">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Remove affordance shared by input chips: 18dp circular state-layer X button. -->
+  <ControlTheme x:Key="M3InputChipRemoveButtonTheme" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Width" Value="18" />
+    <Setter Property="Height" Value="18" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_StateLayer"
+                  Background="{DynamicResource Md3OnSurfaceVariantBrush}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Opacity="0"
+                  IsHitTestVisible="False" />
+          <m3p:RippleHost RippleBrush="{DynamicResource Md3OnSurfaceVariantBrush}"
+                          RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                          RippleClipRadius="{TemplateBinding CornerRadius}" />
+          <Path Data="M 5,5 L 13,13 M 13,5 L 5,13"
+                Stroke="{DynamicResource Md3OnSurfaceVariantBrush}"
+                StrokeThickness="1.5"
+                StrokeLineCap="Round"
+                Stretch="None"
+                Width="18"
+                Height="18" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Input chip: outlined chip representing user input, with an optional trailing
+       remove button (8dp trailing padding when the remove affordance is shown). -->
+  <ControlTheme x:Key="{x:Type m3:InputChip}" TargetType="m3:InputChip">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <Grid ColumnDefinitions="Auto,*,Auto" Margin="{TemplateBinding Padding}">
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Grid.Column="0"
+                                  Content="{TemplateBinding Icon}"
+                                  Width="18"
+                                  Height="18"
+                                  Margin="0,0,8,0"
+                                  VerticalAlignment="Center"
+                                  IsVisible="False" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Grid.Column="1"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  RecognizesAccessKey="True"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <Button Name="PART_RemoveButton"
+                        Grid.Column="2"
+                        Theme="{StaticResource M3InputChipRemoveButtonTheme}"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        IsVisible="{TemplateBinding IsRemovable}" />
+              </Grid>
+            </Panel>
+          </Border>
+          <Border Name="PART_Outline"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Outline">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:with-icon">
+      <Setter Property="Padding" Value="8,0,16,0" />
+    </Style>
+    <Style Selector="^:with-icon /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^[IsRemovable=True]">
+      <Setter Property="Padding" Value="16,0,8,0" />
+    </Style>
+    <Style Selector="^:with-icon[IsRemovable=True]">
+      <Setter Property="Padding" Value="8,0" />
+    </Style>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled /template/ Border#PART_Outline">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_IconPresenter">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Button#PART_RemoveButton">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Chip group: wrapping flow layout with 8dp gaps (the panel gap binds to Spacing in code). -->
+  <ControlTheme x:Key="{x:Type m3:ChipGroup}" TargetType="m3:ChipGroup">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ItemsPresenter Name="PART_ItemsPresenter"
+                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

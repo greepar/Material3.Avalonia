@@ -1,0 +1,227 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- TabbedPage TabControl theme: tab strip on SurfaceContainer, content on Surface. -->
+  <ControlTheme x:Key="Md3TabbedPageTabControlTheme" TargetType="TabControl">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <DockPanel>
+          <Border Name="PART_TabStrip"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  Padding="{TemplateBinding Padding}"
+                  DockPanel.Dock="{TemplateBinding TabStripPlacement}">
+            <ItemsPresenter Name="PART_ItemsPresenter">
+              <ItemsPresenter.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <UniformGrid Rows="1" />
+                </ItemsPanelTemplate>
+              </ItemsPresenter.ItemsPanel>
+            </ItemsPresenter>
+          </Border>
+          <Panel ClipToBounds="True">
+            <ContentPresenter Name="PART_SelectedContentHost2"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Stretch"
+                              IsVisible="False" />
+            <ContentPresenter Name="PART_SelectedContentHost"
+                              HorizontalContentAlignment="Stretch"
+                              VerticalContentAlignment="Stretch" />
+          </Panel>
+        </DockPanel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^[TabStripPlacement=Left] /template/ ItemsPresenter#PART_ItemsPresenter > UniformGrid,
+           ^[TabStripPlacement=Right] /template/ ItemsPresenter#PART_ItemsPresenter > UniformGrid">
+      <Setter Property="Rows" Value="0" />
+      <Setter Property="Columns" Value="1" />
+    </Style>
+  </ControlTheme>
+
+  <!-- TabbedPage TabItem theme: M3 primary tab with icon, state layer, ripple and Primary indicator. -->
+  <ControlTheme x:Key="Md3TabbedPageTabItemTheme" TargetType="TabItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="Padding" Value="16,8" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="MinHeight" Value="48" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerNone}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="IndicatorTemplate">
+      <DataTemplate>
+        <Border Background="{DynamicResource Md3PrimaryBrush}"
+                Height="3"
+                CornerRadius="3,3,0,0"
+                Margin="16,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom" />
+      </DataTemplate>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_LayoutRoot"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}" />
+              <StackPanel Name="PART_HeaderPanel"
+                          Spacing="4"
+                          Margin="{TemplateBinding Padding}"
+                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                <ContentPresenter Name="PART_IconPresenter"
+                                  Content="{TemplateBinding Icon}"
+                                  ContentTemplate="{TemplateBinding IconTemplate}"
+                                  HorizontalAlignment="Center"
+                                  IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                  Width="24"
+                                  Height="24" />
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  HorizontalAlignment="Center"
+                                  HorizontalContentAlignment="Center"
+                                  Content="{TemplateBinding Header}"
+                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                  FontFamily="{TemplateBinding FontFamily}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  FontWeight="{TemplateBinding FontWeight}" />
+              </StackPanel>
+            </Panel>
+          </Border>
+          <!-- M3 active indicator (Primary) -->
+          <ContentPresenter Name="PART_SelectedPipe"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Content="{TemplateBinding DataContext}"
+                            ContentTemplate="{TemplateBinding IndicatorTemplate}"
+                            IsVisible="False"
+                            IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+
+    <!-- Selected state -->
+    <Style Selector="^:selected">
+      <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:selected /template/ ContentPresenter#PART_SelectedPipe">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- Placement-specific indicator positioning -->
+    <Style Selector="^[TabStripPlacement=Top] /template/ ContentPresenter#PART_SelectedPipe">
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+    <Style Selector="^[TabStripPlacement=Bottom]">
+      <Setter Property="IndicatorTemplate">
+        <DataTemplate>
+          <Border Background="{DynamicResource Md3PrimaryBrush}"
+                  Height="3"
+                  CornerRadius="0,0,3,3"
+                  Margin="16,0"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Top" />
+        </DataTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="^[TabStripPlacement=Bottom] /template/ ContentPresenter#PART_SelectedPipe">
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+    <Style Selector="^[TabStripPlacement=Right]">
+      <Setter Property="IndicatorTemplate">
+        <DataTemplate>
+          <Border Background="{DynamicResource Md3PrimaryBrush}"
+                  Width="3"
+                  CornerRadius="0,3,3,0"
+                  Margin="0,12" />
+        </DataTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="^[TabStripPlacement=Right] /template/ ContentPresenter#PART_SelectedPipe">
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^[TabStripPlacement=Left]">
+      <Setter Property="IndicatorTemplate">
+        <DataTemplate>
+          <Border Background="{DynamicResource Md3PrimaryBrush}"
+                  Width="3"
+                  CornerRadius="3,0,0,3"
+                  Margin="0,12" />
+        </DataTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="^[TabStripPlacement=Left] /template/ ContentPresenter#PART_SelectedPipe">
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <!-- Focus visible -->
+    <Style Selector="^:focus-visible /template/ Border#PART_LayoutRoot">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="{StaticResource Md3FocusRingThickness}" />
+    </Style>
+
+    <!-- Disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ StackPanel#PART_HeaderPanel">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 TabbedPage -->
+  <ControlTheme x:Key="{x:Type TabbedPage}" TargetType="TabbedPage">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="{TemplateBinding Background}">
+          <TabControl Name="PART_TabControl"
+                      Theme="{StaticResource Md3TabbedPageTabControlTheme}"
+                      ItemContainerTheme="{StaticResource Md3TabbedPageTabItemTheme}"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

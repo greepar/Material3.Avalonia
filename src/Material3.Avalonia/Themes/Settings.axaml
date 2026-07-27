@@ -1,0 +1,196 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Shared visual for a settings row: icon | headline+supporting | trailing. -->
+  <ControlTheme x:Key="{x:Type m3:SettingItem}" TargetType="m3:SettingItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="MinHeight" Value="56" />
+    <Setter Property="Padding" Value="16,8" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                MinHeight="{TemplateBinding MinHeight}"
+                Padding="{TemplateBinding Padding}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    Margin="-16,-8"
+                    Opacity="0"
+                    IsHitTestVisible="False">
+              <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                </Transitions>
+              </Border.Transitions>
+            </Border>
+            <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+              <ContentControl Grid.Column="0"
+                              Name="PART_Icon"
+                              Content="{TemplateBinding Icon}"
+                              Width="24" Height="24"
+                              Margin="0,0,16,0"
+                              VerticalAlignment="Center"
+                              IsVisible="False"
+                              TextBlock.Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+              <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                <TextBlock Text="{TemplateBinding Headline}"
+                           FontSize="{StaticResource Md3BodyLargeSize}"
+                           Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+                <TextBlock Name="PART_Supporting"
+                           Text="{TemplateBinding SupportingText}"
+                           FontSize="{StaticResource Md3BodyMediumSize}"
+                           Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
+                           TextWrapping="Wrap"
+                           IsVisible="False" />
+              </StackPanel>
+              <ContentControl Grid.Column="2"
+                              Content="{TemplateBinding Trailing}"
+                              Margin="16,0,0,0"
+                              VerticalAlignment="Center" />
+            </Grid>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:has-icon /template/ ContentControl#PART_Icon">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:has-supporting /template/ TextBlock#PART_Supporting">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:has-supporting">
+      <Setter Property="MinHeight" Value="72" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Switch row: trailing slot fixed to a ToggleSwitch bound to IsChecked. -->
+  <ControlTheme x:Key="{x:Type m3:SwitchSettingItem}"
+                TargetType="m3:SwitchSettingItem"
+                BasedOn="{StaticResource {x:Type m3:SettingItem}}">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Trailing">
+      <Template>
+        <ToggleSwitch IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=m3:SwitchSettingItem}, Mode=TwoWay}"
+                      OnContent="{x:Null}" OffContent="{x:Null}"
+                      IsHitTestVisible="False"
+                      Margin="0" Padding="0" />
+      </Template>
+    </Setter>
+  </ControlTheme>
+
+  <!-- CheckBox row -->
+  <ControlTheme x:Key="{x:Type m3:CheckBoxSettingItem}"
+                TargetType="m3:CheckBoxSettingItem"
+                BasedOn="{StaticResource {x:Type m3:SettingItem}}">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Trailing">
+      <Template>
+        <CheckBox IsChecked="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=m3:CheckBoxSettingItem}, Mode=TwoWay}"
+                  IsHitTestVisible="False"
+                  Margin="0" Padding="0" />
+      </Template>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Expandable row: header + rotating chevron + collapsible content below. -->
+  <ControlTheme x:Key="{x:Type m3:ExpandableSettingItem}" TargetType="m3:ExpandableSettingItem">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <StackPanel>
+          <Border Name="PART_Header"
+                  Background="Transparent"
+                  MinHeight="56"
+                  Padding="16,8"
+                  Cursor="Hand">
+            <Panel>
+              <Border Name="PART_StateLayer"
+                      Background="{DynamicResource Md3OnSurfaceBrush}"
+                      Margin="-16,-8"
+                      Opacity="0"
+                      IsHitTestVisible="False">
+                <Border.Transitions>
+                  <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                  </Transitions>
+                </Border.Transitions>
+              </Border>
+              <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                <ContentControl Grid.Column="0"
+                                Name="PART_Icon"
+                                Content="{TemplateBinding Icon}"
+                                Width="24" Height="24"
+                                Margin="0,0,16,0"
+                                VerticalAlignment="Center"
+                                IsVisible="False" />
+                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                  <TextBlock Text="{TemplateBinding Headline}"
+                             FontSize="{StaticResource Md3BodyLargeSize}"
+                             Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+                  <TextBlock Name="PART_Supporting"
+                             Text="{TemplateBinding SupportingText}"
+                             FontSize="{StaticResource Md3BodyMediumSize}"
+                             Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
+                             TextWrapping="Wrap"
+                             IsVisible="False" />
+                </StackPanel>
+                <Path Grid.Column="2"
+                      Name="PART_Chevron"
+                      Data="M 7.41,8.58 L 12,13.17 L 16.59,8.58 L 18,10 L 12,16 L 6,10 Z"
+                      Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                      Width="24" Height="24"
+                      Stretch="Uniform"
+                      VerticalAlignment="Center"
+                      Margin="16,0,0,0"
+                      RenderTransformOrigin="50%,50%">
+                  <Path.Transitions>
+                    <Transitions>
+                      <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                    </Transitions>
+                  </Path.Transitions>
+                </Path>
+              </Grid>
+            </Panel>
+          </Border>
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Margin="56,0,16,16"
+                            IsVisible="False"
+                            Opacity="0">
+            <ContentPresenter.Transitions>
+              <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+              </Transitions>
+            </ContentPresenter.Transitions>
+          </ContentPresenter>
+        </StackPanel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Header:pointerover Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:has-icon /template/ ContentControl#PART_Icon">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:has-supporting /template/ TextBlock#PART_Supporting">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:expanded /template/ Path#PART_Chevron">
+      <Setter Property="RenderTransform" Value="rotate(180deg)" />
+    </Style>
+    <Style Selector="^:expanded /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="IsVisible" Value="True" />
+      <Setter Property="Opacity" Value="1" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

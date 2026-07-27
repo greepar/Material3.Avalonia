@@ -1,0 +1,96 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 TextSelectionHandle. Template contract (per Avalonia 12.1.0
+       Primitives/TextSelectionHandle.cs): PART_Indicator (Border); PART_HandlePathIcon is
+       the visual handle. Pseudo-classes: :caret :start :end :pressed.
+       M3 style: Primary teardrop/circle handles. -->
+
+  <x:Double x:Key="Md3TextSelectHandleSize">32</x:Double>
+
+  <DrawingImage x:Key="Md3TextSelectionHandleDrawing">
+    <DrawingImage.Drawing>
+      <GeometryDrawing Geometry="{StaticResource Md3TextSelectionHandlePath}"
+                       Brush="{DynamicResource Md3PrimaryBrush}" />
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="Md3TextCaretHandleDrawing">
+    <DrawingImage.Drawing>
+      <GeometryDrawing Geometry="{StaticResource Md3TextCaretHandlePath}"
+                       Brush="{DynamicResource Md3PrimaryBrush}" />
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <!-- Teardrop: square corner + circle (selection start/end) -->
+  <GeometryGroup x:Key="Md3TextSelectionHandlePath">
+    <CombinedGeometry>
+      <CombinedGeometry.Geometry1>
+        <RectangleGeometry Rect="0,0,16,16" />
+      </CombinedGeometry.Geometry1>
+      <CombinedGeometry.Geometry2>
+        <EllipseGeometry Center="16,16" RadiusX="16" RadiusY="16" />
+      </CombinedGeometry.Geometry2>
+    </CombinedGeometry>
+  </GeometryGroup>
+
+  <!-- Caret drop: rotated square + circle -->
+  <GeometryGroup x:Key="Md3TextCaretHandlePath">
+    <CombinedGeometry>
+      <CombinedGeometry.Geometry1>
+        <RectangleGeometry Rect="0,0,16,16">
+          <RectangleGeometry.Transform>
+            <TransformGroup>
+              <RotateTransform CenterX="16" Angle="-45" />
+            </TransformGroup>
+          </RectangleGeometry.Transform>
+        </RectangleGeometry>
+      </CombinedGeometry.Geometry1>
+      <CombinedGeometry.Geometry2>
+        <EllipseGeometry Center="16,22.7" RadiusX="16" RadiusY="16" />
+      </CombinedGeometry.Geometry2>
+    </CombinedGeometry>
+  </GeometryGroup>
+
+  <ControlTheme x:Key="{x:Type TextSelectionHandle}" TargetType="TextSelectionHandle">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid>
+          <Border Padding="0,0,0,10" IsHitTestVisible="True" Background="Transparent">
+            <Image Stretch="Uniform"
+                   Cursor="Arrow"
+                   Name="PART_HandlePathIcon"
+                   Height="{StaticResource Md3TextSelectHandleSize}"
+                   Source="{StaticResource Md3TextSelectionHandleDrawing}" />
+          </Border>
+          <Border Background="Transparent"
+                  Name="PART_Indicator"
+                  HorizontalAlignment="Center"
+                  Width="1"
+                  VerticalAlignment="Top"
+                  Height="5" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:caret /template/ Image#PART_HandlePathIcon">
+      <Setter Property="Source" Value="{StaticResource Md3TextCaretHandleDrawing}" />
+    </Style>
+    <Style Selector="^:start /template/ Image#PART_HandlePathIcon">
+      <Setter Property="RenderTransform">
+        <ScaleTransform ScaleX="-1" ScaleY="1" />
+      </Setter>
+    </Style>
+    <Style Selector="^:caret /template/ Border#PART_Indicator">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="^:end /template/ Border#PART_Indicator">
+      <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+    <Style Selector="^:start /template/ Border#PART_Indicator">
+      <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

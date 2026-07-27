@@ -1,0 +1,21 @@
+# .NET
+bin/
+obj/
+*.user
+.vs/
+.idea/
+
+# VitePress
+docs/node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# Publish output
+publish-wasm/
+site/
+artifacts/
+publish-*/
+.DS_Store
+.playwright-mcp/
+wasm-gallery.png
+avalonia-material3-prompt-bundle/

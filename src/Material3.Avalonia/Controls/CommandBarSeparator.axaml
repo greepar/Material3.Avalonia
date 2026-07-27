@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 CommandBarSeparator: 1px OutlineVariant vertical divider. -->
+  <ControlTheme x:Key="{x:Type CommandBarSeparator}" TargetType="CommandBarSeparator">
+    <Setter Property="Width" Value="1" />
+    <Setter Property="MinHeight" Value="24" />
+    <Setter Property="Margin" Value="8,8" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{DynamicResource Md3OutlineVariantBrush}"
+                Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                MinHeight="{TemplateBinding MinHeight}" />
+      </ControlTemplate>
+    </Setter>
+
+    <!-- IsInOverflow: horizontal divider -->
+    <Style Selector="^[IsInOverflow=True]">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="Width" Value="NaN" />
+      <Setter Property="Height" Value="1" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="Margin" Value="4,4" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,183 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 card. API modeled after m3fx (https://github.com/Glavo/m3fx), Apache-2.0;
+       implementation follows the Material 3 spec: 12dp corners; Elevated =
+       SurfaceContainerLow + level-1 shadow (level-2 on hover when clickable),
+       Filled = SurfaceContainerHighest, Outlined = Surface + 1px OutlineVariant. -->
+  <ControlTheme x:Key="{x:Type m3:Card}" TargetType="m3:Card">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Md3OutlineVariantBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerMedium}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <Border Name="PART_Container"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="{TemplateBinding CornerRadius}">
+            <Panel>
+              <!-- state layer (clickable cards only) -->
+              <Border Name="PART_StateLayer"
+                      Background="{TemplateBinding Foreground}"
+                      CornerRadius="{TemplateBinding CornerRadius}"
+                      Opacity="0"
+                      IsHitTestVisible="False" />
+              <m3p:RippleHost Name="PART_Ripple"
+                              RippleBrush="{TemplateBinding Foreground}"
+                              RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                              RippleClipRadius="{TemplateBinding CornerRadius}"
+                              IsRippleEnabled="{TemplateBinding IsClickable}" />
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Panel>
+          </Border>
+          <!-- outline overlay (Outlined variant) -->
+          <Border Name="PART_Outline"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- filled: SurfaceContainerHighest, no shadow -->
+    <Style Selector="^[Variant=Filled]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    </Style>
+    <Style Selector="^[Variant=Filled] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+
+    <!-- outlined: Surface + 1px OutlineVariant, no shadow -->
+    <Style Selector="^[Variant=Outlined]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    </Style>
+    <Style Selector="^[Variant=Outlined] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+    </Style>
+    <Style Selector="^[Variant=Outlined] /template/ Border#PART_Outline">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- clickable interaction states -->
+    <Style Selector="^[IsClickable=True]">
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="^[IsClickable=True]:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^[IsClickable=True][Variant=Elevated]:pointerover /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation2}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 surface: background + shadow follow the elevation scale. -->
+  <ControlTheme x:Key="{x:Type m3:Surface}" TargetType="m3:Surface">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation0}" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^[Elevation=1]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+    </Style>
+    <Style Selector="^[Elevation=1] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+    </Style>
+    <Style Selector="^[Elevation=2]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    </Style>
+    <Style Selector="^[Elevation=2] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation2}" />
+    </Style>
+    <Style Selector="^[Elevation=3]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    </Style>
+    <Style Selector="^[Elevation=3] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation3}" />
+    </Style>
+    <Style Selector="^[Elevation=4]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    </Style>
+    <Style Selector="^[Elevation=4] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation4}" />
+    </Style>
+    <Style Selector="^[Elevation=5]">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    </Style>
+    <Style Selector="^[Elevation=5] /template/ Border#PART_Container">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation5}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 divider: 1px OutlineVariant rule. -->
+  <ControlTheme x:Key="{x:Type m3:Divider}" TargetType="m3:Divider">
+    <Setter Property="Background" Value="{DynamicResource Md3OutlineVariantBrush}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Line" Background="{TemplateBinding Background}" />
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^[Orientation=Horizontal]">
+      <Setter Property="Height" Value="1" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="^[Orientation=Vertical]">
+      <Setter Property="Width" Value="1" />
+      <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

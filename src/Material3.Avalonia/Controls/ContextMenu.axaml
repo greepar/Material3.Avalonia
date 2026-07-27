@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 context menu container. -->
+  <ControlTheme x:Key="{x:Type ContextMenu}" TargetType="ContextMenu">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="MinWidth" Value="112" />
+    <Setter Property="MaxWidth" Value="280" />
+    <Setter Property="Padding" Value="0,8" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="WindowManagerAddShadowHint" Value="False" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+        <Border Name="PART_LayoutRoot"
+                m3p:Entrance.Animation="GrowDown"
+                RenderTransformOrigin="50%,0%"
+                Margin="10,8,10,14"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="{TemplateBinding Padding}"
+                MaxWidth="{TemplateBinding MaxWidth}"
+                MinWidth="{TemplateBinding MinWidth}"
+                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                BoxShadow="{StaticResource Md3Elevation2}">
+          <ScrollViewer Theme="{StaticResource MenuScrollViewer}">
+            <ItemsPresenter Name="PART_ItemsPresenter"
+                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                            KeyboardNavigation.TabNavigation="Continue"
+                            Grid.IsSharedSizeScope="True" />
+          </ScrollViewer>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

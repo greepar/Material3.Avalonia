@@ -1,0 +1,161 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Material 3 scrim. API modeled after m3fx (https://github.com/Glavo/m3fx), Apache-2.0;
+       implementation follows the Material 3 spec: full-bleed Scrim color at 32% opacity. -->
+  <ControlTheme x:Key="{x:Type m3:Scrim}" TargetType="m3:Scrim">
+    <Setter Property="Background" Value="{DynamicResource Md3ScrimBrush}" />
+    <Setter Property="Opacity" Value="0" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+      </Transitions>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Root" Background="{TemplateBinding Background}" />
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^[IsOpen=True]">
+      <Setter Property="Opacity" Value="0.32" />
+      <Setter Property="IsHitTestVisible" Value="True" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 modal bottom sheet: bottom-anchored SurfaceContainerLow surface,
+       28dp top corners, level-1 shadow, optional 32x4 drag handle, scrim light dismiss. -->
+  <ControlTheme x:Key="{x:Type m3:BottomSheet}" TargetType="m3:BottomSheet">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Name="PART_Root" ClipToBounds="True">
+          <Border Name="PART_Scrim"
+                  Background="{DynamicResource Md3ScrimBrush}"
+                  Opacity="0" />
+          <Border Name="PART_Sheet"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="28,28,0,0"
+                  VerticalAlignment="Bottom"
+                  HorizontalAlignment="Stretch">
+            <DockPanel>
+              <Border Name="PART_DragHandle"
+                      DockPanel.Dock="Top"
+                      Width="32"
+                      Height="4"
+                      CornerRadius="{StaticResource Md3CornerFull}"
+                      Background="{DynamicResource Md3OnSurfaceVariantBrush}"
+                      Opacity="0.4"
+                      Margin="0,16,0,6"
+                      HorizontalAlignment="Center"
+                      IsVisible="{TemplateBinding ShowDragHandle}" />
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </DockPanel>
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Scrim">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Sheet">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+      <Setter Property="RenderTransform" Value="translateY(420px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform"
+                                         Duration="0:0:0.3"
+                                         Easing="0.05,0.7,0.1,1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^[IsOpen=False] /template/ Panel#PART_Root">
+      <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ Border#PART_Scrim">
+      <Setter Property="Opacity" Value="0.32" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ Border#PART_Sheet">
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 modal side sheet: 256dp right-anchored surface with 16dp leading corners. -->
+  <ControlTheme x:Key="{x:Type m3:SideSheet}" TargetType="m3:SideSheet">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerLowBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Name="PART_Root" ClipToBounds="True">
+          <Border Name="PART_Scrim"
+                  Background="{DynamicResource Md3ScrimBrush}"
+                  Opacity="0" />
+          <Border Name="PART_Sheet"
+                  Background="{TemplateBinding Background}"
+                  CornerRadius="16,0,0,16"
+                  Width="256"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Stretch">
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Margin="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_Scrim">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Sheet">
+      <Setter Property="BoxShadow" Value="{StaticResource Md3Elevation1}" />
+      <Setter Property="RenderTransform" Value="translateX(280px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform"
+                                         Duration="0:0:0.3"
+                                         Easing="0.05,0.7,0.1,1" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="^[IsOpen=False] /template/ Panel#PART_Root">
+      <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ Border#PART_Scrim">
+      <Setter Property="Opacity" Value="0.32" />
+    </Style>
+    <Style Selector="^[IsOpen=True] /template/ Border#PART_Sheet">
+      <Setter Property="RenderTransform" Value="translateX(0px)" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

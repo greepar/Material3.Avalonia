@@ -1,0 +1,14 @@
+<Styles x:Class="Material3.Avalonia.MaterialTheme"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/Tokens.axaml" />
+        <MergeResourceInclude Source="avares://Material3.Avalonia/Themes/MaterialControls.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <StyleInclude Source="avares://Material3.Avalonia/Themes/TypographyClasses.axaml" />
+</Styles>

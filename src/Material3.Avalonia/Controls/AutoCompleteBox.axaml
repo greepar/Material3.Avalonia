@@ -1,0 +1,57 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 AutoCompleteBox: default TextBox theme + elevated suggestion popup -->
+  <ControlTheme x:Key="{x:Type AutoCompleteBox}" TargetType="AutoCompleteBox">
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="PlaceholderForeground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyLargeSize}" />
+    <Setter Property="MaxDropDownHeight" Value="380" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Name="PART_LayoutRoot">
+          <TextBox Name="PART_TextBox"
+                   PlaceholderText="{TemplateBinding PlaceholderText}"
+                   PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                   Width="{TemplateBinding Width}"
+                   Foreground="{TemplateBinding Foreground}"
+                   CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                   ClearSelectionOnLostFocus="{TemplateBinding ClearSelectionOnLostFocus}"
+                   Margin="0"
+                   DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                   MaxLength="{TemplateBinding MaxLength}"
+                   InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                   InnerRightContent="{TemplateBinding InnerRightContent}" />
+          <Popup Name="PART_Popup"
+                 WindowManagerAddShadowHint="False"
+                 MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                 MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                 IsLightDismissEnabled="True"
+                 HorizontalOffset="-12"
+                 VerticalOffset="-4"
+                 PlacementTarget="{TemplateBinding}">
+            <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+            <Border Name="PART_SuggestionsContainer"
+                    m3p:Entrance.Animation="GrowDown"
+                    RenderTransformOrigin="50%,0%"
+                    Margin="12,8,12,16"
+                    Background="{DynamicResource Md3SurfaceContainerBrush}"
+                    CornerRadius="{StaticResource Md3CornerSmall}"
+                    BoxShadow="{StaticResource Md3Elevation2}"
+                    HorizontalAlignment="Stretch">
+              <ListBox Name="PART_SelectingItemsControl"
+                       BorderThickness="0"
+                       Background="Transparent"
+                       Margin="0,8"
+                       ItemTemplate="{TemplateBinding ItemTemplate}"
+                       ScrollViewer.IsScrollChainingEnabled="False" />
+            </Border>
+          </Popup>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

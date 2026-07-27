@@ -1,0 +1,7 @@
+Material3.Avalonia
+Copyright 2026 greepar
+
+Some public component APIs were modeled after m3fx
+(https://github.com/Glavo/m3fx), Copyright Glavo, licensed under Apache-2.0.
+Material3.Avalonia contains an independent Avalonia implementation; relevant
+source files retain explicit attribution comments.

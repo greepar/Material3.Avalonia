@@ -1,0 +1,204 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 CheckBox: 18x18 rounded-2 box, 40x40 circular state layer. -->
+  <ControlTheme x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Padding" Value="4,0,0,0" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid ColumnDefinitions="Auto,*">
+          <Panel Name="PART_BoxArea"
+                 Grid.Column="0"
+                 Width="40"
+                 Height="40"
+                 VerticalAlignment="Center">
+            <!-- circular state layer behind the box -->
+            <Border Name="PART_StateLayer"
+                    Width="40"
+                    Height="40"
+                    CornerRadius="9999"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost Width="40"
+                            Height="40"
+                            RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="9999" />
+            <!-- 18x18 box -->
+            <Border Name="PART_Box"
+                    Width="18"
+                    Height="18"
+                    CornerRadius="2"
+                    BorderBrush="{DynamicResource Md3OnSurfaceVariantBrush}"
+                    BorderThickness="2"
+                    Background="Transparent">
+              <Panel>
+                <Path Name="PART_CheckGlyph"
+                      Data="M 3,9 L 7.5,13.5 L 15,4.5"
+                      Stroke="{DynamicResource Md3OnPrimaryBrush}"
+                      StrokeThickness="2.4"
+                      StrokeLineCap="Round"
+                      StrokeJoin="Round"
+                      Stretch="None"
+                      Margin="-2"
+                      Width="18"
+                      Height="18"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0" />
+                <Path Name="PART_IndeterminateGlyph"
+                      Data="M 4,9 L 14,9"
+                      Stroke="{DynamicResource Md3OnPrimaryBrush}"
+                      StrokeThickness="2.4"
+                      StrokeLineCap="Round"
+                      Stretch="None"
+                      Margin="-2"
+                      Width="18"
+                      Height="18"
+                      RenderTransformOrigin="50%,50%"
+                      Opacity="0" />
+              </Panel>
+            </Border>
+            <!-- focus ring -->
+            <Border Name="PART_FocusRing"
+                    Width="40"
+                    Height="40"
+                    BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                    BorderThickness="{StaticResource Md3FocusRingThickness}"
+                    CornerRadius="9999"
+                    IsVisible="False"
+                    IsHitTestVisible="False" />
+          </Panel>
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Grid.Column="1"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Margin="{TemplateBinding Padding}"
+                            RecognizesAccessKey="True"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Border#PART_Box">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Path#PART_CheckGlyph">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="scale(0.6)" />
+    </Style>
+    <Style Selector="^ /template/ Path#PART_IndeterminateGlyph">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="scale(0.6)" />
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- checked -->
+    <Style Selector="^:checked /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Path#PART_CheckGlyph">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+
+    <!-- indeterminate -->
+    <Style Selector="^:indeterminate /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:indeterminate /template/ Path#PART_IndeterminateGlyph">
+      <Setter Property="Opacity" Value="1" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+    <Style Selector="^:indeterminate /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+
+    <!-- error -->
+    <Style Selector="^:error /template/ Border#PART_Box">
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:error:checked /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:error:checked /template/ Path#PART_CheckGlyph">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnErrorBrush}" />
+    </Style>
+    <Style Selector="^:error:indeterminate /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+    <Style Selector="^:error:indeterminate /template/ Path#PART_IndeterminateGlyph">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnErrorBrush}" />
+    </Style>
+    <Style Selector="^:error /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3ErrorBrush}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Border#PART_Box">
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+    <Style Selector="^:disabled:checked /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+    <Style Selector="^:disabled:indeterminate /template/ Border#PART_Box">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

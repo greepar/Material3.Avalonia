@@ -1,0 +1,70 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 TableViewColumnHeader. Template contract (per Avalonia 12.1.0
+       TableViewColumnHeader.cs): PART_Resizer (Thumb).
+       Note: TableView in Avalonia 12.1.0 exposes no sorting API/pseudo-classes,
+       so no sort indicator is templated (checked TableViewColumn.cs/TableViewColumnHeader.cs).
+       M3 style: label-large (14 Medium) on OnSurfaceVariant with hover state layer. -->
+
+  <x:Double x:Key="Md3TableViewColumnResizerWidth">12</x:Double>
+  <Thickness x:Key="Md3TableViewColumnResizerMargin">0,-9,-6,-12</Thickness>
+
+  <ControlTemplate x:Key="Md3TableViewColumnHeaderResizerTemplate" TargetType="Thumb">
+    <Border Background="Transparent">
+      <Rectangle Width="1"
+                 Fill="{DynamicResource Md3OutlineVariantBrush}"
+                 HorizontalAlignment="Center" />
+    </Border>
+  </ControlTemplate>
+
+  <ControlTheme x:Key="{x:Type TableViewColumnHeader}" TargetType="TableViewColumnHeader">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Padding" Value="{DynamicResource Md3TableViewCellPadding}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <!-- state layer -->
+          <Border Name="PART_StateLayer"
+                  Background="{DynamicResource Md3OnSurfaceBrush}"
+                  Opacity="0"
+                  IsHitTestVisible="False" />
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Content="{TemplateBinding Content}"
+                            Padding="{TemplateBinding Padding}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+          <Thumb Name="PART_Resizer"
+                 Template="{StaticResource Md3TableViewColumnHeaderResizerTemplate}"
+                 Width="{StaticResource Md3TableViewColumnResizerWidth}"
+                 HorizontalAlignment="Right"
+                 Cursor="SizeWestEast"
+                 Margin="{StaticResource Md3TableViewColumnResizerMargin}"
+                 IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Column?.CanUserEffectivelyResize, FallbackValue=False}" />
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

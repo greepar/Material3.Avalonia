@@ -1,0 +1,136 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3p="using:Material3.Avalonia.Primitives">
+
+  <!-- Material 3 RadioButton: 20x20 ring, 10x10 dot, 40x40 circular state layer. -->
+  <ControlTheme x:Key="{x:Type RadioButton}" TargetType="RadioButton">
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="FontSize" Value="{StaticResource Md3BodyMediumSize}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
+    <Setter Property="Padding" Value="4,0,0,0" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid ColumnDefinitions="Auto,*">
+          <Panel Name="PART_RadioArea"
+                 Grid.Column="0"
+                 Width="40"
+                 Height="40"
+                 VerticalAlignment="Center">
+            <!-- circular state layer behind the ring -->
+            <Border Name="PART_StateLayer"
+                    Width="40"
+                    Height="40"
+                    CornerRadius="9999"
+                    Background="{DynamicResource Md3OnSurfaceBrush}"
+                    Opacity="0"
+                    IsHitTestVisible="False" />
+            <m3p:RippleHost Width="40"
+                            Height="40"
+                            RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                            RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                            RippleClipRadius="9999" />
+            <!-- 20x20 outer ring -->
+            <Ellipse Name="PART_OuterRing"
+                     Width="20"
+                     Height="20"
+                     Stroke="{DynamicResource Md3OnSurfaceVariantBrush}"
+                     StrokeThickness="2"
+                     Fill="Transparent" />
+            <!-- 10x10 inner dot -->
+            <Ellipse Name="PART_InnerDot"
+                     Width="10"
+                     Height="10"
+                     Fill="{DynamicResource Md3PrimaryBrush}"
+                     RenderTransformOrigin="50%,50%">
+              <Ellipse.RenderTransform>
+                <ScaleTransform ScaleX="0" ScaleY="0" />
+              </Ellipse.RenderTransform>
+            </Ellipse>
+            <!-- focus ring -->
+            <Border Name="PART_FocusRing"
+                    Width="40"
+                    Height="40"
+                    BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                    BorderThickness="{StaticResource Md3FocusRingThickness}"
+                    CornerRadius="9999"
+                    IsVisible="False"
+                    IsHitTestVisible="False" />
+          </Panel>
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Grid.Column="1"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Margin="{TemplateBinding Padding}"
+                            RecognizesAccessKey="True"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^ /template/ Border#PART_StateLayer">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^ /template/ Ellipse#PART_InnerDot">
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+          <BrushTransition Property="Fill" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+      <Setter Property="RenderTransform" Value="scale(0)" />
+    </Style>
+    <Style Selector="^ /template/ Ellipse#PART_OuterRing">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <!-- checked -->
+    <Style Selector="^:checked /template/ Ellipse#PART_OuterRing">
+      <Setter Property="Stroke" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+    <Style Selector="^:checked /template/ Ellipse#PART_InnerDot">
+      <Setter Property="RenderTransform" Value="scale(1)" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#PART_StateLayer">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    </Style>
+
+    <!-- disabled -->
+    <Style Selector="^:disabled">
+      <Setter Property="Cursor" Value="Arrow" />
+    </Style>
+    <Style Selector="^:disabled /template/ Ellipse#PART_OuterRing">
+      <Setter Property="Stroke" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Ellipse#PART_InnerDot">
+      <Setter Property="Fill" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

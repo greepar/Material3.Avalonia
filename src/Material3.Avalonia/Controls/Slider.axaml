@@ -1,0 +1,259 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 (2024 expressive) Slider. Contract per Avalonia 12.1.0 Slider.cs:
+       PART_Track (Track), PART_DecreaseButton / PART_IncreaseButton (RepeatButton).
+       Look: 16dp thick tracks with a 6dp gap around a 4x44 vertical bar handle,
+       full-round outer corners / 2dp inner corners, and a 4dp stop dot at the end
+       of the inactive track. Pressed handle narrows to 2dp (per M3 spec). -->
+
+  <x:Double x:Key="Md3SliderTrackThickness">16</x:Double>
+  <x:Double x:Key="Md3SliderHandleLength">44</x:Double>
+  <Thickness x:Key="Md3SliderActiveGapH">0,0,6,0</Thickness>
+  <Thickness x:Key="Md3SliderInactiveGapH">6,0,0,0</Thickness>
+  <Thickness x:Key="Md3SliderActiveGapV">0,6,0,0</Thickness>
+  <Thickness x:Key="Md3SliderInactiveGapV">0,0,0,6</Thickness>
+
+  <!-- Active track (decrease side, horizontal): outer end full, inner end 2 -->
+  <ControlTheme x:Key="Md3SliderHorizontalDecreaseButton" TargetType="RepeatButton">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Background="Transparent">
+          <Border Name="TrackBar"
+                  Background="{TemplateBinding Background}"
+                  Height="{StaticResource Md3SliderTrackThickness}"
+                  Margin="{StaticResource Md3SliderActiveGapH}"
+                  CornerRadius="8,2,2,8"
+                  VerticalAlignment="Center" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Inactive track (increase side, horizontal): inner end 2, outer end full, stop dot -->
+  <ControlTheme x:Key="Md3SliderHorizontalIncreaseButton" TargetType="RepeatButton">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Background="Transparent">
+          <Border Name="TrackBar"
+                  Background="{TemplateBinding Background}"
+                  Height="{StaticResource Md3SliderTrackThickness}"
+                  Margin="{StaticResource Md3SliderInactiveGapH}"
+                  CornerRadius="2,8,8,2"
+                  VerticalAlignment="Center">
+            <Ellipse Name="StopDot"
+                     Width="4" Height="4"
+                     Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Margin="0,0,6,0" />
+          </Border>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Active track (decrease side, vertical): grows from the bottom -->
+  <ControlTheme x:Key="Md3SliderVerticalDecreaseButton" TargetType="RepeatButton">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Background="Transparent">
+          <Border Name="TrackBar"
+                  Background="{TemplateBinding Background}"
+                  Width="{StaticResource Md3SliderTrackThickness}"
+                  Margin="{StaticResource Md3SliderActiveGapV}"
+                  CornerRadius="2,2,8,8"
+                  HorizontalAlignment="Center" />
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="Md3SliderVerticalIncreaseButton" TargetType="RepeatButton">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid Background="Transparent">
+          <Border Name="TrackBar"
+                  Background="{TemplateBinding Background}"
+                  Width="{StaticResource Md3SliderTrackThickness}"
+                  Margin="{StaticResource Md3SliderInactiveGapV}"
+                  CornerRadius="8,8,2,2"
+                  HorizontalAlignment="Center">
+            <Ellipse Name="StopDot"
+                     Width="4" Height="4"
+                     Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="0,6,0,0" />
+          </Border>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <!-- Handle: 4x44 vertical bar (horizontal slider); narrows to 2 when pressed -->
+  <ControlTheme x:Key="Md3SliderThumb" TargetType="Thumb">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent">
+          <Border Name="Knob"
+                  Background="{TemplateBinding Background}"
+                  Width="4"
+                  Height="{StaticResource Md3SliderHandleLength}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  CornerRadius="{StaticResource Md3CornerFull}">
+            <Border.Transitions>
+              <Transitions>
+                <DoubleTransition Property="Width" Duration="0:0:0.1" Easing="CubicEaseOut" />
+              </Transitions>
+            </Border.Transitions>
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pressed /template/ Border#Knob">
+      <Setter Property="Width" Value="2" />
+    </Style>
+    <!-- Keyboard focus: slightly wider handle; Tag is set by the Slider theme -->
+    <Style Selector="^[Tag=focus-visible] /template/ Border#Knob">
+      <Setter Property="Width" Value="6" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Vertical-slider handle: 44x4 horizontal bar -->
+  <ControlTheme x:Key="Md3SliderThumbVertical" TargetType="Thumb">
+    <Setter Property="Background" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel Background="Transparent">
+          <Border Name="Knob"
+                  Background="{TemplateBinding Background}"
+                  Height="4"
+                  Width="{StaticResource Md3SliderHandleLength}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  CornerRadius="{StaticResource Md3CornerFull}">
+            <Border.Transitions>
+              <Transitions>
+                <DoubleTransition Property="Height" Duration="0:0:0.1" Easing="CubicEaseOut" />
+              </Transitions>
+            </Border.Transitions>
+          </Border>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^:pressed /template/ Border#Knob">
+      <Setter Property="Height" Value="2" />
+    </Style>
+    <Style Selector="^[Tag=focus-visible] /template/ Border#Knob">
+      <Setter Property="Height" Value="6" />
+    </Style>
+  </ControlTheme>
+
+  <ControlTheme x:Key="{x:Type Slider}" TargetType="Slider">
+    <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3PrimaryBrush}" />
+
+    <Style Selector="^:horizontal">
+      <Setter Property="MinHeight" Value="44" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <DataValidationErrors>
+            <Grid Margin="{TemplateBinding Padding}" MinHeight="44">
+              <Track Name="PART_Track"
+                     Minimum="{TemplateBinding Minimum}"
+                     Maximum="{TemplateBinding Maximum}"
+                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                     Orientation="Horizontal"
+                     VerticalAlignment="Center">
+                <Track.DecreaseButton>
+                  <RepeatButton Name="PART_DecreaseButton"
+                                Theme="{StaticResource Md3SliderHorizontalDecreaseButton}"
+                                Background="{TemplateBinding Foreground}"
+                                Height="44"
+                                Focusable="False" />
+                </Track.DecreaseButton>
+                <Track.IncreaseButton>
+                  <RepeatButton Name="PART_IncreaseButton"
+                                Theme="{StaticResource Md3SliderHorizontalIncreaseButton}"
+                                Background="{TemplateBinding Background}"
+                                Height="44"
+                                Focusable="False" />
+                </Track.IncreaseButton>
+                <Thumb Name="SliderThumb"
+                       Theme="{StaticResource Md3SliderThumb}"
+                       Width="4"
+                       Height="44"
+                       Margin="0"
+                       Padding="0" />
+              </Track>
+            </Grid>
+          </DataValidationErrors>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <Style Selector="^:vertical">
+      <Setter Property="MinWidth" Value="44" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <DataValidationErrors>
+            <Grid Margin="{TemplateBinding Padding}" MinWidth="44">
+              <Track Name="PART_Track"
+                     Minimum="{TemplateBinding Minimum}"
+                     Maximum="{TemplateBinding Maximum}"
+                     Value="{TemplateBinding Value, Mode=TwoWay}"
+                     IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                     Orientation="Vertical"
+                     HorizontalAlignment="Center">
+                <Track.DecreaseButton>
+                  <RepeatButton Name="PART_DecreaseButton"
+                                Theme="{StaticResource Md3SliderVerticalDecreaseButton}"
+                                Background="{TemplateBinding Foreground}"
+                                Width="44"
+                                Focusable="False" />
+                </Track.DecreaseButton>
+                <Track.IncreaseButton>
+                  <RepeatButton Name="PART_IncreaseButton"
+                                Theme="{StaticResource Md3SliderVerticalIncreaseButton}"
+                                Background="{TemplateBinding Background}"
+                                Width="44"
+                                Focusable="False" />
+                </Track.IncreaseButton>
+                <Thumb Name="SliderThumb"
+                       Theme="{StaticResource Md3SliderThumbVertical}"
+                       Width="44"
+                       Height="4"
+                       Margin="0"
+                       Padding="0" />
+              </Track>
+            </Grid>
+          </DataValidationErrors>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <!-- Keyboard focus: forward :focus-visible to the thumb via Tag,
+         since chained /template/ selectors are invalid inside a ControlTemplate style. -->
+    <Style Selector="^:focus-visible /template/ Thumb#SliderThumb">
+      <Setter Property="Tag" Value="focus-visible" />
+    </Style>
+
+    <!-- Disabled: 38% active track/handle, 12% inactive track -->
+    <Style Selector="^:disabled /template/ RepeatButton#PART_DecreaseButton">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ RepeatButton#PART_IncreaseButton">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContainerOpacity}" />
+    </Style>
+    <Style Selector="^:disabled /template/ Thumb#SliderThumb">
+      <Setter Property="Background" Value="{DynamicResource Md3OnSurfaceBrush}" />
+      <Setter Property="Opacity" Value="{StaticResource Md3DisabledContentOpacity}" />
+    </Style>
+  </ControlTheme>
+</ResourceDictionary>

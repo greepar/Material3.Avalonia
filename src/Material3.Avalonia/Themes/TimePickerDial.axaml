@@ -1,0 +1,302 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:m3="using:Material3.Avalonia.Controls">
+
+  <!-- Material 3 time picker clock dial (self-drawn; rendering lives in
+       TimePickerDial.Render). The theme only supplies default colors and size. -->
+  <ControlTheme x:Key="{x:Type m3:TimePickerDial}" TargetType="m3:TimePickerDial">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="SelectorBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+    <Setter Property="SelectedForeground" Value="{DynamicResource Md3OnPrimaryBrush}" />
+    <Setter Property="SecondaryForeground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="Width" Value="256" />
+    <Setter Property="Height" Value="256" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </ControlTheme>
+
+  <!-- Time display chip (hour / minute): 96x80, display-medium digits.
+       :checked = currently edited unit (PrimaryContainer). -->
+  <ControlTheme x:Key="Md3TimePickerDisplayChip" TargetType="ToggleButton">
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Width" Value="96" />
+    <Setter Property="Height" Value="80" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="FontSize" Value="45" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                ClipToBounds="True">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False">
+              <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                </Transitions>
+              </Border.Transitions>
+            </Border>
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:checked">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryContainerBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- AM/PM segment button -->
+  <ControlTheme x:Key="Md3TimePickerPeriodChip" TargetType="ToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <!-- CornerRadius must match the segment's position inside the rounded selector:
+             ClipToBounds clips to a rectangle in Avalonia, so the corners have to be
+             rounded on the segment itself. -->
+        <Border Name="PART_Container"
+                Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel>
+            <Border Name="PART_StateLayer"
+                    Background="{TemplateBinding Foreground}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Opacity="0"
+                    IsHitTestVisible="False">
+              <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                </Transitions>
+              </Border.Transitions>
+            </Border>
+            <ContentPresenter Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Style Selector="^ /template/ Border#PART_Container">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
+      <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:checked">
+      <Setter Property="Background" Value="{DynamicResource Md3TertiaryContainerBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnTertiaryContainerBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Keyboard input field for the "Enter time" mode (hour/minute), styled like the
+       display chips: 96x80, display-medium digits, PrimaryContainer + Primary border
+       when focused. -->
+  <ControlTheme x:Key="Md3TimePickerInputField" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+    <Setter Property="Width" Value="96" />
+    <Setter Property="Height" Value="80" />
+    <Setter Property="MinHeight" Value="0" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighestBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
+    <Setter Property="FontSize" Value="45" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="TextAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="MaxLength" Value="2" />
+    <Style Selector="^:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource Md3PrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="^:focus">
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnPrimaryContainerBrush}" />
+    </Style>
+  </ControlTheme>
+
+  <!-- Material 3 time picker input pane: title + display chips / input fields +
+       AM/PM + dial + action row (mode toggle, Cancel/OK). -->
+  <ControlTheme x:Key="{x:Type m3:TimePickerPane}" TargetType="m3:TimePickerPane">
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerHighBrush}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerExtraLarge}" />
+    <Setter Property="Padding" Value="24" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                CornerRadius="{TemplateBinding CornerRadius}"
+                Padding="{TemplateBinding Padding}">
+          <StackPanel Spacing="20">
+            <!-- Title: "Select time" / "Enter time" (set from code) -->
+            <TextBlock Name="PART_TitleText"
+                       FontSize="{StaticResource Md3LabelMediumSize}"
+                       FontWeight="Medium"
+                       Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+
+            <!-- Time display row -->
+            <StackPanel Orientation="Horizontal"
+                        Spacing="0"
+                        HorizontalAlignment="Center">
+              <!-- Dial mode: hour/minute chips -->
+              <StackPanel Orientation="Horizontal"
+                          Spacing="0"
+                          IsVisible="{Binding !IsInputMode, RelativeSource={RelativeSource TemplatedParent}}">
+                <ToggleButton Name="PART_HourButton"
+                              Theme="{StaticResource Md3TimePickerDisplayChip}" />
+                <TextBlock Text=":"
+                           FontSize="45"
+                           Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                           VerticalAlignment="Center"
+                           Margin="6,0"
+                           Padding="0,0,0,6" />
+                <ToggleButton Name="PART_MinuteButton"
+                              Theme="{StaticResource Md3TimePickerDisplayChip}" />
+              </StackPanel>
+
+              <!-- Input mode: hour/minute text boxes with labels below -->
+              <StackPanel Orientation="Horizontal"
+                          Spacing="0"
+                          IsVisible="{Binding IsInputMode, RelativeSource={RelativeSource TemplatedParent}}">
+                <StackPanel Spacing="7">
+                  <TextBox Name="PART_HourTextBox"
+                           Theme="{StaticResource Md3TimePickerInputField}" />
+                  <TextBlock Text="Hour"
+                             FontSize="{StaticResource Md3BodySmallSize}"
+                             Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+                <TextBlock Text=":"
+                           FontSize="45"
+                           Foreground="{DynamicResource Md3OnSurfaceBrush}"
+                           VerticalAlignment="Top"
+                           Margin="6,10,6,0" />
+                <StackPanel Spacing="7">
+                  <TextBox Name="PART_MinuteTextBox"
+                           Theme="{StaticResource Md3TimePickerInputField}" />
+                  <TextBlock Text="Minute"
+                             FontSize="{StaticResource Md3BodySmallSize}"
+                             Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+
+              <!-- AM/PM vertical segmented selector (both modes, 12h only) -->
+              <Border Name="PART_PeriodSelector"
+                      Margin="12,0,0,0"
+                      Width="52"
+                      Height="80"
+                      VerticalAlignment="Top"
+                      BorderBrush="{DynamicResource Md3OutlineBrush}"
+                      BorderThickness="1"
+                      CornerRadius="{StaticResource Md3CornerSmall}"
+                      IsVisible="{Binding !Is24Hour, RelativeSource={RelativeSource TemplatedParent}}">
+                <Grid RowDefinitions="*,Auto,*">
+                  <!-- Inner radius = outer 8dp minus the 1px border -->
+                  <ToggleButton Name="PART_AmButton"
+                                Grid.Row="0"
+                                Theme="{StaticResource Md3TimePickerPeriodChip}"
+                                CornerRadius="7,7,0,0"
+                                Content="AM" />
+                  <Border Grid.Row="1"
+                          Height="1"
+                          Background="{DynamicResource Md3OutlineBrush}" />
+                  <ToggleButton Name="PART_PmButton"
+                                Grid.Row="2"
+                                Theme="{StaticResource Md3TimePickerPeriodChip}"
+                                CornerRadius="0,0,7,7"
+                                Content="PM" />
+                </Grid>
+              </Border>
+            </StackPanel>
+
+            <!-- Clock dial (dial mode only) -->
+            <m3:TimePickerDial Name="PART_Dial"
+                               IsVisible="{Binding !IsInputMode, RelativeSource={RelativeSource TemplatedParent}}"
+                               Mode="{Binding Mode, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                               Is24Hour="{Binding Is24Hour, RelativeSource={RelativeSource TemplatedParent}}"
+                               SelectedHour="{Binding SelectedHour, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                               SelectedMinute="{Binding SelectedMinute, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+
+            <!-- Action row: mode toggle (left), Cancel/OK (right) -->
+            <Grid ColumnDefinitions="Auto,*,Auto">
+              <Button Name="PART_ModeToggleButton"
+                      Grid.Column="0"
+                      Width="40"
+                      Height="40"
+                      MinWidth="40"
+                      MinHeight="40"
+                      Padding="0"
+                      Classes="text"
+                      CornerRadius="{StaticResource Md3CornerFull}"
+                      Foreground="{DynamicResource Md3OnSurfaceVariantBrush}">
+                <Panel>
+                  <!-- Keyboard icon: shown in dial mode -->
+                  <Path Data="M4,5 L20,5 C21.1,5 22,5.9 22,7 L22,17 C22,18.1 21.1,19 20,19 L4,19 C2.9,19 2,18.1 2,17 L2,7 C2,5.9 2.9,5 4,5 Z M5,8 L7,8 L7,10 L5,10 Z M8,8 L10,8 L10,10 L8,10 Z M11,8 L13,8 L13,10 L11,10 Z M14,8 L16,8 L16,10 L14,10 Z M17,8 L19,8 L19,10 L17,10 Z M5,11 L7,11 L7,13 L5,13 Z M8,11 L10,11 L10,13 L8,13 Z M11,11 L13,11 L13,13 L11,13 Z M14,11 L16,11 L16,13 L14,13 Z M17,11 L19,11 L19,13 L17,13 Z M8,14 L16,14 L16,16 L8,16 Z"
+                        Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                        Stretch="Uniform"
+                        Width="24"
+                        Height="24"
+                        IsVisible="{Binding !IsInputMode, RelativeSource={RelativeSource TemplatedParent}}" />
+                  <!-- Clock icon: shown in input mode -->
+                  <Path Data="M12,2 C6.48,2 2,6.48 2,12 C2,17.52 6.48,22 12,22 C17.52,22 22,17.52 22,12 C22,6.48 17.52,2 12,2 Z M12,20 C7.59,20 4,16.41 4,12 C4,7.59 7.59,4 12,4 C16.41,4 20,7.59 20,12 C20,16.41 16.41,20 12,20 Z M12.5,7 L11,7 L11,13 L16.25,16.15 L17,14.92 L12.5,12.25 Z"
+                        Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                        Stretch="Uniform"
+                        Width="24"
+                        Height="24"
+                        IsVisible="{Binding IsInputMode, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Panel>
+              </Button>
+              <StackPanel Grid.Column="2"
+                          Orientation="Horizontal"
+                          Spacing="8">
+                <Button Name="PART_CancelButton"
+                        Classes="text"
+                        Content="Cancel" />
+                <Button Name="PART_OkButton"
+                        Classes="text"
+                        Content="OK" />
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

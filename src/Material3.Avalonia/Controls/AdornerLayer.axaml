@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Material 3 AdornerLayer: default focus adorner is a 2px Primary ring
+       (per Avalonia 12.1.0 Fluent AdornerLayer.xaml structure). -->
+  <ControlTheme x:Key="{x:Type AdornerLayer}" TargetType="AdornerLayer">
+    <Setter Property="DefaultFocusAdorner">
+      <FocusAdornerTemplate>
+        <Border BorderThickness="{StaticResource Md3FocusRingThickness}"
+                BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                CornerRadius="{StaticResource Md3CornerExtraSmall}"
+                Margin="0" />
+      </FocusAdornerTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>
