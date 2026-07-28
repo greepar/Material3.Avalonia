@@ -12,14 +12,7 @@ internal static class Program
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        var builder = AppBuilder.Configure<App>()
+    public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont();
-#if DEBUG
-        // builder = builder.WithDeveloperTools().LogToTrace();
-#endif
-        return builder;
-    }
 }

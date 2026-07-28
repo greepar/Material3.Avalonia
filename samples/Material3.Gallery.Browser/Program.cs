@@ -13,12 +13,5 @@ internal static class Program
         .WithInterFont()
         .StartBrowserAppAsync("out");
 
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        var builder = AppBuilder.Configure<App>();
-#if DEBUG
-        // builder = builder.WithDeveloperTools();
-#endif
-        return builder;
-    }
+    public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>();
 }

@@ -17,11 +17,7 @@ public class GalleryApplication : AvaloniaAndroidApplication<App>
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
-        var result = base.CustomizeAppBuilder(builder).WithInterFont();
-#if DEBUG
-        result = result.WithDeveloperTools();
-#endif
-        return result;
+        return base.CustomizeAppBuilder(builder).WithInterFont();
     }
 }
 
