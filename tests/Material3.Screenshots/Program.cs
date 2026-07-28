@@ -270,7 +270,7 @@ public static class Program
                     Assert(rowStateLayer.Bounds.Width >= firstRow.Bounds.Width - 1,
                         $"table: row hover layer should span the row ({rowStateLayer.Bounds.Width:F1}/{firstRow.Bounds.Width:F1})");
                     var rowRight = firstRow.TranslatePoint(
-                                       new Point(firstRow.Bounds.Width - 4, firstRow.Bounds.Height / 2), window)
+                                       new Point(firstRow.Bounds.Width - 24, firstRow.Bounds.Height / 2), window)
                                    ?? throw new InvalidOperationException("Table row TranslatePoint failed");
                     window.MouseMove(rowRight);
                     Pump(2, 50);
