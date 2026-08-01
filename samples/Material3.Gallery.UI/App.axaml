@@ -2,6 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:m3="using:Material3.Avalonia"
              x:Class="Material3.Gallery.UI.App">
+    <Application.Resources>
+        <FontFamily x:Key="Md3FontFamilyPlain">Inter</FontFamily>
+        <FontFamily x:Key="Md3FontFamilyBrand">Inter</FontFamily>
+    </Application.Resources>
     <Application.Styles>
         <m3:MaterialTheme SeedColor="#6750A4" />
     </Application.Styles>
