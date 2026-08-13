@@ -83,20 +83,9 @@
       </Setter>
     </Style>
     <Style Selector="^ /template/ Ellipse#PART_InnerDot">
-      <Setter Property="Transitions">
-        <Transitions>
-          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
-          <BrushTransition Property="Fill" Duration="0:0:0.15" />
-        </Transitions>
-      </Setter>
+      <!-- Radio groups must show exactly one selected item. Animating the dot out leaves
+           the old and new choices visibly selected at the same time. -->
       <Setter Property="RenderTransform" Value="scale(0)" />
-    </Style>
-    <Style Selector="^ /template/ Ellipse#PART_OuterRing">
-      <Setter Property="Transitions">
-        <Transitions>
-          <BrushTransition Property="Stroke" Duration="0:0:0.15" />
-        </Transitions>
-      </Setter>
     </Style>
     <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
