@@ -370,10 +370,13 @@
           </StackPanel>
 
           <!-- ======================= Selection ======================= -->
-          <StackPanel Name="SelectionSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="SelectionSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Selection" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="CheckBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="CheckBox" />
             <StackPanel Spacing="8" Width="360" HorizontalAlignment="Left">
               <CheckBox Name="SelectionUncheckedBox" Content="Unchecked" />
               <CheckBox Content="Checked" IsChecked="True" />
@@ -382,7 +385,11 @@
               <CheckBox Content="Disabled checked" IsChecked="True" IsEnabled="False" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="RadioButton" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="RadioButton" />
             <StackPanel Spacing="8" Width="360" HorizontalAlignment="Left">
               <RadioButton GroupName="Fruit" Content="Apple" IsChecked="True" />
               <RadioButton GroupName="Fruit" Content="Banana" />
@@ -390,7 +397,11 @@
               <RadioButton GroupName="Fruit" Content="Disabled" IsEnabled="False" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="ToggleSwitch" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ToggleSwitch" />
             <StackPanel Spacing="8">
               <ToggleSwitch Content="Wi-Fi" IsChecked="True" />
               <ToggleSwitch Content="Bluetooth" />
@@ -398,13 +409,19 @@
               <ToggleSwitch Content="Disabled off" IsEnabled="False" />
               <ToggleSwitch Content="Disabled on" IsChecked="True" IsEnabled="False" />
             </StackPanel>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Text inputs ======================= -->
-          <StackPanel Name="TextInputsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="TextInputsSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Text inputs" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="TextBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TextBox" />
             <StackPanel Spacing="12" Width="360" HorizontalAlignment="Left">
               <TextBox Text="Plain text" />
               <TextBox PlaceholderText="Watermark text box" />
@@ -413,25 +430,43 @@
               <TextBox PlaceholderText="Multi-line" AcceptsReturn="True" TextWrapping="Wrap" Height="90" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="AutoCompleteBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="AutoCompleteBox" />
             <AutoCompleteBox Name="AutoCompleteDemo" Width="360" HorizontalAlignment="Left"
                              PlaceholderText="Type a fruit name..." FilterMode="Contains" />
 
-            <TextBlock Classes="title-small" Text="NumericUpDown" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="NumericUpDown" />
             <StackPanel Spacing="12" Width="360" HorizontalAlignment="Left">
               <NumericUpDown Value="42" Minimum="0" Maximum="100" Increment="1" />
               <NumericUpDown Value="10" IsEnabled="False" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="MaskedTextBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="MaskedTextBox" />
             <MaskedTextBox Mask="(000) 000-0000" Width="360" HorizontalAlignment="Left" />
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Lists ======================= -->
-          <StackPanel Name="ListsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="ListsSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Lists" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="ListBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ListBox" />
             <ListBox Width="320" Height="240" HorizontalAlignment="Left" SelectedIndex="1">
               <ListBoxItem Content="Item 1" />
               <ListBoxItem Content="Item 2" />
@@ -445,7 +480,11 @@
               <ListBoxItem Content="Item 10" />
             </ListBox>
 
-            <TextBlock Classes="title-small" Text="TreeView" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TreeView" />
             <TreeView Width="320" HorizontalAlignment="Left">
               <TreeViewItem Header="Documents" IsExpanded="True">
                 <TreeViewItem Header="Work">
@@ -463,7 +502,11 @@
               <TreeViewItem Header="Disabled" IsEnabled="False" />
             </TreeView>
 
-            <TextBlock Classes="title-small" Text="GridSplitter" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="GridSplitter" />
             <Grid ColumnDefinitions="*,Auto,*" Height="120" Width="480" HorizontalAlignment="Left">
               <Border Grid.Column="0" Background="{DynamicResource Md3SurfaceContainerHighBrush}"
                       CornerRadius="{StaticResource Md3CornerMedium}">
@@ -477,6 +520,9 @@
                            Foreground="{DynamicResource Md3OnSurfaceBrush}" />
               </Border>
             </Grid>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Combo ======================= -->
@@ -500,10 +546,13 @@
           </StackPanel>
 
           <!-- ======================= Tabs & pages ======================= -->
-          <StackPanel Name="TabsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="TabsSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Tabs &amp; pages" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="TabControl" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TabControl" />
             <TabControl Width="560" Height="180" HorizontalAlignment="Left">
               <TabItem Header="Overview">
                 <TextBlock Margin="16" Text="Overview content." Foreground="{DynamicResource Md3OnSurfaceBrush}" />
@@ -516,17 +565,29 @@
               </TabItem>
             </TabControl>
 
-            <TextBlock Classes="title-small" Text="TabStrip" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TabStrip" />
             <TabStrip HorizontalAlignment="Left" SelectedIndex="0">
               <TabStripItem Content="One" />
               <TabStripItem Content="Two" />
               <TabStripItem Content="Three" />
             </TabStrip>
 
-            <TextBlock Classes="title-small" Text="PipsPager" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="PipsPager" />
             <PipsPager NumberOfPages="5" HorizontalAlignment="Left" />
 
-            <TextBlock Classes="title-small" Text="Expander" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Expander" />
             <StackPanel Spacing="12" Width="400" HorizontalAlignment="Left">
               <Expander Header="Expand down" ExpandDirection="Down">
                 <TextBlock Margin="8" Text="Content expanding downward." Foreground="{DynamicResource Md3OnSurfaceBrush}" />
@@ -537,7 +598,11 @@
               <Expander Header="Disabled" IsEnabled="False" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="Carousel" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Carousel" />
             <StackPanel Spacing="8" Width="400" HorizontalAlignment="Left">
               <Carousel Name="CarouselDemo" Height="120">
                 <Border Background="{DynamicResource Md3PrimaryContainerBrush}" CornerRadius="{StaticResource Md3CornerMedium}">
@@ -558,13 +623,19 @@
                 <Button Classes="outlined" Content="Next" Click="OnCarouselNext" />
               </StackPanel>
             </StackPanel>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Range ======================= -->
-          <StackPanel Name="RangeSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="RangeSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Range" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="Slider" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Slider" />
             <StackPanel Orientation="Horizontal" Spacing="32">
               <StackPanel Spacing="16" Width="300">
                 <Slider Minimum="0" Maximum="100" Value="30" />
@@ -574,7 +645,11 @@
               <Slider Orientation="Vertical" Height="150" Minimum="0" Maximum="100" Value="40" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="RangeSlider (lower / upper values)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="RangeSlider (lower / upper values)" />
             <StackPanel Spacing="28" Width="420" HorizontalAlignment="Left">
               <m3c:RangeSlider Minimum="0" Maximum="100" LowerValue="20" UpperValue="80" />
               <m3c:RangeSlider Name="SignedRangeSlider"
@@ -588,7 +663,11 @@
                                IsSnapToTickEnabled="True" IsDirectionReversed="True" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="ProgressBar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ProgressBar" />
             <StackPanel Orientation="Horizontal" Spacing="32">
               <StackPanel Spacing="16" Width="300">
                 <ProgressBar Minimum="0" Maximum="100" Value="60" />
@@ -598,7 +677,11 @@
               <ProgressBar Orientation="Vertical" Height="120" Minimum="0" Maximum="100" Value="45" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="CircularProgressIndicator" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="CircularProgressIndicator" />
             <StackPanel Orientation="Horizontal" Spacing="32" VerticalAlignment="Center">
               <m3c:CircularProgressIndicator Name="CircularDemo" Minimum="0" Maximum="100" Value="65" />
               <m3c:CircularProgressIndicator IsIndeterminate="True" />
@@ -606,7 +689,11 @@
               <Button Classes="tonal" Content="Random value" Click="OnCircularRandomClick" VerticalAlignment="Center" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="WavyProgressBar (M3 Expressive)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="WavyProgressBar (M3 Expressive)" />
             <StackPanel Spacing="16" Width="360" HorizontalAlignment="Left">
               <m3c:WavyProgressBar Name="WavyDemo" Minimum="0" Maximum="100" Value="60" />
               <m3c:WavyProgressBar IsIndeterminate="True" />
@@ -614,7 +701,11 @@
               <Button Classes="tonal" Content="Random value" Click="OnWavyRandomClick" HorizontalAlignment="Left" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="ScrollBar (via ScrollViewer)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ScrollBar (via ScrollViewer)" />
             <Border Width="320" Height="140" HorizontalAlignment="Left"
                     BorderBrush="{DynamicResource Md3OutlineVariantBrush}" BorderThickness="1"
                     CornerRadius="{StaticResource Md3CornerMedium}">
@@ -633,13 +724,19 @@
                 </StackPanel>
               </ScrollViewer>
             </Border>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Menus ======================= -->
-          <StackPanel Name="MenusSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="MenusSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Menus" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="Menu bar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Menu bar" />
             <m3c:Menu Name="DemoMenuBar" HorizontalAlignment="Left">
               <MenuItem Name="FileMenuItem" Header="File">
                 <MenuItem Header="New" InputGesture="Ctrl+N">
@@ -672,7 +769,11 @@
               </MenuItem>
             </m3c:Menu>
 
-            <TextBlock Classes="title-small" Text="ContextMenu (right-click)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ContextMenu (right-click)" />
             <Border Width="320" Height="80" HorizontalAlignment="Left"
                     Background="{DynamicResource Md3SurfaceContainerHighBrush}"
                     CornerRadius="{StaticResource Md3CornerMedium}">
@@ -689,7 +790,11 @@
                          Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             </Border>
 
-            <TextBlock Classes="title-small" Text="Flyouts &amp; ToolTip" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Flyouts &amp; ToolTip" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
               <Button Content="MenuFlyout">
                 <Button.Flyout>
@@ -714,29 +819,47 @@
               <Button Classes="outlined" Content="Hover for ToolTip"
                       ToolTip.Tip="This is a Material 3 tooltip" />
             </WrapPanel>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Date & time ======================= -->
-          <StackPanel Name="DateTimeSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="DateTimeSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Date &amp; time" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="CalendarDatePicker" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="CalendarDatePicker" />
             <StackPanel Spacing="12" Width="300" HorizontalAlignment="Left">
               <CalendarDatePicker PlaceholderText="Pick a date" HorizontalAlignment="Stretch" />
               <CalendarDatePicker IsEnabled="False" HorizontalAlignment="Stretch" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="DatePicker / TimePicker" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="DatePicker / TimePicker" />
             <StackPanel Spacing="12" HorizontalAlignment="Left">
               <DatePicker />
               <TimePicker />
               <TimePicker ClockIdentifier="24HourClock" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="Calendar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Calendar" />
             <Calendar Name="DemoCalendar" HorizontalAlignment="Left" />
 
-            <TextBlock Classes="title-small" Text="TimePickerPane (dial + AM/PM)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TimePickerPane (dial + AM/PM)" />
             <StackPanel Orientation="Horizontal" Spacing="32">
               <m3c:TimePickerPane Name="PaneDemo" SelectedHour="14" SelectedMinute="30" />
               <StackPanel Spacing="8" VerticalAlignment="Center">
@@ -744,6 +867,9 @@
                 <TextBlock Name="DialValue" Classes="body-medium" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
               </StackPanel>
             </StackPanel>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Table ======================= -->
@@ -753,10 +879,13 @@
           </StackPanel>
 
           <!-- ======================= Overlays ======================= -->
-          <StackPanel Name="OverlaysSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="OverlaysSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Overlays" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="Notifications" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Notifications" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
               <Button Content="Information" Click="OnNotifyInfo" />
               <Button Classes="tonal" Content="Success" Click="OnNotifySuccess" />
@@ -764,15 +893,25 @@
               <Button Classes="danger" Content="Error" Click="OnNotifyError" />
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="Dialog window" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Dialog window" />
             <Button Classes="elevated" Content="Show dialog" Click="OnShowDialog" />
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Misc ======================= -->
-          <StackPanel Name="MiscSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="MiscSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Misc" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="SplitView" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SplitView" />
             <StackPanel Spacing="8" HorizontalAlignment="Left" Width="480">
               <ToggleSwitch Name="PaneToggle" Content="Open pane" IsChecked="True" />
               <Border BorderBrush="{DynamicResource Md3OutlineVariantBrush}" BorderThickness="1"
@@ -789,7 +928,11 @@
               </Border>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="SelectableTextBlock / Label" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SelectableTextBlock / Label" />
             <SelectableTextBlock Text="This text can be selected and copied."
                                  Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -797,7 +940,11 @@
               <TextBox Name="LabeledBox" Width="200" PlaceholderText="Alt+N focuses me" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="GroupBox / HeaderedContentControl" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="GroupBox / HeaderedContentControl" />
             <StackPanel Orientation="Horizontal" Spacing="16">
               <GroupBox Header="GroupBox" Width="240">
                 <StackPanel Spacing="8" Margin="4">
@@ -810,7 +957,11 @@
               </HeaderedContentControl>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="Separator" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Separator" />
             <StackPanel Spacing="8" Width="400" HorizontalAlignment="Left">
               <TextBlock Text="Above the separator" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
               <Separator />
@@ -821,16 +972,26 @@
               </StackPanel>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="DataValidationErrors" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="DataValidationErrors" />
             <TextBox Name="ValidatedBox" Width="300" HorizontalAlignment="Left"
                      PlaceholderText="Enter a number 0-100" TextChanged="OnValidatedTextChanged" />
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= M3 Components ======================= -->
-          <StackPanel Name="M3ComponentsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="M3ComponentsSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="M3 Components" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="Chips" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Chips" />
             <m3c:ChipGroup Name="MainChipGroup" Spacing="8">
               <m3c:AssistChip Content="Assist chip">
                 <m3c:AssistChip.Icon>
@@ -844,7 +1005,11 @@
               <m3c:SuggestionChip Content="Suggestion chip" />
             </m3c:ChipGroup>
 
-            <TextBlock Classes="title-small" Text="Badge / BadgedBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Badge / BadgedBox" />
             <StackPanel Orientation="Horizontal" Spacing="24">
               <m3c:BadgedBox>
                 <m3c:BadgedBox.Badge>
@@ -864,14 +1029,22 @@
               </m3c:BadgedBox>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="Avatar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Avatar" />
             <StackPanel Orientation="Horizontal" Spacing="16">
               <m3c:Avatar Text="Circle" Variant="Circle" />
               <m3c:Avatar Text="Rounded" Variant="Rounded" />
               <m3c:Avatar Text="Square" Variant="Square" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="IconButton variants" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="IconButton variants" />
             <StackPanel Orientation="Horizontal" Spacing="12">
               <m3c:IconButton Variant="Standard">
                 <PathIcon Data="M12,21.35L10.55,20.03C5.4,15.36 2,12.28 2,8.5C2,5.42 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.09C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.42 22,8.5C22,12.28 18.6,15.36 13.45,20.03L12,21.35Z" />
@@ -887,7 +1060,11 @@
               </m3c:IconButton>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="IconToggleButton variants" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="IconToggleButton variants" />
             <StackPanel Orientation="Horizontal" Spacing="12">
               <m3c:IconToggleButton Variant="Standard" IsChecked="True">
                 <PathIcon Data="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
@@ -903,7 +1080,11 @@
               </m3c:IconToggleButton>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="Floating action buttons" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Floating action buttons" />
             <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
               <m3c:FloatingActionButton Size="Small">
                 <PathIcon Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
@@ -921,28 +1102,48 @@
               </m3c:ExtendedFloatingActionButton>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="SegmentedButtonGroup (Single)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SegmentedButtonGroup (Single)" />
             <m3c:SegmentedButtonGroup SelectionMode="Single" HorizontalAlignment="Left">
               <m3c:SegmentedButton Content="Day" IsChecked="True" />
               <m3c:SegmentedButton Content="Week" />
               <m3c:SegmentedButton Content="Month" />
             </m3c:SegmentedButtonGroup>
 
-            <TextBlock Classes="title-small" Text="ButtonGroup (Connected)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ButtonGroup (Connected)" />
             <m3c:ButtonGroup Variant="Connected" HorizontalAlignment="Left">
               <Button Content="Copy" />
               <Button Content="Paste" />
               <Button Content="Delete" />
             </m3c:ButtonGroup>
 
-            <TextBlock Classes="title-small" Text="RangeSlider" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="RangeSlider" />
             <m3c:RangeSlider Minimum="0" Maximum="100" LowerValue="20" UpperValue="80"
                              Width="360" HorizontalAlignment="Left" />
 
-            <TextBlock Classes="title-small" Text="SearchBar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SearchBar" />
             <m3c:SearchBar Watermark="Search components" Width="360" HorizontalAlignment="Left" />
 
-            <TextBlock Classes="title-small" Text="Setting items" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Setting items" />
             <m3c:Card Variant="Outlined" Width="480" HorizontalAlignment="Left">
               <StackPanel>
                 <m3c:SettingItem Headline="Account" SupportingText="Manage your account details">
@@ -959,10 +1160,18 @@
               </StackPanel>
             </m3c:Card>
 
-            <TextBlock Classes="title-small" Text="Snackbar (static)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Snackbar (static)" />
             <m3c:Snackbar Message="Photo saved to album" ActionText="UNDO" HorizontalAlignment="Left" />
 
-            <TextBlock Classes="title-small" Text="DialogPane (static)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="DialogPane (static)" />
             <m3c:DialogPane Title="Dialog title" Width="360" HorizontalAlignment="Left" Margin="0,0,0,16">
               <TextBlock Text="A dialog is a modal window that appears in front of app content."
                          TextWrapping="Wrap"
@@ -974,6 +1183,9 @@
                 </StackPanel>
               </m3c:DialogPane.Buttons>
             </m3c:DialogPane>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= M3 Layout ======================= -->
@@ -1152,10 +1364,13 @@
           </StackPanel>
 
           <!-- ======================= Loading & progress ======================= -->
-          <StackPanel Name="LoadingSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="LoadingSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Loading &amp; progress" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="LoadingIndicator (M3 Expressive)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="LoadingIndicator (M3 Expressive)" />
             <StackPanel Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
               <m3c:LoadingIndicator />
               <m3c:LoadingIndicator />
@@ -1165,7 +1380,11 @@
             <TextBlock Classes="body-medium" Text="Shape-morphing M3 Expressive loading indicator"
                        Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
 
-            <TextBlock Classes="title-small" Text="CircularProgressIndicator (plain / wavy)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="CircularProgressIndicator (plain / wavy)" />
             <StackPanel Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
               <m3c:CircularProgressIndicator Minimum="0" Maximum="100" Value="65" />
               <m3c:CircularProgressIndicator IsIndeterminate="True" />
@@ -1173,24 +1392,38 @@
               <m3c:CircularProgressIndicator IsWavy="True" IsIndeterminate="True" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="WavyProgressBar (M3 Expressive)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="WavyProgressBar (M3 Expressive)" />
             <StackPanel Spacing="16" Width="360" HorizontalAlignment="Left">
               <m3c:WavyProgressBar Minimum="0" Maximum="100" Value="60" />
               <m3c:WavyProgressBar IsIndeterminate="True" />
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="ProgressBar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ProgressBar" />
             <StackPanel Spacing="16" Width="360" HorizontalAlignment="Left">
               <ProgressBar Minimum="0" Maximum="100" Value="60" />
               <ProgressBar IsIndeterminate="True" />
             </StackPanel>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Button groups ======================= -->
-          <StackPanel Name="GroupsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="GroupsSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="Button groups" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="ButtonGroup (Standard)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ButtonGroup (Standard)" />
             <m3c:ButtonGroup Variant="Standard" HorizontalAlignment="Left">
               <Button Content="One" />
               <Button Content="Two" />
@@ -1199,26 +1432,41 @@
             <TextBlock Classes="body-medium" Text="Press and hold to see neighbors squeeze"
                        Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
 
-            <TextBlock Classes="title-small" Text="ButtonGroup (Connected)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="ButtonGroup (Connected)" />
             <m3c:ButtonGroup Variant="Connected" HorizontalAlignment="Left">
               <Button Content="One" />
               <Button Content="Two" />
               <Button Content="Three" />
             </m3c:ButtonGroup>
 
-            <TextBlock Classes="title-small" Text="SegmentedButtonGroup (Single)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SegmentedButtonGroup (Single)" />
             <m3c:SegmentedButtonGroup SelectionMode="Single" HorizontalAlignment="Left">
               <m3c:SegmentedButton Content="Day" IsChecked="True" />
               <m3c:SegmentedButton Content="Week" />
               <m3c:SegmentedButton Content="Month" />
             </m3c:SegmentedButtonGroup>
 
-            <TextBlock Classes="title-small" Text="SegmentedButtonGroup (Multiple)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SegmentedButtonGroup (Multiple)" />
             <m3c:SegmentedButtonGroup SelectionMode="Multiple" HorizontalAlignment="Left">
               <m3c:SegmentedButton Content="Bold" IsChecked="True" />
               <m3c:SegmentedButton Content="Italic" />
               <m3c:SegmentedButton Content="Underline" IsChecked="True" />
             </m3c:SegmentedButtonGroup>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Typography ======================= -->
