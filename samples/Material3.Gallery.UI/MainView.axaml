@@ -7,13 +7,14 @@
              Background="{DynamicResource Md3SurfaceBrush}">
 
   <Grid RowDefinitions="Auto,*">
-    <!-- Top bar: theme controls -->
+    <!-- Top bar: title + theme toggle on a single row; the theme generator (variant,
+         contrast, random seed) is tucked into a flyout so the bar stays uncluttered. -->
     <Border Grid.Row="0"
             Background="{DynamicResource Md3SurfaceContainerBrush}"
-            Padding="16,12">
-      <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+            Padding="24,16,24,12">
+      <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto">
         <!-- Hamburger (narrow screens only): 40x40 circular state-layer button toggling the overlay pane -->
-        <Button Name="MenuButton" Classes="text" IsVisible="False"
+        <Button Grid.Column="0" Name="MenuButton" Classes="text" IsVisible="False"
                 Width="40" Height="40" Padding="0" CornerRadius="20"
                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                 Click="OnMenuClick">
@@ -21,40 +22,57 @@
                 Data="M0,0 H18 V2 H0 Z M0,5 H18 V7 H0 Z M0,10 H18 V12 H0 Z"
                 Fill="{DynamicResource Md3OnSurfaceBrush}" />
         </Button>
-        <TextBlock Classes="title-large" Text="Material 3 Gallery"
+        <TextBlock Grid.Column="1" Classes="title-large" Text="Material 3 Gallery"
                    Foreground="{DynamicResource Md3OnSurfaceBrush}"
                    VerticalAlignment="Center" />
-        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-          <Button Name="LightButton" Classes="text" Content="Light" Click="OnLightClick" />
-          <Button Name="DarkButton" Classes="text" Content="Dark" Click="OnDarkClick" />
-          <Button Name="SeedButton" Classes="tonal" Content="Random seed" Click="OnSeedClick" />
-        </StackPanel>
-        <!-- Variant/Contrast are hidden on narrow screens (implementation choice: keep the
-             top bar single-row for touch/mobile; only Light/Dark/Random seed remain). -->
-        <StackPanel Name="VariantPanel" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-          <TextBlock Classes="label-large" Text="Variant"
-                     Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
-                     VerticalAlignment="Center" />
-          <ComboBox Name="VariantCombo" Width="160" SelectionChanged="OnVariantChanged">
-            <ComboBoxItem Content="TonalSpot" />
-            <ComboBoxItem Content="Neutral" />
-            <ComboBoxItem Content="Vibrant" />
-            <ComboBoxItem Content="Expressive" />
-            <ComboBoxItem Content="Fidelity" />
-            <ComboBoxItem Content="Content" />
-            <ComboBoxItem Content="Monochrome" />
-            <ComboBoxItem Content="Rainbow" />
-            <ComboBoxItem Content="FruitSalad" />
-          </ComboBox>
-        </StackPanel>
-        <StackPanel Name="ContrastPanel" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-          <TextBlock Classes="label-large" Text="Contrast"
-                     Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
-                     VerticalAlignment="Center" />
-          <Slider Name="ContrastSlider" Width="140" Minimum="0" Maximum="1"
-                  ValueChanged="OnContrastChanged" VerticalAlignment="Center" />
-        </StackPanel>
-      </StackPanel>
+
+        <!-- The knob state layer is 40dp on a 52dp track, so it overhangs the switch
+             bounds by 4dp on each side; the margin keeps that halo from being clipped. -->
+        <ToggleSwitch Grid.Column="3" Name="ThemeSwitch"
+                      OnContent="Dark" OffContent="Light"
+                      IsCheckedChanged="OnThemeSwitchChanged"
+                      Margin="6,0,12,0"
+                      VerticalAlignment="Center" />
+
+        <!-- Theme generator settings live in a flyout so the bar stays a single row of
+             two controls instead of four inline groups. -->
+        <Button Grid.Column="4" Name="ThemeSettingsButton" Classes="text"
+                Width="40" Height="40" Padding="0" CornerRadius="20"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                ToolTip.Tip="Theme settings">
+          <PathIcon Data="{x:Static icons:MaterialSymbols.Tune}" Width="20" Height="20" />
+          <Button.Flyout>
+            <Flyout Placement="BottomEdgeAlignedRight">
+              <StackPanel Width="260" Spacing="16" Margin="4">
+                <StackPanel Spacing="8">
+                  <TextBlock Classes="label-large" Text="Variant"
+                             Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                  <ComboBox Name="VariantCombo" HorizontalAlignment="Stretch"
+                            SelectionChanged="OnVariantChanged">
+                    <ComboBoxItem Content="TonalSpot" />
+                    <ComboBoxItem Content="Neutral" />
+                    <ComboBoxItem Content="Vibrant" />
+                    <ComboBoxItem Content="Expressive" />
+                    <ComboBoxItem Content="Fidelity" />
+                    <ComboBoxItem Content="Content" />
+                    <ComboBoxItem Content="Monochrome" />
+                    <ComboBoxItem Content="Rainbow" />
+                    <ComboBoxItem Content="FruitSalad" />
+                  </ComboBox>
+                </StackPanel>
+                <StackPanel Spacing="8">
+                  <TextBlock Classes="label-large" Text="Contrast"
+                             Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                  <Slider Name="ContrastSlider" Minimum="0" Maximum="1"
+                          ValueChanged="OnContrastChanged" />
+                </StackPanel>
+                <Button Name="SeedButton" Classes="tonal" Content="Random seed"
+                        HorizontalAlignment="Stretch" Click="OnSeedClick" />
+              </StackPanel>
+            </Flyout>
+          </Button.Flyout>
+        </Button>
+      </Grid>
     </Border>
 
     <!-- Responsive shell: wide (>= 900) = inline pane always open; narrow = overlay pane

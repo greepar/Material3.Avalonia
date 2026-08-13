@@ -79,14 +79,11 @@ public partial class MainView : UserControl
         _isCompact = compact;
         if (compact)
         {
-            // Narrow / touch: overlay pane closed by default, hamburger visible,
-            // Variant/Contrast hidden (implementation choice: keep only
-            // Light/Dark/Random seed so the top bar fits a phone width).
+            // Narrow / touch: overlay pane closed by default, hamburger visible. The
+            // theme generator controls already live in a flyout, so the bar itself fits.
             NavSplit.DisplayMode = SplitViewDisplayMode.Overlay;
             NavSplit.IsPaneOpen = false;
             MenuButton.IsVisible = true;
-            VariantPanel.IsVisible = false;
-            ContrastPanel.IsVisible = false;
         }
         else
         {
@@ -94,8 +91,6 @@ public partial class MainView : UserControl
             NavSplit.DisplayMode = SplitViewDisplayMode.Inline;
             NavSplit.IsPaneOpen = true;
             MenuButton.IsVisible = false;
-            VariantPanel.IsVisible = true;
-            ContrastPanel.IsVisible = true;
         }
     }
 
@@ -104,16 +99,12 @@ public partial class MainView : UserControl
 
     // ---- Top bar ----
 
-    private void OnLightClick(object? sender, RoutedEventArgs e)
+    private void OnThemeSwitchChanged(object? sender, RoutedEventArgs e)
     {
         if (global::Avalonia.Application.Current is { } app)
-            app.RequestedThemeVariant = ThemeVariant.Light;
-    }
-
-    private void OnDarkClick(object? sender, RoutedEventArgs e)
-    {
-        if (global::Avalonia.Application.Current is { } app)
-            app.RequestedThemeVariant = ThemeVariant.Dark;
+            app.RequestedThemeVariant = ThemeSwitch.IsChecked == true
+                ? ThemeVariant.Dark
+                : ThemeVariant.Light;
     }
 
     private void OnSeedClick(object? sender, RoutedEventArgs e)
