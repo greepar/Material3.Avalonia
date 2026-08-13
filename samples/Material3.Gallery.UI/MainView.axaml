@@ -4,7 +4,7 @@
              xmlns:icons="using:Material3.Avalonia.Icons"
              xmlns:local="using:Material3.Gallery.UI"
              x:Class="Material3.Gallery.UI.MainView"
-             Background="{DynamicResource Md3SurfaceBrush}">
+             Background="{DynamicResource Md3SurfaceContainerBrush}">
 
   <UserControl.Styles>
     <!-- The SplitView template always paints a 1px divider on the pane edge. The shell
@@ -158,9 +158,15 @@
         </ScrollViewer>
       </SplitView.Pane>
 
-      <!-- Content area -->
-      <ScrollViewer Name="ContentScroll">
-        <Panel Margin="24">
+      <!-- Content area: a lighter Surface panel on the darker shell. Only the top-left
+           corner is rounded so the panel sits flush against the rail and the top bar.
+           The inset lives on the content Panel, not the ScrollViewer: ScrollViewer
+           padding is not added to the scrollable extent, so a bottom padding there
+           would clip the last section instead of letting it scroll fully into view. -->
+      <Border Background="{DynamicResource Md3SurfaceBrush}"
+              CornerRadius="28,0,0,0">
+        <ScrollViewer Name="ContentScroll">
+          <Panel Margin="32,32,32,48">
 
           <!-- ======================= Buttons ======================= -->
           <StackPanel Name="ButtonsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left">
@@ -1214,8 +1220,9 @@
             </StackPanel>
           </Grid>
 
-        </Panel>
-      </ScrollViewer>
+          </Panel>
+        </ScrollViewer>
+      </Border>
     </SplitView>
   </Grid>
 </UserControl>
