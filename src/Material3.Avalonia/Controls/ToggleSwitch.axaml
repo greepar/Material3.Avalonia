@@ -32,64 +32,70 @@
                             RecognizesAccessKey="True"
                             Margin="0,0,0,6" />
           <Grid Grid.Row="1"
-                ColumnDefinitions="Auto,12,Auto"
+                ColumnDefinitions="Auto,8,Auto"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top">
             <Panel Grid.Column="0"
-                   Width="52"
-                   Height="32"
+                   Width="60"
+                   Height="40"
                    TemplatedControl.IsTemplateFocusTarget="True">
-              <!-- track -->
-              <Border Name="PART_Track"
-                      Width="52"
-                      Height="32"
-                      CornerRadius="{StaticResource Md3CornerFull}"
-                      Background="{DynamicResource Md3SurfaceContainerHighestBrush}"
-                      BorderBrush="{DynamicResource Md3OutlineBrush}"
-                      BorderThickness="2" />
-              <!-- knob travel canvas: width = travel distance -->
-              <Canvas Name="PART_SwitchKnob"
-                      Width="20"
-                      Height="24"
-                      Margin="4,0,0,0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center">
-                <Panel Name="PART_MovingKnobs"
-                       Width="24"
-                       Height="24">
-                  <!-- circular hover state layer centered on knob -->
-                  <Ellipse Name="PART_KnobStateLayer"
-                           Width="40"
-                           Height="40"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Fill="{DynamicResource Md3OnSurfaceBrush}"
-                           Opacity="0"
-                           IsHitTestVisible="False" />
-                  <m3p:RippleHost Width="40"
-                                  Height="40"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
-                                  RippleOpacity="{StaticResource Md3StatePressedOpacity}"
-                                  RippleClipRadius="9999" />
-                  <Ellipse Name="PART_Knob"
-                           Width="16"
-                           Height="16"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Fill="{DynamicResource Md3OutlineBrush}"
-                           RenderTransformOrigin="50%,50%" />
-                </Panel>
-              </Canvas>
-              <!-- focus ring -->
-              <Border Name="PART_FocusRing"
-                      BorderBrush="{DynamicResource Md3PrimaryBrush}"
-                      BorderThickness="{StaticResource Md3FocusRingThickness}"
-                      CornerRadius="{StaticResource Md3CornerFull}"
-                      Margin="-3"
-                      IsVisible="False"
-                      IsHitTestVisible="False" />
+              <!-- The 60x40 visual slot reserves 4dp around the 52x32 track for the
+                   knob's 40dp state layer at both ends of its travel. -->
+              <Panel Width="52" Height="32"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center">
+                <!-- track -->
+                <Border Name="PART_Track"
+                        Width="52"
+                        Height="32"
+                        CornerRadius="{StaticResource Md3CornerFull}"
+                        Background="{DynamicResource Md3SurfaceContainerHighestBrush}"
+                        BorderBrush="{DynamicResource Md3OutlineBrush}"
+                        BorderThickness="2" />
+                <!-- knob travel canvas: width = travel distance -->
+                <Canvas Name="PART_SwitchKnob"
+                        Width="20"
+                        Height="24"
+                        Margin="4,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                  <Panel Name="PART_MovingKnobs"
+                         Width="24"
+                         Height="24">
+                    <!-- circular hover state layer centered on knob -->
+                    <Ellipse Name="PART_KnobStateLayer"
+                             Width="40"
+                             Height="40"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             Fill="{DynamicResource Md3OnSurfaceBrush}"
+                             Opacity="0"
+                             IsHitTestVisible="False" />
+                    <m3p:RippleHost Width="40"
+                                    Height="40"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    RippleBrush="{DynamicResource Md3OnSurfaceBrush}"
+                                    RippleOpacity="{StaticResource Md3StatePressedOpacity}"
+                                    RippleClipRadius="9999" />
+                    <Ellipse Name="PART_Knob"
+                             Width="16"
+                             Height="16"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             Fill="{DynamicResource Md3OutlineBrush}"
+                             RenderTransformOrigin="50%,50%" />
+                  </Panel>
+                </Canvas>
+                <!-- focus ring -->
+                <Border Name="PART_FocusRing"
+                        BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                        BorderThickness="{StaticResource Md3FocusRingThickness}"
+                        CornerRadius="{StaticResource Md3CornerFull}"
+                        Margin="-3"
+                        IsVisible="False"
+                        IsHitTestVisible="False" />
+              </Panel>
             </Panel>
             <!-- on/off labels -->
             <ContentPresenter Name="PART_OffContentPresenter"
