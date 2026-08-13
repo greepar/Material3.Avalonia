@@ -44,13 +44,14 @@
     </Style>
   </ControlTheme>
 
-  <!-- Material 3 TreeViewItem: pill-shaped selection -->
+  <!-- Material 3 TreeViewItem -->
   <ControlTheme x:Key="{x:Type TreeViewItem}" TargetType="TreeViewItem">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceBrush}" />
+    <Setter Property="Margin" Value="12,4" />
     <Setter Property="MinHeight" Value="40" />
-    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerFull}" />
+    <Setter Property="CornerRadius" Value="{StaticResource Md3CornerSmall}" />
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
     <Setter Property="Template">
@@ -120,7 +121,7 @@
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
     </Style>
 
-    <!-- Selected: pill of SecondaryContainer -->
+    <!-- Selected: SecondaryContainer -->
     <Style Selector="^:selected /template/ Border#PART_LayoutRoot">
       <Setter Property="Background" Value="{DynamicResource Md3SecondaryContainerBrush}" />
     </Style>

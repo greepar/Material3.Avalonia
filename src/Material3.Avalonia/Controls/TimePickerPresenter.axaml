@@ -16,11 +16,11 @@
       <ControlTemplate>
         <Border Name="PART_Container"
                 Background="{TemplateBinding Background}"
-                CornerRadius="{StaticResource Md3CornerFull}">
+                CornerRadius="{StaticResource Md3CornerSmall}">
           <Panel>
             <Border Name="PART_StateLayer"
                     Background="{DynamicResource Md3OnSurfaceBrush}"
-                    CornerRadius="{StaticResource Md3CornerFull}"
+                    CornerRadius="{StaticResource Md3CornerSmall}"
                     Opacity="0"
                     IsHitTestVisible="False" />
             <ContentPresenter Name="PART_ContentPresenter"
@@ -219,7 +219,7 @@
                         IsHitTestVisible="False"
                         ZIndex="-1"
                         Background="{DynamicResource Md3SecondaryContainerBrush}"
-                        CornerRadius="{StaticResource Md3CornerFull}"
+                        CornerRadius="{StaticResource Md3CornerSmall}"
                         Grid.Column="0"
                         Grid.ColumnSpan="7"
                         VerticalAlignment="Center"

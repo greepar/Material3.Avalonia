@@ -11,7 +11,7 @@ A standalone Material Design 3 theme and component library for Avalonia 12.1 on 
 - Material-specific controls including chips, FAB menus, button groups, sheets, search, time picker, wavy progress, loading morphs, and range sliders.
 - 4,007 Google Material Symbols Rounded 400 icons, optically sized for 24dp, in regular and filled variants as cached Avalonia `Geometry` objects.
 - Pointer-centered ripples, state layers, elevation, expressive shape transitions, and responsive Gallery layouts.
-- Desktop Gallery tray integration with a native tray entry and a custom Material background panel.
+- Desktop Gallery tray integration with a compact native menu.
 - AOT/trim analyzers enabled in the library and shared Gallery UI.
 
 ## Requirements

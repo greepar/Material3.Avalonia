@@ -4,13 +4,13 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Styling;
 
 namespace Material3.Gallery.UI;
 
 public class App : Application
 {
     private TrayIcon? _trayIcon;
-    private TrayPanelWindow? _trayPanel;
     private bool _isExiting;
 
     public static bool EnableDesktopTray { get; set; }
@@ -44,21 +44,28 @@ public class App : Application
     private void ConfigureTray(IClassicDesktopStyleApplicationLifetime desktop, Window mainWindow)
     {
         desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        _trayPanel = new TrayPanelWindow();
-        _trayPanel.ShowGalleryRequested += (_, _) => ShowMainWindow(mainWindow);
-        _trayPanel.QuitRequested += (_, _) => Quit(desktop);
-
-        var showPanelItem = new NativeMenuItem("Open Material panel");
-        showPanelItem.Click += (_, _) => ShowTrayPanel();
         var showGalleryItem = new NativeMenuItem("Show gallery");
         showGalleryItem.Click += (_, _) => ShowMainWindow(mainWindow);
+        var darkThemeItem = new NativeMenuItem("Dark theme")
+        {
+            ToggleType = MenuItemToggleType.CheckBox,
+            IsChecked = ActualThemeVariant == ThemeVariant.Dark,
+        };
+        darkThemeItem.Click += (_, _) =>
+        {
+            var useDarkTheme = ActualThemeVariant != ThemeVariant.Dark;
+            RequestedThemeVariant = useDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
+            darkThemeItem.IsChecked = useDarkTheme;
+        };
         var quitItem = new NativeMenuItem("Quit");
         quitItem.Click += (_, _) => Quit(desktop);
         var menu = new NativeMenu();
-        menu.Items.Add(showPanelItem);
         menu.Items.Add(showGalleryItem);
+        menu.Items.Add(darkThemeItem);
         menu.Items.Add(new NativeMenuItemSeparator());
         menu.Items.Add(quitItem);
+        menu.NeedsUpdate += (_, _) =>
+            darkThemeItem.IsChecked = ActualThemeVariant == ThemeVariant.Dark;
 
         _trayIcon = new TrayIcon
         {
@@ -67,7 +74,6 @@ public class App : Application
             Menu = menu,
             IsVisible = true,
         };
-        _trayIcon.Clicked += (_, _) => ShowTrayPanel();
         TrayIcon.SetIcons(this, new TrayIcons { _trayIcon });
 
         mainWindow.Closing += (_, e) =>
@@ -76,7 +82,6 @@ public class App : Application
                 return;
             e.Cancel = true;
             mainWindow.Hide();
-            ShowTrayPanel();
         };
         desktop.Exit += (_, _) => _trayIcon?.Dispose();
     }
@@ -95,16 +100,6 @@ public class App : Application
         return new WindowIcon(bitmap);
     }
 
-    private void ShowTrayPanel()
-    {
-        if (_trayPanel is null)
-            return;
-        _trayPanel.SyncTheme();
-        if (!_trayPanel.IsVisible)
-            _trayPanel.Show();
-        _trayPanel.Activate();
-    }
-
     private static void ShowMainWindow(Window mainWindow)
     {
         if (!mainWindow.IsVisible)
@@ -117,7 +112,6 @@ public class App : Application
     private void Quit(IClassicDesktopStyleApplicationLifetime desktop)
     {
         _isExiting = true;
-        _trayPanel?.Close();
         _trayIcon?.Dispose();
         desktop.Shutdown();
     }

@@ -160,6 +160,20 @@ public static class Program
                     Assert(!floatingToolbar.ClipToBounds,
                         "gallery-m3-layout: floating toolbar must not clip its elevation shadow");
 
+                    sectionsList.SelectedIndex = 7; // Lists & settings
+                    Pump(4, 50);
+                    var firstListItem = view.GetVisualDescendants().OfType<ListBoxItem>()
+                        .First(item => item is not NavigationRailItem);
+                    Assert(firstListItem.CornerRadius.TopLeft == 8,
+                        $"options: ListBoxItem radius should be 8dp, got {firstListItem.CornerRadius}");
+                    Assert(firstListItem.Margin == new Thickness(12, 4) && firstListItem.MinHeight == 40,
+                        $"options: ListBoxItem highlight should be compact, got margin {firstListItem.Margin} and height {firstListItem.MinHeight}");
+                    var firstTreeItem = view.GetVisualDescendants().OfType<TreeViewItem>().First();
+                    Assert(firstTreeItem.CornerRadius.TopLeft == 8,
+                        $"options: TreeViewItem radius should be 8dp, got {firstTreeItem.CornerRadius}");
+                    Assert(firstTreeItem.Margin == new Thickness(12, 4),
+                        $"options: TreeViewItem highlight should be inset, got margin {firstTreeItem.Margin}");
+
                     sectionsList.SelectedIndex = 10; // Loading & progress (LoadingSection)
                     Pump(6, 50);
                     Capture(window, "/tmp/m3-nav-loading.png", out var navLoadingPixels);
@@ -238,6 +252,26 @@ public static class Program
 
                     sectionsList.SelectedIndex = 12; // Date & time
                     Pump(6, 50);
+                    var datePicker = view.GetVisualDescendants().OfType<DatePicker>().First();
+                    var datePopup = datePicker.GetVisualDescendants().OfType<Popup>().First();
+                    datePopup.IsOpen = true;
+                    Pump(2, 50);
+                    var dateHighlight = datePopup.Child!.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "HighlightRect");
+                    Assert(dateHighlight.CornerRadius.TopLeft == 8,
+                        $"date-picker: selected row radius should be 8dp, got {dateHighlight.CornerRadius}");
+                    datePopup.IsOpen = false;
+
+                    var timePicker = view.GetVisualDescendants().OfType<TimePicker>().First();
+                    var timePopup = timePicker.GetVisualDescendants().OfType<Popup>().First();
+                    timePopup.IsOpen = true;
+                    Pump(2, 50);
+                    var timeHighlight = timePopup.Child!.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "HighlightRect");
+                    Assert(timeHighlight.CornerRadius.TopLeft == 8,
+                        $"time-picker: selected row radius should be 8dp, got {timeHighlight.CornerRadius}");
+                    timePopup.IsOpen = false;
+
                     var calendar = view.FindControl<Calendar>("DemoCalendar")
                                    ?? throw new InvalidOperationException("DemoCalendar not found");
                     calendar.DisplayDate = new DateTime(2026, 9, 17);
@@ -264,13 +298,26 @@ public static class Program
                     Pump(6, 50);
                     var table = view.FindControl<TableView>("TableDemo")
                                 ?? throw new InvalidOperationException("TableDemo not found");
+                    var firstHeader = table.GetVisualDescendants().OfType<TableViewColumnHeader>().First();
+                    var headerStateLayer = firstHeader.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "PART_StateLayer");
+                    Assert(headerStateLayer.Bounds.Height >= 34,
+                        $"table: header hover layer should cover the full header height, got {headerStateLayer.Bounds.Height:F1}");
+                    var headerBottom = firstHeader.TranslatePoint(
+                                           new Point(firstHeader.Bounds.Width / 2, firstHeader.Bounds.Height - 3), window)
+                                       ?? throw new InvalidOperationException("Table header TranslatePoint failed");
+                    window.MouseMove(headerBottom);
+                    Pump(2, 50);
+                    Assert(headerStateLayer.Opacity > 0,
+                        "table: hovering below the header text should activate the full header state layer");
+
                     var firstRow = table.GetVisualDescendants().OfType<TableViewRow>().First();
                     var rowStateLayer = firstRow.GetVisualDescendants().OfType<Border>()
                         .First(border => border.Name == "PART_StateLayer");
                     Assert(rowStateLayer.Bounds.Width >= firstRow.Bounds.Width - 1,
                         $"table: row hover layer should span the row ({rowStateLayer.Bounds.Width:F1}/{firstRow.Bounds.Width:F1})");
                     var rowRight = firstRow.TranslatePoint(
-                                       new Point(firstRow.Bounds.Width - 24, firstRow.Bounds.Height / 2), window)
+                                       new Point(firstRow.Bounds.Width - 48, firstRow.Bounds.Height / 2), window)
                                    ?? throw new InvalidOperationException("Table row TranslatePoint failed");
                     window.MouseMove(rowRight);
                     Pump(2, 50);
@@ -311,18 +358,6 @@ public static class Program
                     Assert(iconPixels > 500, $"icons: screenshot looks blank ({iconPixels} px)");
 
                     window.Close();
-                }
-
-                // ---- Scenario I: Material tray panel ----
-                {
-                    var trayPanel = new TrayPanelWindow();
-                    trayPanel.Show();
-                    Pump(6, 50);
-                    Capture(trayPanel, "/tmp/m3-tray-panel.png", out var trayPixels);
-                    Assert(trayPixels > 500, $"tray-panel: screenshot looks blank ({trayPixels} px)");
-                    Assert(!trayPanel.ShowInTaskbar && trayPanel.Topmost,
-                        "tray-panel: expected a topmost utility window hidden from the taskbar");
-                    trayPanel.Close();
                 }
 
                 // ---- Scenario B: narrow (420x800) — overlay closed, hamburger visible ----

@@ -17,12 +17,11 @@
             <!-- M3 data table header row: surface tone + bottom divider.
                  Top corners match the outer 12dp rounded container (minus 1px border)
                  so the square header background is not visibly cut by the corner clip. -->
-            <Border Background="{DynamicResource Md3SurfaceContainerLowBrush}"
-                    BorderBrush="{DynamicResource Md3OutlineVariantBrush}"
-                    BorderThickness="0,0,0,1"
-                    CornerRadius="11,11,0,0"
-                    Padding="{DynamicResource Md3TableViewRowPadding}"
-                    DockPanel.Dock="Top">
+             <Border Background="{DynamicResource Md3SurfaceContainerLowBrush}"
+                     BorderBrush="{DynamicResource Md3OutlineVariantBrush}"
+                     BorderThickness="0,0,0,1"
+                     CornerRadius="11,11,0,0"
+                     DockPanel.Dock="Top">
               <TableViewColumnHeadersPresenter />
             </Border>
             <ScrollContentPresenter Name="PART_ContentPresenter"

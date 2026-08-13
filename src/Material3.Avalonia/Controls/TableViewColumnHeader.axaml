@@ -8,7 +8,8 @@
        M3 style: label-large (14 Medium) on OnSurfaceVariant with hover state layer. -->
 
   <x:Double x:Key="Md3TableViewColumnResizerWidth">12</x:Double>
-  <Thickness x:Key="Md3TableViewColumnResizerMargin">0,-9,-6,-12</Thickness>
+  <Thickness x:Key="Md3TableViewColumnResizerMargin">0,0,-6,0</Thickness>
+  <Thickness x:Key="Md3TableViewColumnHeaderPadding">18,9,18,12</Thickness>
 
   <ControlTemplate x:Key="Md3TableViewColumnHeaderResizerTemplate" TargetType="Thumb">
     <Border Background="Transparent">
@@ -19,11 +20,12 @@
   </ControlTemplate>
 
   <ControlTheme x:Key="{x:Type TableViewColumnHeader}" TargetType="TableViewColumnHeader">
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
     <Setter Property="FontSize" Value="{StaticResource Md3LabelLargeSize}" />
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="{DynamicResource Md3FontFamilyPlain}" />
-    <Setter Property="Padding" Value="{DynamicResource Md3TableViewCellPadding}" />
+    <Setter Property="Padding" Value="{StaticResource Md3TableViewColumnHeaderPadding}" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="ClipToBounds" Value="False" />
