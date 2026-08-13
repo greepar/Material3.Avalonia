@@ -58,7 +58,8 @@
         <ToggleSwitch Grid.Column="3" Name="ThemeSwitch"
                       OnContent="Dark" OffContent="Light"
                       IsCheckedChanged="OnThemeSwitchChanged"
-                      Margin="6,0,12,0"
+                      ClipToBounds="False"
+                      Margin="12,0"
                       VerticalAlignment="Center" />
 
         <!-- Theme generator settings live in a flyout so the bar stays a single row of
