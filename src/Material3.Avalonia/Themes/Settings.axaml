@@ -160,10 +160,11 @@
               </Grid>
             </Panel>
           </Border>
+          <!-- Top inset separates the expanded content from the header's hover state layer. -->
           <ContentPresenter Name="PART_ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
-                            Margin="56,0,16,16"
+                            Margin="56,4,16,16"
                             IsVisible="False"
                             Opacity="0">
             <ContentPresenter.Transitions>
