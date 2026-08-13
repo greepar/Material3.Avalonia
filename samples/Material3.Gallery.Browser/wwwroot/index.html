@@ -5,13 +5,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="./" />
+    <meta name="color-scheme" content="light dark" />
     <style>
+        /* M3 baseline scheme for seed #6750A4, matching MaterialTheme in the app. */
+        :root {
+            --m3-surface: #FEF7FF;
+            --m3-on-surface-variant: #49454F;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --m3-surface: #141218;
+                --m3-on-surface-variant: #CAC4D0;
+            }
+        }
+
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #FEF7FF;
+            background: var(--m3-surface);
             font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -44,18 +58,37 @@
         }
 
         .splash {
+            position: fixed;
+            inset: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            color: #6750A4;
+            gap: 24px;
+            background: var(--m3-surface);
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .splash--hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .splash-label {
+            font-size: 14px;
+            letter-spacing: 0.1px;
+            color: var(--m3-on-surface-variant);
         }
     </style>
 </head>
 <body>
-    <div id="out">
-        <div class="splash"><h2>Loading Material 3 Gallery…</h2></div>
+    <div id="out"></div>
+    <div id="splash" class="splash">
+        <canvas id="splash-canvas"></canvas>
+        <div class="splash-label">Loading Material 3 Gallery…</div>
     </div>
+    <script type="module" src="./splash.js"></script>
     <script type="module" src="./main.js"></script>
 </body>
 </html>

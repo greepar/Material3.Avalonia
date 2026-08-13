@@ -3,8 +3,8 @@
              xmlns:m3="using:Material3.Avalonia"
              x:Class="Material3.Gallery.UI.App">
     <Application.Resources>
-        <FontFamily x:Key="Md3FontFamilyPlain">Inter</FontFamily>
-        <FontFamily x:Key="Md3FontFamilyBrand">Inter</FontFamily>
+        <FontFamily x:Key="Md3FontFamilyPlain">Inter, avares://Material3.Gallery.UI/Assets/Fonts#Noto Sans SC</FontFamily>
+        <FontFamily x:Key="Md3FontFamilyBrand">Inter, avares://Material3.Gallery.UI/Assets/Fonts#Noto Sans SC</FontFamily>
     </Application.Resources>
     <Application.Styles>
         <m3:MaterialTheme SeedColor="#6750A4" />

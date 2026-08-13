@@ -23,6 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <AvaloniaResource Include="Assets\Fonts\*" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\src\Material3.Avalonia\Material3.Avalonia.csproj" />
     </ItemGroup>
 

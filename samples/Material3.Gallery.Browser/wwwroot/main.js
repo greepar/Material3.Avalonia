@@ -11,6 +11,8 @@ try {
     // The runtime falls back to the uncompressed asset on older browsers.
 }
 
+const splash = globalThis.m3Splash;
+
 function loadCompressedResource(type, name, defaultUri, integrity, behavior) {
     if (!supportsBrotli || type.includes('js') || type === 'configuration' || type === 'manifest') {
         return undefined;
@@ -40,4 +42,17 @@ const dotnetRuntime = await dotnet
 
 const config = dotnetRuntime.getConfig();
 
+// Avalonia renders into a canvas it appends to #out; hide the splash on the first painted frame.
+const out = document.getElementById('out');
+const observer = new MutationObserver(() => {
+    if (out.querySelector('canvas')) {
+        observer.disconnect();
+        requestAnimationFrame(() => requestAnimationFrame(() => splash?.hide()));
+    }
+});
+observer.observe(out, { childList: true, subtree: true });
+
 await dotnetRuntime.runMain(config.mainAssemblyName, [globalThis.location.href]);
+
+observer.disconnect();
+splash?.hide();
