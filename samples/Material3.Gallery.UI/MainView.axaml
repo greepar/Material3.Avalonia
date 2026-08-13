@@ -1145,7 +1145,9 @@
               <Border Classes="demo-card">
                 <StackPanel>
                   <TextBlock Classes="title-small demo-caption" Text="Setting items" />
-            <m3c:Card Variant="Outlined" Width="480" HorizontalAlignment="Left">
+            <!-- ClipToBounds keeps each row's rectangular hover state layer from painting
+                 past the card's rounded corners. -->
+            <m3c:Card Variant="Outlined" Width="480" HorizontalAlignment="Left" ClipToBounds="True">
               <StackPanel>
                 <m3c:SettingItem Headline="Account" SupportingText="Manage your account details">
                   <m3c:SettingItem.Icon>
