@@ -90,31 +90,27 @@
                 </Transitions>
               </Path.Transitions>
             </Path>
-            <!-- HorizontalOffset -12 shifts the popup box left by the same 12dp the border's
-                 left margin insets it, so the visible dropdown's left edge lines up with the
-                 target. The border's Width is pinned to the target width, and the 12dp side
-                 margins around it reserve room for the BoxShadow (which is why the popup box
-                 is wider than the target). -->
+            <!-- The popup box matches the target width and is centered under it; the border's
+                 12dp side margins inset the visible dropdown slightly and reserve room for the
+                 BoxShadow so it is not clipped. -->
             <Popup Name="PART_Popup"
                    WindowManagerAddShadowHint="False"
                    IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
                    PlacementTarget="PART_Background"
                    IsLightDismissEnabled="True"
-                   HorizontalOffset="-12"
                    VerticalOffset="-4"
                    InheritsTransform="True">
-              <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup
-                   bounds; Width pins the visible border to the target width. -->
+              <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
               <Border Name="PART_PopupBorder"
                       m3p:Entrance.Animation="GrowDown"
                       RenderTransformOrigin="50%,0%"
                       Margin="12,8,12,16"
-                      Width="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                       Background="{DynamicResource Md3SurfaceContainerBrush}"
                       CornerRadius="{StaticResource Md3CornerSmall}"
                       BoxShadow="{StaticResource Md3Elevation2}"
-                      HorizontalAlignment="Left">
+                      HorizontalAlignment="Stretch">
                 <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
                               VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
                               IsScrollChainingEnabled="False"
