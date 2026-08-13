@@ -142,14 +142,20 @@
                              TextWrapping="Wrap"
                              IsVisible="False" />
                 </StackPanel>
+                <!-- Thin stroked chevron (2dp) in a 24dp box. The collapsed state pins an
+                     explicit rotate(0deg) so the :expanded rotate(180deg) interpolates as an
+                     in-place spin rather than a swap. -->
                 <Path Grid.Column="2"
                       Name="PART_Chevron"
-                      Data="M 7.41,8.58 L 12,13.17 L 16.59,8.58 L 18,10 L 12,16 L 6,10 Z"
-                      Fill="{DynamicResource Md3OnSurfaceVariantBrush}"
+                      Data="M 8,10 L 12,14 L 16,10"
+                      Stroke="{DynamicResource Md3OnSurfaceVariantBrush}"
+                      StrokeThickness="2"
+                      StrokeLineCap="Round"
+                      StrokeJoin="Round"
                       Width="24" Height="24"
-                      Stretch="Uniform"
                       VerticalAlignment="Center"
                       Margin="16,0,0,0"
+                      RenderTransform="rotate(0deg)"
                       RenderTransformOrigin="50%,50%">
                   <Path.Transitions>
                     <Transitions>
