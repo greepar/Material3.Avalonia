@@ -12,6 +12,12 @@
     <Style Selector="SplitView /template/ Rectangle#HCPaneBorder">
       <Setter Property="IsVisible" Value="False" />
     </Style>
+
+    <!-- Page-level title rhythm: a display-small heading with a small gap below,
+         separating it from the section content. -->
+    <Style Selector="TextBlock.page-title">
+      <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
   </UserControl.Styles>
 
   <Grid RowDefinitions="Auto,*">
@@ -170,7 +176,7 @@
 
           <!-- ======================= Buttons ======================= -->
           <StackPanel Name="ButtonsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left">
-            <TextBlock Classes="headline-small" Text="Buttons" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Buttons" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Material Symbols Geometry" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <WrapPanel ItemSpacing="20" LineSpacing="12" VerticalAlignment="Center">
@@ -322,7 +328,7 @@
 
           <!-- ======================= Selection ======================= -->
           <StackPanel Name="SelectionSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Selection" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Selection" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="CheckBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Spacing="8" Width="360" HorizontalAlignment="Left">
@@ -353,7 +359,7 @@
 
           <!-- ======================= Text inputs ======================= -->
           <StackPanel Name="TextInputsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Text inputs" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Text inputs" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="TextBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Spacing="12" Width="360" HorizontalAlignment="Left">
@@ -380,7 +386,7 @@
 
           <!-- ======================= Lists ======================= -->
           <StackPanel Name="ListsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Lists" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Lists" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="ListBox" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <ListBox Width="320" Height="240" HorizontalAlignment="Left" SelectedIndex="1">
@@ -432,7 +438,7 @@
 
           <!-- ======================= Combo ======================= -->
           <StackPanel Name="ComboSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="ComboBox" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="ComboBox" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <StackPanel Spacing="12" Width="280" HorizontalAlignment="Left">
               <ComboBox PlaceholderText="Pick an option" HorizontalAlignment="Stretch">
                 <ComboBoxItem Content="Option A" />
@@ -452,7 +458,7 @@
 
           <!-- ======================= Tabs & pages ======================= -->
           <StackPanel Name="TabsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Tabs &amp; pages" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Tabs &amp; pages" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="TabControl" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <TabControl Width="560" Height="180" HorizontalAlignment="Left">
@@ -513,7 +519,7 @@
 
           <!-- ======================= Range ======================= -->
           <StackPanel Name="RangeSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Range" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Range" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Slider" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="32">
@@ -588,7 +594,7 @@
 
           <!-- ======================= Menus ======================= -->
           <StackPanel Name="MenusSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Menus" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Menus" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Menu bar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <m3c:Menu Name="DemoMenuBar" HorizontalAlignment="Left">
@@ -669,7 +675,7 @@
 
           <!-- ======================= Date & time ======================= -->
           <StackPanel Name="DateTimeSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Date &amp; time" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Date &amp; time" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="CalendarDatePicker" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Spacing="12" Width="300" HorizontalAlignment="Left">
@@ -699,13 +705,13 @@
 
           <!-- ======================= Table ======================= -->
           <StackPanel Name="TableSection" Spacing="16" HorizontalAlignment="Stretch" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="TableView" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="TableView" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <TableView Name="TableDemo" Height="360" />
           </StackPanel>
 
           <!-- ======================= Overlays ======================= -->
           <StackPanel Name="OverlaysSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Overlays" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Overlays" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Notifications" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
@@ -721,7 +727,7 @@
 
           <!-- ======================= Misc ======================= -->
           <StackPanel Name="MiscSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Misc" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Misc" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="SplitView" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Spacing="8" HorizontalAlignment="Left" Width="480">
@@ -779,7 +785,7 @@
 
           <!-- ======================= M3 Components ======================= -->
           <StackPanel Name="M3ComponentsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="M3 Components" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="M3 Components" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="Chips" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <m3c:ChipGroup Name="MainChipGroup" Spacing="8">
@@ -929,7 +935,7 @@
 
           <!-- ======================= M3 Layout ======================= -->
           <StackPanel Name="M3LayoutSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="M3 Layout" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="M3 Layout" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="TopAppBar (Small)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <m3c:TopAppBar Title="Top app bar" Variant="Small" Width="560" HorizontalAlignment="Left">
@@ -1070,7 +1076,7 @@
 
           <!-- ======================= Loading & progress ======================= -->
           <StackPanel Name="LoadingSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Loading &amp; progress" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Loading &amp; progress" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="LoadingIndicator (M3 Expressive)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <StackPanel Orientation="Horizontal" Spacing="24" VerticalAlignment="Center">
@@ -1105,7 +1111,7 @@
 
           <!-- ======================= Button groups ======================= -->
           <StackPanel Name="GroupsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Button groups" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Button groups" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
             <TextBlock Classes="title-small" Text="ButtonGroup (Standard)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <m3c:ButtonGroup Variant="Standard" HorizontalAlignment="Left">
@@ -1140,7 +1146,7 @@
 
           <!-- ======================= Typography ======================= -->
           <StackPanel Name="TypographySection" Spacing="8" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Typography" Foreground="{DynamicResource Md3OnSurfaceBrush}" Margin="0,0,0,8" />
+            <TextBlock Classes="display-small page-title" Text="Typography" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <TextBlock Classes="display-large" Text="Display Large" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <TextBlock Classes="display-medium" Text="Display Medium" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <TextBlock Classes="display-small" Text="Display Small" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
@@ -1160,7 +1166,7 @@
 
           <!-- ======================= Colors ======================= -->
           <StackPanel Name="ColorsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
-            <TextBlock Classes="headline-small" Text="Color roles" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+            <TextBlock Classes="display-small page-title" Text="Color roles" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
             <WrapPanel Name="ColorsPanel" ItemSpacing="8" LineSpacing="8" />
           </StackPanel>
 
@@ -1168,7 +1174,7 @@
           <Grid Name="IconsSection" RowDefinitions="Auto,Auto,Auto" RowSpacing="16"
                 MaxWidth="1200" HorizontalAlignment="Stretch" IsVisible="False">
             <StackPanel Grid.Row="0" Spacing="4">
-              <TextBlock Classes="headline-small" Text="Material Symbols" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
+              <TextBlock Classes="display-small page-title" Text="Material Symbols" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
               <TextBlock Classes="body-medium"
                          Text="4,007 Rounded 400 icons, optically sized for 24dp. ItemsRepeater realizes only cards inside the current viewport."
                          Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
