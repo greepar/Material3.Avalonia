@@ -6,6 +6,14 @@
              x:Class="Material3.Gallery.UI.MainView"
              Background="{DynamicResource Md3SurfaceBrush}">
 
+  <UserControl.Styles>
+    <!-- The SplitView template always paints a 1px divider on the pane edge. The shell
+         already separates the rail from the content by tone, so hide it. -->
+    <Style Selector="SplitView /template/ Rectangle#HCPaneBorder">
+      <Setter Property="IsVisible" Value="False" />
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*">
     <!-- Top bar: title + theme toggle on a single row; the theme generator (variant,
          contrast, random seed) is tucked into a flyout so the bar stays uncluttered. -->
@@ -76,35 +84,78 @@
     </Border>
 
     <!-- Responsive shell: wide (>= 900) = inline pane always open; narrow = overlay pane
-         toggled by the hamburger button. The nav ListBox exists only once, inside the pane. -->
+         toggled by the hamburger button. The nav rail exists only once, inside the pane. -->
     <SplitView Grid.Row="1" Name="NavSplit"
                DisplayMode="Inline" IsPaneOpen="True"
-               PanePlacement="Left" OpenPaneLength="236"
-               PaneBackground="{DynamicResource Md3SurfaceBrush}">
+               PanePlacement="Left" OpenPaneLength="88"
+               PaneBackground="{DynamicResource Md3SurfaceContainerBrush}">
       <SplitView.Pane>
-        <!-- Left navigation -->
-        <ListBox Name="SectionsList" Width="220" HorizontalAlignment="Left"
-                 Margin="8" SelectionChanged="OnSectionChanged">
-          <ListBoxItem Content="App bars &amp; layout" />
-          <ListBoxItem Content="Badges &amp; chips" />
-          <ListBoxItem Content="Buttons" />
-          <ListBoxItem Content="Button groups" />
-          <ListBoxItem Content="Selection" />
-          <ListBoxItem Content="Text fields" />
-          <ListBoxItem Content="Search &amp; combo" />
-          <ListBoxItem Content="Lists &amp; settings" />
-          <ListBoxItem Content="Tabs &amp; carousel" />
-          <ListBoxItem Content="Sliders &amp; range" />
-          <ListBoxItem Content="Loading &amp; progress" />
-          <ListBoxItem Content="Menus &amp; tooltips" />
-          <ListBoxItem Content="Date &amp; time" />
-          <ListBoxItem Content="Table" />
-          <ListBoxItem Content="Dialogs &amp; overlays" />
-          <ListBoxItem Content="Typography" />
-          <ListBoxItem Content="Colors" />
-          <ListBoxItem Content="Misc" />
-          <ListBoxItem Content="Material Symbols" />
-        </ListBox>
+        <!-- Icon navigation rail (88dp): each destination is a 56x32 pill indicator with
+             a 24dp glyph and a label below. Background is transparent so the pane tone
+             from the SplitView shows through and matches the top bar. -->
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+          <m3c:NavigationRail Name="SectionsList" Width="88" Margin="0,0,0,16"
+                              Background="Transparent"
+                              SelectionChanged="OnSectionChanged">
+            <m3c:NavigationRailItem Label="App bars">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.WebAsset}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Chips">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Label}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Buttons">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Widgets}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Groups">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Apps}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Selection">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Rule}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Text">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.TextFields}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Search">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Search}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Lists">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.FormatListBulleted}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Tabs">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Tab}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Sliders">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Tune}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Loading">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Autorenew}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Menus">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Menu}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Date">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Schedule}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Table">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.TableChart}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Dialogs">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Layers}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Type">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.TextFormat}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Colors">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Palette}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Misc">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.MoreHoriz}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+            <m3c:NavigationRailItem Label="Symbols">
+              <m3c:NavigationRailItem.Icon><PathIcon Data="{x:Static icons:MaterialSymbols.Category}" /></m3c:NavigationRailItem.Icon>
+            </m3c:NavigationRailItem>
+          </m3c:NavigationRail>
+        </ScrollViewer>
       </SplitView.Pane>
 
       <!-- Content area -->
