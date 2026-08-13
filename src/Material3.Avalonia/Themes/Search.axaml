@@ -21,6 +21,7 @@
           <Panel>
             <TextBlock Name="PART_Placeholder"
                        Foreground="{DynamicResource Md3OnSurfaceVariantBrush}"
+                       Opacity="0.6"
                        Text="{TemplateBinding PlaceholderText}"
                        VerticalAlignment="Center">
               <TextBlock.IsVisible>

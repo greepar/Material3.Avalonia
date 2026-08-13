@@ -49,14 +49,18 @@
             <DockPanel>
               <Border Name="PART_DragHandle"
                       DockPanel.Dock="Top"
-                      Width="32"
-                      Height="4"
-                      CornerRadius="{StaticResource Md3CornerFull}"
-                      Background="{DynamicResource Md3OnSurfaceVariantBrush}"
-                      Opacity="0.4"
-                      Margin="0,16,0,6"
-                      HorizontalAlignment="Center"
-                      IsVisible="{TemplateBinding ShowDragHandle}" />
+                      Height="32"
+                      Background="Transparent"
+                      Cursor="SizeNorthSouth"
+                      IsVisible="{TemplateBinding ShowDragHandle}">
+                <Border Width="32"
+                        Height="4"
+                        CornerRadius="{StaticResource Md3CornerFull}"
+                        Background="{DynamicResource Md3OnSurfaceVariantBrush}"
+                        Opacity="0.4"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+              </Border>
               <ContentPresenter Name="PART_ContentPresenter"
                                 Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}"

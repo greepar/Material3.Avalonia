@@ -3,7 +3,7 @@
         xmlns:ui="using:Material3.Gallery.UI"
         x:Class="Material3.Gallery.UI.MainWindow"
         Title="Material 3 Gallery"
-        Width="1280" Height="860"
+        Width="1338" Height="800"
         Background="{DynamicResource Md3SurfaceBrush}">
   <ui:MainView />
 </Window>

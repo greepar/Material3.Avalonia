@@ -8,10 +8,13 @@
     <Setter Property="Template">
       <ControlTemplate>
         <Border Background="{TemplateBinding Background}">
-          <Viewbox Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
-            <Path Fill="{TemplateBinding Foreground}"
-                  Data="{TemplateBinding Data}"
-                  Stretch="Uniform" />
+          <Viewbox Height="{TemplateBinding Height}"
+                   Width="{TemplateBinding Width}"
+                   Stretch="Uniform">
+            <Canvas Width="24" Height="24">
+              <Path Fill="{TemplateBinding Foreground}"
+                    Data="{TemplateBinding Data}" />
+            </Canvas>
           </Viewbox>
         </Border>
       </ControlTemplate>

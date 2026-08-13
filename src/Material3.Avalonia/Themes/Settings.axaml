@@ -131,7 +131,7 @@
                                 Margin="0,0,16,0"
                                 VerticalAlignment="Center"
                                 IsVisible="False" />
-                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                   <TextBlock Text="{TemplateBinding Headline}"
                              FontSize="{StaticResource Md3BodyLargeSize}"
                              Foreground="{DynamicResource Md3OnSurfaceBrush}" />
@@ -184,6 +184,9 @@
     </Style>
     <Style Selector="^:has-supporting /template/ TextBlock#PART_Supporting">
       <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:has-supporting /template/ Border#PART_Header">
+      <Setter Property="MinHeight" Value="72" />
     </Style>
     <Style Selector="^:expanded /template/ Path#PART_Chevron">
       <Setter Property="RenderTransform" Value="rotate(180deg)" />

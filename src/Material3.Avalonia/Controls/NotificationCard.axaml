@@ -145,7 +145,7 @@
     <!-- Implementation choice: M3 has no notification-type color tokens, so the whole
          card container is tinted with the closest M3 role container:
          information -> PrimaryContainer, success -> TertiaryContainer,
-         error -> ErrorContainer, warning -> ErrorContainer variant (Error border accent),
+         error/warning -> ErrorContainer,
          instead of Fluent's colored header strip. -->
     <Style Selector="^:information /template/ Border#PART_CardBorder">
       <Setter Property="Background" Value="{DynamicResource Md3PrimaryContainerBrush}" />
@@ -168,11 +168,9 @@
       <Setter Property="Foreground" Value="{DynamicResource Md3OnErrorContainerBrush}" />
     </Style>
 
-    <!-- warning: ErrorContainer variant, distinguished from :error by a 1px Error border -->
+    <!-- Warning uses the tonal container without a high-contrast outline. -->
     <Style Selector="^:warning /template/ Border#PART_CardBorder">
       <Setter Property="Background" Value="{DynamicResource Md3ErrorContainerBrush}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource Md3ErrorBrush}" />
-      <Setter Property="BorderThickness" Value="1" />
     </Style>
     <Style Selector="^:warning">
       <Setter Property="Foreground" Value="{DynamicResource Md3OnErrorContainerBrush}" />
