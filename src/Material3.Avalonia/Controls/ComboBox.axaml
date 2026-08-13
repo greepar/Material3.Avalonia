@@ -97,14 +97,16 @@
                    MaxHeight="{TemplateBinding MaxDropDownHeight}"
                    PlacementTarget="PART_Background"
                    IsLightDismissEnabled="True"
-                   HorizontalOffset="-12"
                    VerticalOffset="-4"
                    InheritsTransform="True">
-              <!-- Margin reserves space for the BoxShadow so it is not clipped by the popup bounds -->
+              <!-- Negative side margins pull the visible border out to the popup box edges so
+                   it matches the target width, while the top/bottom margins still reserve
+                   room for the BoxShadow. The popup box width equals the target (MinWidth),
+                   so the dropdown lines up with the ComboBox on both sides. -->
               <Border Name="PART_PopupBorder"
                       m3p:Entrance.Animation="GrowDown"
                       RenderTransformOrigin="50%,0%"
-                      Margin="12,8,12,16"
+                      Margin="0,8,0,16"
                       Background="{DynamicResource Md3SurfaceContainerBrush}"
                       CornerRadius="{StaticResource Md3CornerSmall}"
                       BoxShadow="{StaticResource Md3Elevation2}"
