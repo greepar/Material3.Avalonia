@@ -18,6 +18,19 @@
     <Style Selector="TextBlock.page-title">
       <Setter Property="Margin" Value="0,0,0,8" />
     </Style>
+
+    <!-- Demo card: one subheading plus its examples. Sections lay these out in a
+         WrapPanel so they reflow into multiple columns on wide windows. -->
+    <Style Selector="Border.demo-card">
+      <Setter Property="Background" Value="{DynamicResource Md3SurfaceContainerBrush}" />
+      <Setter Property="CornerRadius" Value="{StaticResource Md3CornerLarge}" />
+      <Setter Property="Padding" Value="20" />
+      <Setter Property="MinWidth" Value="300" />
+    </Style>
+    <Style Selector="Border.demo-card TextBlock.demo-caption">
+      <Setter Property="Margin" Value="0,0,0,12" />
+      <Setter Property="Foreground" Value="{DynamicResource Md3OnSurfaceVariantBrush}" />
+    </Style>
   </UserControl.Styles>
 
   <Grid RowDefinitions="Auto,*">
@@ -175,10 +188,13 @@
           <Panel Margin="32,32,32,48">
 
           <!-- ======================= Buttons ======================= -->
-          <StackPanel Name="ButtonsSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left">
+          <StackPanel Name="ButtonsSection" Spacing="16">
             <TextBlock Classes="display-small page-title" Text="Buttons" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="Material Symbols Geometry" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Material Symbols Geometry" />
             <WrapPanel ItemSpacing="20" LineSpacing="12" VerticalAlignment="Center">
               <PathIcon Data="{x:Static icons:MaterialSymbols.Home}" />
               <PathIcon Data="{x:Static icons:MaterialSymbols.Search}" />
@@ -192,7 +208,11 @@
                        Text="Strongly typed Rounded 400 icons return cached Avalonia Geometry objects."
                        Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
 
-            <TextBlock Classes="title-small" Text="Material 3 Expressive button family" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Material 3 Expressive button family" />
             <WrapPanel ItemSpacing="16" LineSpacing="16" VerticalAlignment="Center">
               <Button>
                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -242,7 +262,11 @@
               </m3c:ExtendedFloatingActionButton>
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="FAB menus" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="FAB menus" />
             <TextBlock Classes="body-medium" Text="Menu items inherit the menu color; click an item or press Escape to close." Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
             <WrapPanel ItemSpacing="40" LineSpacing="24" VerticalAlignment="Bottom">
               <m3c:FabMenu Color="Surface" IsOpen="True">
@@ -265,7 +289,11 @@
               </m3c:FabMenu>
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="Button classes" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Button classes" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
               <Button Content="Filled" />
               <Button Classes="elevated" Content="Elevated" />
@@ -277,7 +305,11 @@
               <Button Classes="outlined" Content="Disabled outlined" IsEnabled="False" />
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="RepeatButton / ToggleButton" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="RepeatButton / ToggleButton" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
               <RepeatButton Name="RepeatDemo" Content="Hold me (0)" Click="OnRepeatClick" />
               <ToggleButton Content="Toggle me" />
@@ -285,7 +317,11 @@
               <ToggleButton Content="Disabled" IsEnabled="False" />
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="DropDownButton / SplitButton / ToggleSplitButton" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="DropDownButton / SplitButton / ToggleSplitButton" />
             <WrapPanel ItemSpacing="12" LineSpacing="12">
               <DropDownButton Content="Options">
                 <DropDownButton.Flyout>
@@ -316,13 +352,20 @@
               <SplitButton Content="Disabled" IsEnabled="False" />
             </WrapPanel>
 
-            <TextBlock Classes="title-small" Text="HyperlinkButton / ButtonSpinner" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="HyperlinkButton / ButtonSpinner" />
             <WrapPanel ItemSpacing="12" LineSpacing="12" VerticalAlignment="Center">
               <HyperlinkButton Content="Avalonia docs" NavigateUri="https://docs.avaloniaui.net/" />
               <HyperlinkButton Content="Disabled link" IsEnabled="False" />
               <ButtonSpinner Name="SpinnerDemo" Spin="OnSpin" Width="140">
                 <TextBlock Name="SpinnerValue" Text="5" />
               </ButtonSpinner>
+            </WrapPanel>
+                </StackPanel>
+              </Border>
             </WrapPanel>
           </StackPanel>
 
@@ -934,10 +977,13 @@
           </StackPanel>
 
           <!-- ======================= M3 Layout ======================= -->
-          <StackPanel Name="M3LayoutSection" Spacing="16" MaxWidth="1000" HorizontalAlignment="Left" IsVisible="False">
+          <StackPanel Name="M3LayoutSection" Spacing="16" IsVisible="False">
             <TextBlock Classes="display-small page-title" Text="M3 Layout" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
 
-            <TextBlock Classes="title-small" Text="TopAppBar (Small)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+            <WrapPanel ItemSpacing="16" LineSpacing="16">
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="TopAppBar (Small)" />
             <m3c:TopAppBar Title="Top app bar" Variant="Small" Width="560" HorizontalAlignment="Left">
               <m3c:TopAppBar.NavigationIcon>
                 <m3c:IconButton>
@@ -956,7 +1002,11 @@
               </m3c:TopAppBar.Actions>
             </m3c:TopAppBar>
 
-            <TextBlock Classes="title-small" Text="Toolbar (Floating)" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Toolbar (Floating)" />
             <m3c:Toolbar Name="FloatingToolbar" Variant="Floating" HorizontalAlignment="Left">
               <StackPanel Orientation="Horizontal" Spacing="4">
                 <m3c:IconButton>
@@ -971,7 +1021,11 @@
               </StackPanel>
             </m3c:Toolbar>
 
-            <TextBlock Classes="title-small" Text="Card variants" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="Card variants" />
             <StackPanel Orientation="Horizontal" Spacing="16">
               <m3c:Card Variant="Elevated" Width="160" Height="120">
                 <TextBlock Margin="16" Text="Elevated card" Foreground="{DynamicResource Md3OnSurfaceBrush}" />
@@ -984,7 +1038,11 @@
               </m3c:Card>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="NavigationBar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="NavigationBar" />
             <m3c:NavigationBar Width="480" HorizontalAlignment="Left" SelectedIndex="0">
               <m3c:NavigationBarItem Label="Home">
                 <m3c:NavigationBarItem.Icon>
@@ -1003,7 +1061,11 @@
               </m3c:NavigationBarItem>
             </m3c:NavigationBar>
 
-            <TextBlock Classes="title-small" Text="NavigationRail" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="NavigationRail" />
             <m3c:NavigationRail Height="240" HorizontalAlignment="Left" SelectedIndex="0">
               <m3c:NavigationRailItem Label="Home">
                 <m3c:NavigationRailItem.Icon>
@@ -1022,7 +1084,11 @@
               </m3c:NavigationRailItem>
             </m3c:NavigationRail>
 
-            <TextBlock Classes="title-small" Text="BottomAppBar" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="BottomAppBar" />
             <m3c:BottomAppBar Width="480" HorizontalAlignment="Left">
               <m3c:BottomAppBar.Actions>
                 <StackPanel Orientation="Horizontal" Spacing="4">
@@ -1044,7 +1110,11 @@
               </m3c:BottomAppBar.FloatingActionButton>
             </m3c:BottomAppBar>
 
-            <TextBlock Classes="title-small" Text="BottomSheet" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="BottomSheet" />
             <StackPanel Spacing="8" Width="480" HorizontalAlignment="Left">
               <Button Classes="tonal" Content="Open bottom sheet" Click="OnOpenBottomSheet" />
               <Border Height="300" ClipToBounds="True"
@@ -1064,7 +1134,11 @@
               </Border>
             </StackPanel>
 
-            <TextBlock Classes="title-small" Text="SnackbarHost" Foreground="{DynamicResource Md3OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Border>
+              <Border Classes="demo-card">
+                <StackPanel>
+                  <TextBlock Classes="title-small demo-caption" Text="SnackbarHost" />
             <m3c:SnackbarHost Name="SnackbarHostDemo" Width="480" Height="160" HorizontalAlignment="Left">
               <Border BorderBrush="{DynamicResource Md3OutlineVariantBrush}" BorderThickness="1"
                       CornerRadius="{StaticResource Md3CornerMedium}">
@@ -1072,6 +1146,9 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center" />
               </Border>
             </m3c:SnackbarHost>
+                </StackPanel>
+              </Border>
+            </WrapPanel>
           </StackPanel>
 
           <!-- ======================= Loading & progress ======================= -->
