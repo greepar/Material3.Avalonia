@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.Android" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Android" />
     </ItemGroup>
 
     <ItemGroup>

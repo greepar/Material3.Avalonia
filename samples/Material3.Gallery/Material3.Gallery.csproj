@@ -9,25 +9,28 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
-    <!-- Release publishes as NativeAOT: a single self-contained native executable.
-         Publish with: dotnet publish -c Release -r <rid> (e.g. osx-arm64, win-x64, linux-x64) -->
+    <!-- Release publishes as a statically linked, self-contained NativeAOT executable. -->
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <PublishAot>true</PublishAot>
         <PublishSingleFile>true</PublishSingleFile>
-        <PublishSelfContained>true</PublishSelfContained>
+        <SelfContained>true</SelfContained>
         <PublishTrimmed>true</PublishTrimmed>
-        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <PublishReadyToRun>false</PublishReadyToRun>
         <StripSymbols>true</StripSymbols>
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
         <OptimizationPreference>Speed</OptimizationPreference>
         <TrimMode>link</TrimMode>
         <InvariantGlobalization>false</InvariantGlobalization>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.0" />
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+        <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.Desktop" />
+        <PackageReference Include="Avalonia.Fonts.Inter" />
+        <PackageReference Include="HotAvalonia" />
+        <PackageReference Include="StaticLink.Avalonia" />
+        <PackageReference Include="StaticLink.Avalonia.Native" />
     </ItemGroup>
 
     <ItemGroup>

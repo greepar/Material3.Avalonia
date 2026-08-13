@@ -1,4 +1,4 @@
-name: Release NativeAOT Gallery
+name: Release Gallery
 
 on:
   push:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -24,7 +24,7 @@ jobs:
           dotnet-version: 10.0.x
       - run: dotnet run --project tests/Material3.Screenshots -c Release
 
-  publish:
+  publish-desktop:
     needs: verify
     strategy:
       fail-fast: false
@@ -33,9 +33,18 @@ jobs:
           - os: windows-2025
             rid: win-x64
             archive: Material3.Gallery-win-x64.zip
-          - os: ubuntu-22.04
+          - os: windows-2025
+            rid: win-arm64
+            archive: Material3.Gallery-win-arm64.zip
+          - os: ubuntu-24.04
             rid: linux-x64
             archive: Material3.Gallery-linux-x64.tar.gz
+          - os: ubuntu-24.04-arm
+            rid: linux-arm64
+            archive: Material3.Gallery-linux-arm64.tar.gz
+          - os: macos-15-intel
+            rid: osx-x64
+            archive: Material3.Gallery-osx-x64.tar.gz
           - os: macos-15
             rid: osx-arm64
             archive: Material3.Gallery-osx-arm64.tar.gz
@@ -48,16 +57,23 @@ jobs:
 
       - name: Install Linux NativeAOT prerequisites
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+        run: sudo apt-get update && sudo apt-get install -y clang lld zlib1g-dev
 
-      - name: Publish NativeAOT
+      - name: Publish NativeAOT single file
         run: >-
           dotnet publish samples/Material3.Gallery/Material3.Gallery.csproj
           -c Release
           -r ${{ matrix.rid }}
           --self-contained true
-          -p:PublishAot=true
+          -p:DebugSymbols=false
+          -p:DebugType=None
           -o publish/${{ matrix.rid }}
+
+      - name: Remove debug symbols
+        shell: pwsh
+        run: |
+          Get-ChildItem "publish/${{ matrix.rid }}" -Recurse -Include *.pdb,*.dbg,*.dSYM |
+            Remove-Item -Recurse -Force
 
       - name: Archive Windows artifact
         if: runner.os == 'Windows'
@@ -78,9 +94,92 @@ jobs:
           path: ${{ matrix.archive }}
           if-no-files-found: error
 
+  publish-musl:
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            rid: linux-musl-x64
+            archive: Material3.Gallery-linux-musl-x64.tar.gz
+          - os: ubuntu-24.04-arm
+            rid: linux-musl-arm64
+            archive: Material3.Gallery-linux-musl-arm64.tar.gz
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish musl NativeAOT single file
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/src" \
+            -w /src \
+            mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+            sh -lc '
+              set -eu
+              apk add --no-cache build-base clang lld zlib-dev fontconfig-dev
+              dotnet publish samples/Material3.Gallery/Material3.Gallery.csproj \
+                -c Release \
+                -r ${{ matrix.rid }} \
+                --self-contained true \
+                -p:DebugSymbols=false \
+                -p:DebugType=None \
+                -o publish/${{ matrix.rid }}
+            '
+          sudo chown -R "$(id -u):$(id -g)" publish
+
+      - name: Remove debug symbols and archive artifact
+        run: |
+          find "publish/${{ matrix.rid }}" \( -name '*.pdb' -o -name '*.dbg' -o -name '*.dSYM' \) -exec rm -rf {} +
+          cp README.md LICENSE NOTICE "publish/${{ matrix.rid }}"
+          tar -C "publish/${{ matrix.rid }}" -czf "${{ matrix.archive }}" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: ${{ matrix.archive }}
+          if-no-files-found: error
+
+  publish-wasm:
+    needs: verify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install wasm-tools workload
+        run: dotnet workload install wasm-tools
+
+      - name: Publish WASM AOT
+        run: >-
+          dotnet publish samples/Material3.Gallery.Browser/Material3.Gallery.Browser.csproj
+          -c Release
+          -p:DebugSymbols=false
+          -p:DebugType=None
+          -o publish/wasm-aot
+
+      - name: Remove debug symbols and archive artifact
+        run: |
+          find publish/wasm-aot -name '*.pdb' -delete
+          cp README.md LICENSE NOTICE publish/wasm-aot/wwwroot
+          cd publish/wasm-aot/wwwroot
+          zip -r "$GITHUB_WORKSPACE/Material3.Gallery-wasm-aot.zip" .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wasm-aot
+          path: Material3.Gallery-wasm-aot.zip
+          if-no-files-found: error
+
   release:
-    needs: publish
-    runs-on: ubuntu-22.04
+    needs:
+      - publish-desktop
+      - publish-musl
+      - publish-wasm
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/download-artifact@v4
         with:
