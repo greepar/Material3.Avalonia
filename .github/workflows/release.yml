@@ -57,7 +57,7 @@ jobs:
 
       - name: Install Linux NativeAOT prerequisites
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y clang lld zlib1g-dev
+        run: sudo apt-get update && sudo apt-get install -y clang lld zlib1g-dev libfontconfig1-dev
 
       - name: Publish NativeAOT single file
         run: >-
