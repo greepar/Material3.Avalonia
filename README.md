@@ -48,6 +48,24 @@ Keep the Avalonia platform package used by your application, such as `Avalonia.D
 
 Material-specific controls use `xmlns:m3c="using:Material3.Avalonia.Controls"`. See the [controls overview](https://greepar.github.io/Material3.Avalonia/controls/overview.html) for chips, FABs, navigation, sheets, settings rows, progress indicators, and other components.
 
+For example, add the namespace to a view and use the controls directly:
+
+```xml
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:m3c="using:Material3.Avalonia.Controls"
+             x:Class="MyApp.Views.HomeView">
+  <StackPanel Spacing="12">
+    <Button Content="Standard Avalonia button, automatically themed" />
+    <m3c:AssistChip Content="Material-specific control" />
+    <m3c:RangeSlider Minimum="0" Maximum="100"
+                     LowerValue="25" UpperValue="75" />
+  </StackPanel>
+</UserControl>
+```
+
+See [Getting Started](https://greepar.github.io/Material3.Avalonia/guide/getting-started.html) for FluentTheme migration, Central Package Management, platform packages, namespaces, and troubleshooting.
+
 ## RangeSlider
 
 `RangeSlider` exposes independently bindable lower and upper values, optional indicators, snapping, direction reversal, keyboard input, and change events:

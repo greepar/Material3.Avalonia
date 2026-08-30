@@ -11,7 +11,11 @@ Material3.Avalonia is a **standalone** Material Design 3 theme for Avalonia. It 
 | Extra dependencies | none — only the Avalonia base package |
 | AOT / trimming | fully compatible (`IsAotCompatible`, no reflection) |
 
-## Install
+## Add it to an existing Avalonia project
+
+The following steps apply to Desktop, Browser, Android, and iOS applications. Material3.Avalonia replaces the control theme; it does not replace your Avalonia platform package or application startup code.
+
+### 1. Install the package
 
 Install the preview package:
 
@@ -27,11 +31,41 @@ Or add an explicit package reference:
 </ItemGroup>
 ```
 
-Keep your application's platform package (`Avalonia.Desktop`, `Avalonia.Browser`, `Avalonia.Android`, or `Avalonia.iOS`). The theme package depends only on the Avalonia base package.
+If your repository uses NuGet Central Package Management, put the version in `Directory.Packages.props`:
 
-## Apply the theme
+```xml
+<ItemGroup>
+  <PackageVersion Include="Material3.Avalonia" Version="0.2.0-preview.1" />
+</ItemGroup>
+```
 
-Add `MaterialTheme` to `Application.Styles` — **instead of** FluentTheme:
+Then add an unversioned reference to your application project:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Material3.Avalonia" />
+</ItemGroup>
+```
+
+Keep the platform package already used by your application:
+
+```xml
+<!-- Desktop example: keep this package -->
+<PackageReference Include="Avalonia.Desktop" />
+```
+
+The equivalent package may be `Avalonia.Browser`, `Avalonia.Android`, or `Avalonia.iOS`. Material3.Avalonia depends only on the Avalonia base package and does not configure a platform backend.
+
+### 2. Replace the existing theme in App.axaml
+
+Open `App.axaml`. Remove `<FluentTheme />`, `<SimpleTheme />`, or the corresponding `StyleInclude`, then add the Material namespace and `MaterialTheme`:
+
+```xml
+<!-- Before -->
+<Application.Styles>
+    <FluentTheme />
+</Application.Styles>
+```
 
 ```xml
 <Application xmlns="https://github.com/avaloniaui"
@@ -44,7 +78,61 @@ Add `MaterialTheme` to `Application.Styles` — **instead of** FluentTheme:
 </Application>
 ```
 
-That's it. Every control in your app now renders with Material 3 visuals, and the whole palette is derived from `SeedColor`.
+Do not load FluentTheme and MaterialTheme together. Both provide themes for built-in Avalonia controls, so mixing them creates ambiguous resources and inconsistent visuals.
+
+### 3. Use standard and Material-specific controls
+
+Standard Avalonia controls require no new namespace and are restyled automatically:
+
+```xml
+<StackPanel Spacing="12">
+    <Button Content="Save" />
+    <TextBox Watermark="Name" />
+    <CheckBox Content="Remember me" />
+</StackPanel>
+```
+
+For controls supplied by this package, add the controls namespace to your `Window`, `UserControl`, or view:
+
+```xml
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:m3c="using:Material3.Avalonia.Controls"
+             xmlns:icons="using:Material3.Avalonia.Icons"
+             x:Class="MyApp.Views.HomeView">
+    <StackPanel Margin="24" Spacing="16">
+        <m3c:AssistChip Content="Create"
+                        Command="{Binding CreateCommand}">
+            <m3c:AssistChip.Icon>
+                <PathIcon Data="{x:Static icons:MaterialSymbols.Add}" />
+            </m3c:AssistChip.Icon>
+        </m3c:AssistChip>
+
+        <m3c:RangeSlider Minimum="0"
+                         Maximum="100"
+                         LowerValue="25"
+                         UpperValue="75" />
+    </StackPanel>
+</UserControl>
+```
+
+Use `Material3.Avalonia.Controls` for package controls, `Material3.Avalonia.Icons` for Material Symbols, and `Material3.Avalonia.Colors` when calling the color engine from C#.
+
+### 4. Build and run
+
+```bash
+dotnet restore
+dotnet run --project path/to/MyApp.csproj
+```
+
+If the application starts and the ordinary `Button` uses Material styling, the theme is installed correctly. The complete palette is derived from `SeedColor`.
+
+::: warning Common mistakes
+- Do not remove `Avalonia.Desktop`, `Avalonia.Browser`, `Avalonia.Android`, or `Avalonia.iOS` from the application project.
+- Do not keep `<FluentTheme />` or `<SimpleTheme />` beside `<m3:MaterialTheme />`.
+- Put `MaterialTheme` in `Application.Styles`, not inside a page's visual content.
+- The package is currently a preview, so specify `0.2.0-preview.1` explicitly.
+:::
 
 ## Light / dark
 
