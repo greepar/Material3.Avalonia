@@ -94,6 +94,7 @@ jobs:
             <PropertyGroup>
               <TargetFramework>net8.0</TargetFramework>
               <Nullable>enable</Nullable>
+              <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
             </PropertyGroup>
             <ItemGroup>
               <PackageReference Include="Material3.Avalonia" Version="PACKAGE_VERSION" />
