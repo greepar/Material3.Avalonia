@@ -1,9 +1,13 @@
 using System.Runtime.InteropServices;
+using System.Windows.Input;
+using System.Collections;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,8 +17,10 @@ using Avalonia.Threading;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 using Material3.Avalonia;
+using Material3.Avalonia.Colors;
 using Material3.Avalonia.Controls;
 using Material3.Avalonia.Icons;
+using Material3.Avalonia.Primitives;
 using Material3.Gallery.UI;
 
 namespace Material3.Screenshots;
@@ -54,6 +60,12 @@ public static class Program
                     "material-symbols: filled Favorite geometry should not be empty");
                 Assert(MaterialSymbolCatalog.All.Count == 4007,
                     $"material-symbols: expected 4007 catalog entries, got {MaterialSymbolCatalog.All.Count}");
+                Assert(MaterialSymbolCatalog.All is not MaterialSymbolInfo[],
+                    "material-symbols: catalog should not expose its mutable backing array");
+
+                CheckPublicApiGuards();
+
+                RunControlValidationChecks();
 
                 // ---- Scenario A: wide (1280x900) — inline nav rail, no hamburger ----
                 {
@@ -101,6 +113,13 @@ public static class Program
                         "gallery-m3-components: chip group must not clip child shadows");
                     Assert(elevatedAssist.GetVisualChildren().First() is Panel { ClipToBounds: false },
                         "gallery-m3-components: chip template root must not clip its shadow");
+                    var chipCommandExecutions = 0;
+                    elevatedAssist.Command = new TestCommand(() => chipCommandExecutions++);
+                    elevatedAssist.Focus();
+                    window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+                    window.KeyRelease(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+                    Assert(chipCommandExecutions == 1,
+                        $"gallery-m3-components: Enter should execute an AssistChip command once, got {chipCommandExecutions}");
 
                     sectionsList.SelectedIndex = 2; // Buttons (expressive family + FAB menus)
                     Pump(8, 50);
@@ -693,6 +712,420 @@ public static class Program
                         "connected-group-press: expected right width restored after release");
                     window.Close();
                 }
+
+                // ---- Scenario I: keyboard and closed-overlay accessibility ----
+                {
+                    var switchSetting = new SwitchSettingItem { Headline = "Switch" };
+                    var checkBoxSetting = new CheckBoxSettingItem { Headline = "Checkbox" };
+                    var expandableSetting = new ExpandableSettingItem
+                    {
+                        Headline = "Expandable",
+                        Content = new TextBlock { Text = "Details" },
+                    };
+                    var bottomSheetButton = new Button { Content = "Bottom action" };
+                    var sideSheetButton = new Button { Content = "Side action" };
+                    var bottomSheet = new BottomSheet { Content = bottomSheetButton };
+                    var sideSheet = new SideSheet { Content = sideSheetButton };
+                    var fabAction = new ExtendedFloatingActionButton { Content = "Action" };
+                    var fabMenu = new FabMenu { Icon = MakeIcon(PlusPath) };
+                    fabMenu.Items.Add(fabAction);
+
+                    var root = new Grid();
+                    root.Children.Add(new StackPanel
+                    {
+                        Children =
+                        {
+                            switchSetting,
+                            checkBoxSetting,
+                            expandableSetting,
+                            fabMenu,
+                        },
+                    });
+                    root.Children.Add(bottomSheet);
+                    root.Children.Add(sideSheet);
+                    var window = new Window { Width = 480, Height = 480, Content = root };
+                    window.Show();
+                    Pump(4, 20);
+
+                    Assert(switchSetting.Focusable && checkBoxSetting.Focusable && expandableSetting.Focusable,
+                        "accessibility: interactive setting rows must be keyboard-focusable");
+                    switchSetting.Focus(NavigationMethod.Tab);
+                    Pump(1, 20);
+                    var settingContainer = switchSetting.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "PART_Container");
+                    Assert(settingContainer.BorderThickness == new Thickness(2),
+                        "accessibility: keyboard-focused setting rows must show a focus indicator");
+                    switchSetting.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Space });
+                    checkBoxSetting.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter });
+                    expandableSetting.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Space });
+                    Assert(switchSetting.IsChecked && checkBoxSetting.IsChecked && expandableSetting.IsExpanded,
+                        "accessibility: Space/Enter must operate interactive setting rows");
+                    Assert(!bottomSheet.GetVisualDescendants().OfType<Panel>()
+                               .First(panel => panel.Name == "PART_Root").IsVisible
+                           && !sideSheet.GetVisualDescendants().OfType<Panel>()
+                               .First(panel => panel.Name == "PART_Root").IsVisible,
+                        "sheets: closed template roots must not remain visible");
+                    bottomSheetButton.Focus();
+                    sideSheetButton.Focus();
+                    Assert(!bottomSheetButton.IsFocused && !sideSheetButton.IsFocused,
+                        "sheets: closed content must not remain focusable through tab navigation");
+                    fabAction.Focus();
+                    var actionsPresenter = fabMenu.GetVisualDescendants().OfType<ItemsPresenter>()
+                        .First(presenter => presenter.Name == "PART_ItemsPresenter");
+                    Assert(!actionsPresenter.IsVisible && !fabAction.IsFocused,
+                        "fab-menu: closed actions must not remain visible or focusable through tab navigation");
+
+                    bottomSheet.IsOpen = true;
+                    Pump(1, 20);
+                    bottomSheetButton.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Escape });
+                    Assert(!bottomSheet.IsOpen, "bottom-sheet: Escape from content must close the sheet");
+
+                    sideSheet.IsOpen = true;
+                    Pump(1, 20);
+                    sideSheetButton.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Escape });
+                    Assert(!sideSheet.IsOpen, "side-sheet: Escape from content must close the sheet");
+
+                    fabMenu.IsOpen = true;
+                    Pump(1, 20);
+                    Assert(fabAction.IsEffectivelyVisible, "fab-menu: actions must be visible while open");
+                    fabAction.Focus();
+                    fabMenu.IsOpen = false;
+                    Pump(1, 20);
+                    var primaryFab = fabMenu.GetVisualDescendants().OfType<FloatingActionButton>().First();
+                    Assert(primaryFab.IsFocused,
+                        "fab-menu: closing must return focus to the primary FAB");
+                    Assert(!actionsPresenter.IsVisible && !fabAction.IsFocused,
+                        "fab-menu: actions must become non-focusable and invisible when closed");
+                    window.Close();
+                }
+
+                // ---- Scenario J: focus indicators and ProgressBar text contract ----
+                {
+                    var navigationBarItem = new NavigationBarItem { Label = "Home", Icon = MakeIcon(HomePath) };
+                    var navigationRailItem = new NavigationRailItem { Label = "Search", Icon = MakeIcon(SearchPath) };
+                    var segmentedButton = new SegmentedButton { Content = "Day" };
+                    var rangeSlider = new RangeSlider
+                    {
+                        Width = 320,
+                        LowerValue = 25,
+                        UpperValue = 75,
+                    };
+                    var horizontalProgress = new ProgressBar
+                    {
+                        Width = 240,
+                        Height = 24,
+                        Minimum = 20,
+                        Maximum = 120,
+                        Value = 70,
+                        ShowProgressText = true,
+                        ProgressTextFormat = "{0:0} of {3:0} ({1:0}%)",
+                    };
+                    var verticalProgress = new ProgressBar
+                    {
+                        Width = 24,
+                        Height = 240,
+                        Orientation = Orientation.Vertical,
+                        Value = 25,
+                        ShowProgressText = true,
+                        ProgressTextFormat = "{1:0}%",
+                    };
+                    var root = new StackPanel
+                    {
+                        Margin = new Thickness(16),
+                        Spacing = 8,
+                        Children =
+                        {
+                            navigationBarItem,
+                            navigationRailItem,
+                            segmentedButton,
+                            rangeSlider,
+                            horizontalProgress,
+                            verticalProgress,
+                        },
+                    };
+                    var window = new Window { Width = 420, Height = 720, Content = root };
+                    window.Show();
+                    Pump(4, 20);
+
+                    foreach (var control in new Control[] { navigationBarItem, navigationRailItem, segmentedButton })
+                    {
+                        control.Focus(NavigationMethod.Tab);
+                        Pump(1, 20);
+                        var focusRing = control.GetVisualDescendants().OfType<Border>()
+                            .First(border => border.Name == "PART_FocusRing");
+                        Assert(focusRing.IsVisible && focusRing.BorderThickness == new Thickness(2),
+                            $"focus-visible: {control.GetType().Name} must show the Material 2dp focus ring");
+                    }
+
+                    var thumbs = rangeSlider.GetVisualDescendants().OfType<Thumb>().ToArray();
+                    Assert(thumbs.Length == 2, $"range-slider focus: expected two thumbs, got {thumbs.Length}");
+                    foreach (var thumb in thumbs)
+                    {
+                        thumb.Focus(NavigationMethod.Tab);
+                        Pump(1, 20);
+                        var focusRing = thumb.GetVisualDescendants().OfType<Border>()
+                            .First(border => border.Name == "PART_FocusRing");
+                        Assert(focusRing.IsVisible && focusRing.BorderThickness == new Thickness(2),
+                            $"range-slider focus: {thumb.Name} must show the Material 2dp focus ring");
+                    }
+
+                    var horizontalText = horizontalProgress.GetVisualDescendants().OfType<TextBlock>().Single();
+                    var verticalText = verticalProgress.GetVisualDescendants().OfType<TextBlock>().Single();
+                    Assert(horizontalText.Text == "70 of 120 (50%)",
+                        $"progress text: custom value/percentage/maximum format was '{horizontalText.Text}'");
+                    Assert(verticalText.Text == "25%",
+                        $"progress text: vertical percentage format was '{verticalText.Text}'");
+                    var verticalTextPresenter = verticalProgress.GetVisualDescendants()
+                        .OfType<LayoutTransformControl>()
+                        .First(control => control.Name == "PART_ProgressTextPresenter");
+                    Assert(verticalTextPresenter.LayoutTransform is RotateTransform { Angle: 90 },
+                        "progress text: vertical orientation must rotate the text presenter by 90 degrees");
+                    Capture(window, "/tmp/m3-focus-progress.png", out var focusProgressPixels);
+                    Assert(focusProgressPixels > 500,
+                        $"focus-progress: screenshot looks blank ({focusProgressPixels} px)");
+                    window.Close();
+                }
+
+                RunRequestedControlRegressions();
+
+                void RunRequestedControlRegressions()
+                {
+                    // ---- Card activation requires a primary sequence and supports keyboard focus ----
+                    {
+                    var card = new Card
+                    {
+                        IsClickable = true,
+                        Width = 180,
+                        Height = 80,
+                        Margin = new Thickness(24),
+                        Content = new TextBlock { Text = "Clickable card" },
+                    };
+                    var other = new Button { Content = "Other" };
+                    var clicks = 0;
+                    card.Clicked += (_, _) => clicks++;
+                    var window = new Window
+                    {
+                        Width = 260,
+                        Height = 190,
+                        Content = new StackPanel { Children = { card, other } },
+                    };
+                    window.Show();
+                    Pump(4, 20);
+
+                    Assert(card.Focusable, "card: clickable cards must be keyboard-focusable");
+                    var center = card.TranslatePoint(
+                                     new Point(card.Bounds.Width / 2, card.Bounds.Height / 2), window)
+                                 ?? throw new InvalidOperationException("Card TranslatePoint failed");
+                    window.MouseUp(center, MouseButton.Left);
+                    window.MouseDown(center, MouseButton.Right);
+                    window.MouseUp(center, MouseButton.Right);
+                    Assert(clicks == 0,
+                        $"card: release-only and secondary clicks must not activate, got {clicks}");
+
+                    window.MouseDown(center, MouseButton.Left);
+                    window.MouseUp(center, MouseButton.Left);
+                    Assert(clicks == 1, $"card: primary press/release should activate once, got {clicks}");
+
+                    other.Focus();
+                    card.Focus(NavigationMethod.Tab);
+                    Pump(1, 20);
+                    var focusRing = card.GetVisualDescendants().OfType<Border>()
+                        .First(border => border.Name == "PART_FocusRing");
+                    Assert(focusRing.IsVisible,
+                        "card: keyboard-focused clickable cards must show a focus indicator");
+                    window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+                    window.KeyRelease(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
+                    window.KeyPress(Key.Space, RawInputModifiers.None, PhysicalKey.Space, null);
+                    window.KeyRelease(Key.Space, RawInputModifiers.None, PhysicalKey.Space, null);
+                    Assert(clicks == 3, $"card: Enter and Space should each activate once, got {clicks}");
+                    window.Close();
+                    }
+
+                    // ---- TimePickerDial 12-hour keyboard wrapping preserves AM/PM ----
+                    {
+                    var dial = new TimePickerDial { Mode = TimePickerDialMode.Hours };
+                    void Press(Key key) => dial.RaiseEvent(new KeyEventArgs
+                        { RoutedEvent = InputElement.KeyDownEvent, Key = key });
+
+                    dial.SelectedHour = 11;
+                    Press(Key.Right);
+                    Assert(dial.SelectedHour == 0,
+                        $"time-dial: 11 AM + 1 should wrap to 12 AM, got {dial.SelectedHour}");
+                    Press(Key.Left);
+                    Assert(dial.SelectedHour == 11,
+                        $"time-dial: 12 AM - 1 should wrap to 11 AM, got {dial.SelectedHour}");
+                    dial.SelectedHour = 23;
+                    Press(Key.Right);
+                    Assert(dial.SelectedHour == 12,
+                        $"time-dial: 11 PM + 1 should wrap to 12 PM, got {dial.SelectedHour}");
+                    Press(Key.Left);
+                    Assert(dial.SelectedHour == 23,
+                        $"time-dial: 12 PM - 1 should wrap to 11 PM, got {dial.SelectedHour}");
+                    dial.Is24Hour = true;
+                    Press(Key.Right);
+                    Assert(dial.SelectedHour == 0,
+                        $"time-dial: 24-hour mode should still cross midnight, got {dial.SelectedHour}");
+                    }
+
+                    // ---- TimePickerPane synchronizes SelectedTime as one two-way batch ----
+                    {
+                    var values = new TimeValues { SelectedTime = new TimeSpan(9, 15, 0) };
+                    var pane = new TimePickerPane();
+                    pane.Bind(TimePickerPane.SelectedTimeProperty, new Binding(nameof(TimeValues.SelectedTime))
+                    {
+                        Source = values,
+                    });
+                    Assert(pane.SelectedHour == 9 && pane.SelectedMinute == 15,
+                        $"time-pane: binding should initialize component values, got {pane.SelectedTime}");
+
+                    var changes = 0;
+                    var observed = TimeSpan.MinValue;
+                    pane.SelectedTimeChanged += (_, _) =>
+                    {
+                        changes++;
+                        observed = pane.SelectedTime;
+                    };
+                    values.SelectedTime = new TimeSpan(17, 42, 37);
+                    Assert(pane.SelectedTime == new TimeSpan(17, 42, 0)
+                           && pane.SelectedHour == 17 && pane.SelectedMinute == 42,
+                        $"time-pane: SelectedTime should synchronize final hour/minute values, got {pane.SelectedTime}");
+                    Assert(changes == 1 && observed == new TimeSpan(17, 42, 0),
+                        $"time-pane: setting SelectedTime should raise one final event, got {changes} at {observed}");
+
+                    pane.SelectedMinute = 43;
+                    Assert(values.SelectedTime == new TimeSpan(17, 43, 0),
+                        $"time-pane: default binding must update the source, got {values.SelectedTime}");
+                    Assert(changes == 2,
+                        $"time-pane: component updates should raise one event, got {changes}");
+                    }
+
+                    // ---- ButtonGroup preserves consumer property sources ----
+                    {
+                    var values = new ButtonValues
+                    {
+                        Width = 116,
+                        Padding = new Thickness(22, 3),
+                        CornerRadius = new CornerRadius(6),
+                    };
+                    var left = new Button
+                    {
+                        Content = "Local",
+                        Width = 108,
+                        Padding = new Thickness(19, 2),
+                        CornerRadius = new CornerRadius(5),
+                    };
+                    var middle = new Button { Content = "Bound" };
+                    middle.Bind(Layoutable.WidthProperty, values.GetObservable(ButtonValues.WidthProperty));
+                    middle.Bind(Button.PaddingProperty, values.GetObservable(ButtonValues.PaddingProperty));
+                    middle.Bind(Button.CornerRadiusProperty, values.GetObservable(ButtonValues.CornerRadiusProperty));
+                    var right = new Button { Content = "Right" };
+                    var group = new ButtonGroup
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Margin = new Thickness(24),
+                    };
+                    group.Items.Add(left);
+                    group.Items.Add(middle);
+                    group.Items.Add(right);
+
+                    var window = new Window
+                    {
+                        Width = 500,
+                        Height = 140,
+                        Title = "ButtonGroup property preservation",
+                        Content = group,
+                    };
+                    window.Show();
+                    Pump(6, 50);
+
+                    var center = middle.TranslatePoint(
+                                     new Point(middle.Bounds.Width / 2, middle.Bounds.Height / 2), window)
+                                 ?? throw new InvalidOperationException("TranslatePoint failed");
+                    window.MouseDown(center, MouseButton.Left);
+                    Pump(3, 50);
+                    group.Variant = ButtonGroupVariant.Connected;
+                    window.MouseUp(center, MouseButton.Left);
+                    Pump(9, 50);
+                    group.Variant = ButtonGroupVariant.Standard;
+                    Pump(2, 50);
+
+                    Assert(Math.Abs(left.Width - 108) < 0.1 && left.Padding == new Thickness(19, 2)
+                           && left.CornerRadius == new CornerRadius(5),
+                        $"group-values: local values were not restored ({left.Width}, {left.Padding}, {left.CornerRadius})");
+                    Assert(Math.Abs(middle.Width - 116) < 0.1 && middle.Padding == new Thickness(22, 3)
+                           && middle.CornerRadius == new CornerRadius(6),
+                        $"group-values: bound values were not restored ({middle.Width}, {middle.Padding}, {middle.CornerRadius})");
+
+                    values.Width = 124;
+                    values.Padding = new Thickness(24, 4);
+                    values.CornerRadius = new CornerRadius(7);
+                    Pump(5, 50);
+                    Assert(Math.Abs(middle.Width - 124) < 0.1 && middle.Padding == new Thickness(24, 4)
+                           && middle.GetBaseValue(Button.CornerRadiusProperty).Value == new CornerRadius(7)
+                           && Math.Abs(middle.CornerRadius.TopLeft - 7) < 0.2,
+                        $"group-values: bindings must remain live after animation and variant changes ({middle.Width}, {middle.Padding}, {middle.CornerRadius})");
+
+                    center = middle.TranslatePoint(
+                                 new Point(middle.Bounds.Width / 2, middle.Bounds.Height / 2), window)
+                             ?? throw new InvalidOperationException("TranslatePoint failed");
+                    window.MouseDown(center, MouseButton.Left);
+                    Pump(3, 50);
+                    group.Items.Remove(middle);
+                    Pump(2, 20);
+                    Assert(Math.Abs(middle.Width - 124) < 0.1 && middle.Padding == new Thickness(24, 4)
+                           && middle.CornerRadius == new CornerRadius(7),
+                        "group-values: container clearing must release all temporary property overrides");
+                    values.Width = 132;
+                    values.Padding = new Thickness(26, 5);
+                    values.CornerRadius = new CornerRadius(9);
+                    Pump(5, 50);
+                    Assert(Math.Abs(middle.Width - 132) < 0.1 && middle.Padding == new Thickness(26, 5)
+                            && middle.GetBaseValue(Button.CornerRadiusProperty).Value == new CornerRadius(9),
+                        $"group-values: bindings must remain live after container clearing ({middle.Width}, {middle.Padding}, {middle.CornerRadius}, base={middle.GetBaseValue(Button.CornerRadiusProperty).Value})");
+                    window.MouseUp(center, MouseButton.Left);
+                    window.Close();
+                }
+
+                    // ---- SegmentedButtonGroup normalizes Single selection ----
+                    {
+                    var first = new SegmentedButton { Content = "First", IsChecked = true };
+                    var second = new SegmentedButton { Content = "Second", IsChecked = true };
+                    var third = new SegmentedButton { Content = "Third", IsChecked = true };
+                    var group = new SegmentedButtonGroup
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Margin = new Thickness(24),
+                    };
+                    group.Items.Add(first);
+                    group.Items.Add(second);
+                    group.Items.Add(third);
+                    var window = new Window
+                    {
+                        Width = 420,
+                        Height = 140,
+                        Title = "Segmented selection normalization",
+                        Content = group,
+                    };
+                    window.Show();
+                    Pump(4, 50);
+                    Assert(first.IsChecked == true && second.IsChecked == false && third.IsChecked == false,
+                        "segmented-single: initially checked children should deterministically keep the first item");
+
+                    group.SelectionMode = SegmentedSelectionMode.Multiple;
+                    second.IsChecked = true;
+                    third.IsChecked = true;
+                    group.SelectionMode = SegmentedSelectionMode.Single;
+                    Assert(first.IsChecked == true && second.IsChecked == false && third.IsChecked == false,
+                        "segmented-single: Multiple to Single should deterministically keep the first checked item");
+                    window.Close();
+                    }
+                }
             }, CancellationToken.None);
         }
         catch (Exception ex)
@@ -718,11 +1151,123 @@ public static class Program
 
     private static PathIcon MakeIcon(string data) => new() { Data = StreamGeometry.Parse(data) };
 
+    private static void RunControlValidationChecks()
+    {
+        var badge = new Badge { Value = -1, MaxValue = -2 };
+        Assert(badge.Value == 0 && badge.MaxValue == 0 && badge.DisplayText == "0",
+            $"badge: negative counts should coerce to zero, got {badge.Value}/{badge.MaxValue}/{badge.DisplayText}");
+
+        AssertThrows<ArgumentException>(() => new Avatar { Size = double.NaN },
+            "avatar: NaN Size should be rejected");
+        AssertThrows<ArgumentException>(() => new Avatar { Size = 0 },
+            "avatar: non-positive Size should be rejected");
+
+        AssertThrows<ArgumentException>(() => new CircularProgressIndicator { StrokeWidth = 0 },
+            "circular-progress: non-positive StrokeWidth should be rejected");
+        AssertThrows<ArgumentException>(() => new CircularProgressIndicator { TrackGap = -1 },
+            "circular-progress: negative TrackGap should be rejected");
+        AssertThrows<ArgumentException>(() => new CircularProgressIndicator { WaveCount = double.PositiveInfinity },
+            "circular-progress: infinite WaveCount should be rejected");
+        AssertThrows<ArgumentException>(() => new WavyProgressBar { Amplitude = -1 },
+            "wavy-progress: negative Amplitude should be rejected");
+        AssertThrows<ArgumentException>(() => new WavyProgressBar { Wavelength = 0 },
+            "wavy-progress: non-positive Wavelength should be rejected");
+
+        var range = new RangeSlider();
+        range.LowerValue = 90;
+        Assert(range.LowerValue == 80 && range.LowerValue <= range.UpperValue,
+            $"range-slider: LowerValue must not exceed UpperValue, got {range.LowerValue}/{range.UpperValue}");
+        range.UpperValue = 10;
+        Assert(range.UpperValue == range.LowerValue,
+            $"range-slider: UpperValue must not cross LowerValue, got {range.LowerValue}/{range.UpperValue}");
+        range.Minimum = 150;
+        Assert(range.Minimum == range.Maximum && range.LowerValue == range.UpperValue && range.LowerValue == range.Minimum,
+            $"range-slider: incoherent bounds should coerce coherently, got {range.Minimum}/{range.LowerValue}/{range.UpperValue}/{range.Maximum}");
+        AssertThrows<ArgumentException>(() => range.LowerValue = double.NaN,
+            "range-slider: NaN values should be rejected");
+        AssertThrows<ArgumentException>(() => range.TickFrequency = 0,
+            "range-slider: non-positive TickFrequency should be rejected");
+        AssertThrows<ArgumentException>(() => range.SmallChange = 0,
+            "range-slider: non-positive SmallChange should be rejected");
+
+        var host = new SnackbarHost();
+        host.Show("queued", duration: TimeSpan.FromSeconds(5));
+        var window = new Window { Content = host };
+        window.Show();
+        Pump(2, 20);
+        var slot = host.GetVisualDescendants().OfType<ContentControl>()
+            .First(control => control.Name == SnackbarHost.PartSnackbarSlot);
+        Assert(slot.Content is Snackbar { Message: "queued" },
+            "snackbar-host: Show before template application should display after attachment");
+        window.Content = null;
+        Pump(1, 20);
+        Assert(slot.Content is null && !slot.Classes.Contains("open"),
+            "snackbar-host: detach should clear content and open state");
+        window.Close();
+        AssertThrows<ArgumentOutOfRangeException>(() => host.Show("invalid", duration: TimeSpan.Zero),
+            "snackbar-host: non-positive duration should be rejected");
+    }
+
     private static TextBlock Caption(string text)
     {
         var block = new TextBlock { Text = text };
         block.Classes.Add("title-small");
         return block;
+    }
+
+    private sealed class TestCommand(Action execute) : ICommand
+    {
+        public bool CanExecute(object? parameter) => true;
+
+        public void Execute(object? parameter) => execute();
+
+        public event EventHandler? CanExecuteChanged
+        {
+            add { }
+            remove { }
+        }
+    }
+
+    private sealed class ButtonValues : AvaloniaObject
+    {
+        public static readonly StyledProperty<double> WidthProperty =
+            AvaloniaProperty.Register<ButtonValues, double>(nameof(Width));
+
+        public static readonly StyledProperty<Thickness> PaddingProperty =
+            AvaloniaProperty.Register<ButtonValues, Thickness>(nameof(Padding));
+
+        public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
+            AvaloniaProperty.Register<ButtonValues, CornerRadius>(nameof(CornerRadius));
+
+        public double Width
+        {
+            get => GetValue(WidthProperty);
+            set => SetValue(WidthProperty, value);
+        }
+
+        public Thickness Padding
+        {
+            get => GetValue(PaddingProperty);
+            set => SetValue(PaddingProperty, value);
+        }
+
+        public CornerRadius CornerRadius
+        {
+            get => GetValue(CornerRadiusProperty);
+            set => SetValue(CornerRadiusProperty, value);
+        }
+    }
+
+    private sealed class TimeValues : AvaloniaObject
+    {
+        public static readonly StyledProperty<TimeSpan> SelectedTimeProperty =
+            AvaloniaProperty.Register<TimeValues, TimeSpan>(nameof(SelectedTime));
+
+        public TimeSpan SelectedTime
+        {
+            get => GetValue(SelectedTimeProperty);
+            set => SetValue(SelectedTimeProperty, value);
+        }
     }
 
     private static StackPanel BuildM3ComponentsPanel()
@@ -905,6 +1450,86 @@ public static class Program
     {
         if (!condition)
             throw new InvalidOperationException(message);
+    }
+
+    private static void CheckPublicApiGuards()
+    {
+        var whitePoint = ColorUtils.WhitePointD65();
+        whitePoint[0] = 0;
+        Assert(ColorUtils.WhitePointD65()[0] == 95.047,
+            "colors: D65 white point should not expose mutable static storage");
+
+        var suppliedWhitePoint = ColorUtils.WhitePointD65();
+        var viewingConditions = ViewingConditions.Make(suppliedWhitePoint);
+        var expectedRgbD = viewingConditions.RgbD[0];
+        suppliedWhitePoint[0] = 1;
+        var exposedRgbD = viewingConditions.RgbD;
+        exposedRgbD[0] = 0;
+        Assert(viewingConditions.RgbD[0] == expectedRgbD,
+            "colors: viewing conditions should isolate supplied and exposed arrays");
+
+        var palette = TonalPalette.FromInt(0xff6750a4);
+        AssertThrows<ArgumentOutOfRangeException>(() => palette.Tone(-1),
+            "colors: negative tones should be rejected");
+        AssertThrows<ArgumentOutOfRangeException>(() => palette.Tone(101),
+            "colors: tones above 100 should be rejected");
+        var tones = new uint[64];
+        Parallel.For(0, tones.Length, i => tones[i] = palette.Tone(40));
+        Assert(tones.All(tone => tone == tones[0]),
+            "colors: concurrent tone requests should return a stable cached value");
+
+        var theme = new MaterialTheme();
+        AssertThrows<ArgumentException>(() => theme.ContrastLevel = double.NaN,
+            "theme: non-finite contrast should be rejected");
+        AssertThrows<ArgumentException>(() => theme.ContrastLevel = 1.01,
+            "theme: contrast above 1 should be rejected");
+        AssertThrows<ArgumentException>(() => theme.SchemeVariant = (SchemeVariant)int.MaxValue,
+            "theme: undefined scheme variants should be rejected");
+
+        var rippleHost = new RippleHost();
+        AssertThrows<ArgumentException>(() => rippleHost.RippleOpacity = double.PositiveInfinity,
+            "ripple: non-finite opacity should be rejected");
+        AssertThrows<ArgumentException>(() => rippleHost.RippleOpacity = -0.01,
+            "ripple: opacity below 0 should be rejected");
+        AssertThrows<ArgumentException>(() => rippleHost.RippleOpacity = 1.01,
+            "ripple: opacity above 1 should be rejected");
+
+        CheckRippleLifecycle(rippleHost);
+    }
+
+    private static void CheckRippleLifecycle(RippleHost rippleHost)
+    {
+        rippleHost.Arrange(new Rect(0, 0, 40, 40));
+        var source = new Button();
+        typeof(RippleHost).GetField("_source", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(rippleHost, source);
+        var keyDown = typeof(RippleHost).GetMethod("OnSourceKeyDown", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var keyArgs = new KeyEventArgs { Key = Key.Space };
+        keyDown.Invoke(rippleHost, [source, keyArgs]);
+        keyDown.Invoke(rippleHost, [source, keyArgs]);
+
+        var ripples = (IList)typeof(RippleHost).GetField("_ripples", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(rippleHost)!;
+        Assert(ripples.Count == 1, "ripple: key auto-repeat should not start repeated ripples");
+
+        rippleHost.IsRippleEnabled = false;
+        var released = ripples[0]!.GetType().GetField("Released")!.GetValue(ripples[0]);
+        Assert(released is not null, "ripple: disabling should release active ripples");
+    }
+
+    private static void AssertThrows<TException>(Action action, string message)
+        where TException : Exception
+    {
+        try
+        {
+            action();
+        }
+        catch (TException)
+        {
+            return;
+        }
+
+        throw new InvalidOperationException(message);
     }
 
     private static void Pump(int iterations, int sleepMs)

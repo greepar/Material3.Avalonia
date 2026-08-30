@@ -9,7 +9,7 @@
     <Setter Property="Template">
       <ControlTemplate>
         <Panel Background="Transparent" Width="20" Height="44">
-          <Border Name="Knob"
+           <Border Name="Knob"
                   Background="{TemplateBinding Background}"
                   Width="4"
                   Height="44"
@@ -20,13 +20,26 @@
               <Transitions>
                 <DoubleTransition Property="Width" Duration="0:0:0.1" Easing="CubicEaseOut" />
               </Transitions>
-            </Border.Transitions>
-          </Border>
+             </Border.Transitions>
+           </Border>
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{StaticResource Md3CornerFull}"
+                  Width="8"
+                  Height="44"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="False"
+                  IsHitTestVisible="False" />
         </Panel>
       </ControlTemplate>
     </Setter>
     <Style Selector="^:pressed /template/ Border#Knob">
       <Setter Property="Width" Value="2" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
   </ControlTheme>
 

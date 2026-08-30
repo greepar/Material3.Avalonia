@@ -50,6 +50,12 @@ public class TimePickerPane : TemplatedControl
             defaultBindingMode: BindingMode.TwoWay,
             coerce: static (_, v) => Math.Clamp(v, 0, 59));
 
+    public static readonly StyledProperty<TimeSpan> SelectedTimeProperty =
+        AvaloniaProperty.Register<TimePickerPane, TimeSpan>(nameof(SelectedTime),
+            defaultBindingMode: BindingMode.TwoWay,
+            coerce: static (_, v) => new TimeSpan(
+                Math.Clamp(v.Hours, 0, 23), Math.Clamp(v.Minutes, 0, 59), 0));
+
     public static readonly StyledProperty<bool> Is24HourProperty =
         AvaloniaProperty.Register<TimePickerPane, bool>(nameof(Is24Hour));
 
@@ -75,6 +81,7 @@ public class TimePickerPane : TemplatedControl
     private Button? _okButton;
     private TextBlock? _titleText;
     private bool _updating;
+    private bool _synchronizingTime;
 
     /// <summary>Selected hour, 0-23.</summary>
     public int SelectedHour
@@ -133,15 +140,11 @@ public class TimePickerPane : TemplatedControl
     /// <summary>Raised when the OK action button is clicked.</summary>
     public event EventHandler? Confirmed;
 
-    /// <summary>Selected time as a <see cref="TimeSpan"/>.</summary>
+    /// <summary>Selected time as a two-way bindable <see cref="TimeSpan"/>.</summary>
     public TimeSpan SelectedTime
     {
-        get => new(SelectedHour, SelectedMinute, 0);
-        set
-        {
-            SetCurrentValue(SelectedHourProperty, value.Hours);
-            SetCurrentValue(SelectedMinuteProperty, value.Minutes);
-        }
+        get => GetValue(SelectedTimeProperty);
+        set => SetValue(SelectedTimeProperty, value);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -227,9 +230,41 @@ public class TimePickerPane : TemplatedControl
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == SelectedHourProperty
-            || change.Property == SelectedMinuteProperty)
+        if (change.Property == SelectedTimeProperty)
         {
+            if (_synchronizingTime)
+                return;
+
+            _synchronizingTime = true;
+            try
+            {
+                SetCurrentValue(SelectedHourProperty, SelectedTime.Hours);
+                SetCurrentValue(SelectedMinuteProperty, SelectedTime.Minutes);
+            }
+            finally
+            {
+                _synchronizingTime = false;
+            }
+
+            UpdateDisplay();
+            SelectedTimeChanged?.Invoke(this, EventArgs.Empty);
+        }
+        else if (change.Property == SelectedHourProperty
+                 || change.Property == SelectedMinuteProperty)
+        {
+            if (_synchronizingTime)
+                return;
+
+            _synchronizingTime = true;
+            try
+            {
+                SetCurrentValue(SelectedTimeProperty, new TimeSpan(SelectedHour, SelectedMinute, 0));
+            }
+            finally
+            {
+                _synchronizingTime = false;
+            }
+
             UpdateDisplay();
             SelectedTimeChanged?.Invoke(this, EventArgs.Empty);
         }

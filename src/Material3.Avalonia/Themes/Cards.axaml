@@ -46,6 +46,13 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="1"
                   CornerRadius="{TemplateBinding CornerRadius}"
+                   IsVisible="False"
+                   IsHitTestVisible="False" />
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="-3"
                   IsVisible="False"
                   IsHitTestVisible="False" />
         </Panel>
@@ -91,6 +98,10 @@
     <!-- clickable interaction states -->
     <Style Selector="^[IsClickable=True]">
       <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Focusable" Value="True" />
+    </Style>
+    <Style Selector="^[IsClickable=True]:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
     <Style Selector="^[IsClickable=True]:pointerover /template/ Border#PART_StateLayer">
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />

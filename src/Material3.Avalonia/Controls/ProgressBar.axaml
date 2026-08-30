@@ -1,5 +1,8 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="using:Avalonia.Controls.Converters">
+
+  <converters:StringFormatConverter x:Key="Md3ProgressStringFormatConverter" />
 
   <!-- Material 3 ProgressBar. Contract per Avalonia 12.1.0 ProgressBar.cs:
        PART_Indicator (Border, required). In indeterminate mode the control fills
@@ -28,7 +31,7 @@
                       Background="{TemplateBinding Foreground}"
                       CornerRadius="{TemplateBinding CornerRadius}" />
             </Panel>
-            <Panel x:Name="IndeterminateRoot" Opacity="0">
+             <Panel x:Name="IndeterminateRoot" Opacity="0">
               <Panel.Transitions>
                 <Transitions>
                   <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
@@ -38,11 +41,30 @@
                       Margin="{TemplateBinding Padding}"
                       Background="{TemplateBinding Foreground}"
                       CornerRadius="{TemplateBinding CornerRadius}" />
-              <Border x:Name="IndeterminateIndicator2"
+               <Border x:Name="IndeterminateIndicator2"
                       Margin="{TemplateBinding Padding}"
                       Background="{TemplateBinding Foreground}"
-                      CornerRadius="{TemplateBinding CornerRadius}" />
-            </Panel>
+                       CornerRadius="{TemplateBinding CornerRadius}" />
+             </Panel>
+            <LayoutTransformControl x:Name="PART_ProgressTextPresenter"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{TemplateBinding ShowProgressText}">
+              <TextBlock FontFamily="{DynamicResource Md3FontFamilyPlain}"
+                         FontSize="{StaticResource Md3LabelMediumSize}"
+                         FontWeight="Medium"
+                         Foreground="{DynamicResource Md3OnSurfaceBrush}">
+                <TextBlock.Text>
+                  <MultiBinding Converter="{StaticResource Md3ProgressStringFormatConverter}">
+                    <TemplateBinding Property="ProgressTextFormat" />
+                    <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <TemplateBinding Property="Percentage" />
+                    <TemplateBinding Property="Minimum" />
+                    <TemplateBinding Property="Maximum" />
+                  </MultiBinding>
+                </TextBlock.Text>
+              </TextBlock>
+            </LayoutTransformControl>
           </Panel>
         </Border>
       </ControlTemplate>
@@ -64,6 +86,11 @@
     <Style Selector="^:vertical /template/ Border#PART_Indicator">
       <Setter Property="HorizontalAlignment" Value="Stretch" />
       <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+    <Style Selector="^:vertical /template/ LayoutTransformControl#PART_ProgressTextPresenter">
+      <Setter Property="LayoutTransform">
+        <RotateTransform Angle="90" />
+      </Setter>
     </Style>
 
     <Style Selector="^:indeterminate /template/ Panel#DeterminateRoot">

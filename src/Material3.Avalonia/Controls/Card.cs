@@ -24,6 +24,9 @@ public enum CardVariant
 /// </summary>
 public class Card : ContentControl
 {
+    private bool _primaryPointerPressed;
+    private Key? _activationKey;
+
     public static readonly StyledProperty<CardVariant> VariantProperty =
         AvaloniaProperty.Register<Card, CardVariant>(nameof(Variant), CardVariant.Elevated);
 
@@ -47,12 +50,76 @@ public class Card : ContentControl
     /// <summary>Raised when a clickable card is released inside its bounds.</summary>
     public event EventHandler? Clicked;
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsClickableProperty && !IsClickable)
+        {
+            _primaryPointerPressed = false;
+            _activationKey = null;
+        }
+        else if (change.Property == IsFocusedProperty && !IsFocused)
+        {
+            _activationKey = null;
+        }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        if (!IsClickable || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            return;
+
+        _primaryPointerPressed = true;
+        Focus();
+        e.Pointer.Capture(this);
+        e.Handled = true;
+    }
+
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        if (IsClickable && new Rect(Bounds.Size).Contains(e.GetPosition(this)))
+        var activate = IsClickable
+                       && _primaryPointerPressed
+                       && e.InitialPressMouseButton == MouseButton.Left
+                       && new Rect(Bounds.Size).Contains(e.GetPosition(this));
+        _primaryPointerPressed = false;
+        e.Pointer.Capture(null);
+
+        if (!activate)
+            return;
+
+        Clicked?.Invoke(this, EventArgs.Empty);
+        e.Handled = true;
+    }
+
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        base.OnPointerCaptureLost(e);
+        _primaryPointerPressed = false;
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!IsClickable || e.Handled || e.Key is not (Key.Enter or Key.Space))
+            return;
+
+        if (_activationKey is null)
         {
+            _activationKey = e.Key;
             Clicked?.Invoke(this, EventArgs.Empty);
         }
+        e.Handled = true;
+    }
+
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+        if (!IsClickable || e.Handled || _activationKey != e.Key)
+            return;
+
+        _activationKey = null;
+        e.Handled = true;
     }
 }

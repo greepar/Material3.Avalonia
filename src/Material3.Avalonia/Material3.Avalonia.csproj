@@ -1,19 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <RootNamespace>Material3.Avalonia</RootNamespace>
         <PackageId>Material3.Avalonia</PackageId>
-        <Version>0.1.2</Version>
+        <Version>0.2.0-preview.1</Version>
         <Authors>greepar</Authors>
-        <Description>Material Design 3 theme for Avalonia 12.1.0. Fully standalone: no Fluent/Simple dependency.</Description>
+        <Description>Standalone Material Design 3 theme and control library for Avalonia 12.1.</Description>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/greepar/Material3.Avalonia</RepositoryUrl>
         <PackageProjectUrl>https://greepar.github.io/Material3.Avalonia/</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>avalonia;avaloniaui;material;material-design;material3;theme;controls;desktop;android;ios;wasm</PackageTags>
+        <Copyright>Copyright © 2026 greepar</Copyright>
+        <PackageReleaseNotes>First NuGet preview: net8.0+ support, documented Material controls, improved keyboard access, safer bindings and validated public properties.</PackageReleaseNotes>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>portable</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
 

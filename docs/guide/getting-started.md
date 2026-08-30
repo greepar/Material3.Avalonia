@@ -6,22 +6,28 @@ Material3.Avalonia is a **standalone** Material Design 3 theme for Avalonia. It 
 
 | | |
 |---|---|
-| Avalonia | **12.1.0** |
-| TFM | **net10.0** (also `net10.0-android`, `net10.0-ios`, `net10.0-browser`) |
+| Avalonia | **12.1.1 or later** |
+| TFM | **net8.0 or later** (including platform-specific Android, iOS, and Browser TFMs) |
 | Extra dependencies | none — only the Avalonia base package |
 | AOT / trimming | fully compatible (`IsAotCompatible`, no reflection) |
 
 ## Install
 
-Reference the project (or the NuGet package once published):
+Install the preview package:
+
+```bash
+dotnet add package Material3.Avalonia --version 0.2.0-preview.1
+```
+
+Or add an explicit package reference:
 
 ```xml
 <ItemGroup>
-  <ProjectReference Include="path/to/Material3.Avalonia.csproj" />
-  <!-- or -->
-  <PackageReference Include="Material3.Avalonia" Version="*" />
+  <PackageReference Include="Material3.Avalonia" Version="0.2.0-preview.1" />
 </ItemGroup>
 ```
+
+Keep your application's platform package (`Avalonia.Desktop`, `Avalonia.Browser`, `Avalonia.Android`, or `Avalonia.iOS`). The theme package depends only on the Avalonia base package.
 
 ## Apply the theme
 

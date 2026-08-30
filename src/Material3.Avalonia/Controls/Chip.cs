@@ -10,7 +10,7 @@ namespace Material3.Avalonia.Controls;
 /// Set <see cref="IsElevated"/> for the elevated container treatment (no outline,
 /// SurfaceContainerLow background, level-1 shadow) used on visually busy surfaces.
 /// </summary>
-public class Chip : ContentControl
+public class Chip : Button
 {
     public static readonly StyledProperty<object?> IconProperty =
         AvaloniaProperty.Register<Chip, object?>(nameof(Icon));

@@ -36,10 +36,12 @@ public class MaterialTheme : Styles
         AvaloniaProperty.Register<MaterialTheme, Color>(nameof(SeedColor), Color.FromRgb(0x67, 0x50, 0xA4));
 
     public static readonly StyledProperty<SchemeVariant> SchemeVariantProperty =
-        AvaloniaProperty.Register<MaterialTheme, SchemeVariant>(nameof(SchemeVariant), SchemeVariant.TonalSpot);
+        AvaloniaProperty.Register<MaterialTheme, SchemeVariant>(nameof(SchemeVariant), SchemeVariant.TonalSpot,
+            validate: static value => Enum.IsDefined(value));
 
     public static readonly StyledProperty<double> ContrastLevelProperty =
-        AvaloniaProperty.Register<MaterialTheme, double>(nameof(ContrastLevel), 0.0);
+        AvaloniaProperty.Register<MaterialTheme, double>(nameof(ContrastLevel), 0.0,
+            validate: static value => double.IsFinite(value) && value is >= -1.0 and <= 1.0);
 
     public static readonly StyledProperty<MotionScheme> MotionSchemeProperty =
         AvaloniaProperty.Register<MaterialTheme, MotionScheme>(nameof(MotionScheme), MotionScheme.Standard);

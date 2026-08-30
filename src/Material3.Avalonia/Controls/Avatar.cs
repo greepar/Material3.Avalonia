@@ -21,7 +21,8 @@ public class Avatar : TemplatedControl
         AvaloniaProperty.Register<Avatar, string?>(nameof(Text));
 
     public static readonly StyledProperty<double> SizeProperty =
-        AvaloniaProperty.Register<Avatar, double>(nameof(Size), 40.0);
+        AvaloniaProperty.Register<Avatar, double>(nameof(Size), 40.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<AvatarVariant> VariantProperty =
         AvaloniaProperty.Register<Avatar, AvatarVariant>(nameof(Variant));

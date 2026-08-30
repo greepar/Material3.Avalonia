@@ -20,7 +20,8 @@ public sealed class RippleHost : Control
         AvaloniaProperty.Register<RippleHost, IBrush?>(nameof(RippleBrush));
 
     public static readonly StyledProperty<double> RippleOpacityProperty =
-        AvaloniaProperty.Register<RippleHost, double>(nameof(RippleOpacity), 0.10);
+        AvaloniaProperty.Register<RippleHost, double>(nameof(RippleOpacity), 0.10,
+            validate: static value => double.IsFinite(value) && value is >= 0.0 and <= 1.0);
 
     public static readonly StyledProperty<bool> IsRippleEnabledProperty =
         AvaloniaProperty.Register<RippleHost, bool>(nameof(IsRippleEnabled), true);
@@ -29,6 +30,7 @@ public sealed class RippleHost : Control
         AvaloniaProperty.Register<RippleHost, CornerRadius>(nameof(RippleClipRadius));
 
     private readonly List<Ripple> _ripples = new();
+    private readonly HashSet<Key> _pressedKeys = new();
     private InputElement? _source;
     private bool _frameRequested;
 
@@ -101,6 +103,18 @@ public sealed class RippleHost : Control
         }
 
         _ripples.Clear();
+        _pressedKeys.Clear();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == IsRippleEnabledProperty && !change.GetNewValue<bool>())
+        {
+            _pressedKeys.Clear();
+            ReleaseAll();
+        }
     }
 
     private InputElement? FindSource()
@@ -137,7 +151,7 @@ public sealed class RippleHost : Control
     {
         if (!IsRippleEnabled || _source is not { IsEffectivelyEnabled: true })
             return;
-        if (e.Key is Key.Space or Key.Enter && !e.IsRepeat())
+        if (e.Key is Key.Space or Key.Enter && _pressedKeys.Add(e.Key))
         {
             StartRipple(new Point(Bounds.Width / 2, Bounds.Height / 2), fromKeyboard: true);
         }
@@ -146,7 +160,10 @@ public sealed class RippleHost : Control
     private void OnSourceKeyUp(object? sender, KeyEventArgs e)
     {
         if (e.Key is Key.Space or Key.Enter)
+        {
+            _pressedKeys.Remove(e.Key);
             ReleaseAll();
+        }
     }
 
     internal void StartRipple(Point origin, bool fromKeyboard)
@@ -285,10 +302,4 @@ public sealed class RippleHost : Control
         public long Started;
         public long? Released;
     }
-}
-
-internal static class KeyEventArgsExtensions
-{
-    // Avalonia 12 KeyEventArgs does not expose IsRepeat on all platforms uniformly; treat as non-repeat.
-    public static bool IsRepeat(this KeyEventArgs _) => false;
 }

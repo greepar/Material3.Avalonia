@@ -261,7 +261,12 @@ public class TimePickerDial : TemplatedControl
             return;
 
         if (Mode == TimePickerDialMode.Hours)
-            SetCurrentValue(SelectedHourProperty, ((SelectedHour + delta) % 24 + 24) % 24);
+        {
+            var hour = Is24Hour
+                ? ((SelectedHour + delta) % 24 + 24) % 24
+                : ((SelectedHour % 12 + delta + 12) % 12) + (SelectedHour >= 12 ? 12 : 0);
+            SetCurrentValue(SelectedHourProperty, hour);
+        }
         else
             SetCurrentValue(SelectedMinuteProperty, ((SelectedMinute + delta) % 60 + 60) % 60);
         e.Handled = true;

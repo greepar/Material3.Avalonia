@@ -1,5 +1,7 @@
 // Ported from material-color-utilities (https://github.com/material-foundation/material-color-utilities), Apache-2.0.
 
+using System.Collections.Concurrent;
+
 namespace Material3.Avalonia.Colors;
 
 /// <summary>
@@ -8,7 +10,7 @@ namespace Material3.Avalonia.Colors;
 /// </summary>
 public sealed class TonalPalette
 {
-    private readonly Dictionary<int, uint> _cache = new();
+    private readonly ConcurrentDictionary<int, uint> _cache = new();
 
     public double Hue { get; }
     public double Chroma { get; }
@@ -57,19 +59,13 @@ public sealed class TonalPalette
     /// <returns>ARGB representation of a color with that tone.</returns>
     public uint Tone(int tone)
     {
-        if (!_cache.TryGetValue(tone, out var argb))
-        {
-            if (tone == 99 && Hct.IsYellow(Hue))
-            {
-                argb = AverageArgb(Tone(98), Tone(100));
-            }
-            else
-            {
-                argb = Hct.From(Hue, Chroma, tone).ToInt();
-            }
-            _cache[tone] = argb;
-        }
-        return argb;
+        ArgumentOutOfRangeException.ThrowIfLessThan(tone, 0);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(tone, 100);
+
+        return _cache.GetOrAdd(tone, static (value, palette) =>
+            value == 99 && Hct.IsYellow(palette.Hue)
+                ? AverageArgb(palette.Tone(98), palette.Tone(100))
+                : Hct.From(palette.Hue, palette.Chroma, value).ToInt(), this);
     }
 
     /// <summary>

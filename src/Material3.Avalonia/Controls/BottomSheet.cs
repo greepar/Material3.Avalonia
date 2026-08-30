@@ -39,6 +39,11 @@ public class BottomSheet : ContentControl
     private double _dragOffset;
     private bool _isDragging;
 
+    public BottomSheet()
+    {
+        AddHandler(KeyDownEvent, OnSheetKeyDown, handledEventsToo: true);
+    }
+
     /// <summary>Whether the sheet is open. Two-way bindable.</summary>
     public bool IsOpen
     {
@@ -98,7 +103,21 @@ public class BottomSheet : ContentControl
 
     private void OnScrimPressed(object? sender, PointerPressedEventArgs e)
     {
-        SetCurrentValue(IsOpenProperty, false);
+        if (sender is Border scrim
+            && e.GetCurrentPoint(scrim).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+        {
+            SetCurrentValue(IsOpenProperty, false);
+            e.Handled = true;
+        }
+    }
+
+    private void OnSheetKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (IsOpen && e.Key == Key.Escape)
+        {
+            SetCurrentValue(IsOpenProperty, false);
+            e.Handled = true;
+        }
     }
 
     private void OnDragHandlePointerPressed(object? sender, PointerPressedEventArgs e)

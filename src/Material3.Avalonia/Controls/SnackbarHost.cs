@@ -22,11 +22,32 @@ public class SnackbarHost : ContentControl
     private DispatcherTimer? _timer;
     private Action? _onAction;
     private Snackbar? _current;
+    private PendingSnackbar? _pending;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearCurrent();
         base.OnApplyTemplate(e);
         _slot = e.NameScope.Find<ContentControl>(PartSnackbarSlot);
+
+        if (_pending is { } pending)
+        {
+            _pending = null;
+            ShowCore(pending.Message, pending.ActionText, pending.Duration, pending.OnAction);
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearCurrent();
+        _pending = null;
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ShowPending();
     }
 
     /// <summary>
@@ -38,48 +59,71 @@ public class SnackbarHost : ContentControl
     /// <param name="onAction">Callback invoked when the action button is clicked.</param>
     public void Show(string message, string? actionText = null, TimeSpan? duration = null, Action? onAction = null)
     {
-        if (_slot is null)
+        var actualDuration = duration ?? TimeSpan.FromSeconds(4);
+        if (actualDuration <= TimeSpan.Zero)
         {
+            throw new ArgumentOutOfRangeException(nameof(duration), duration, "Snackbar duration must be greater than zero.");
+        }
+
+        if (_slot is null || VisualRoot is null)
+        {
+            _pending = new PendingSnackbar(message, actionText, actualDuration, onAction);
             return;
         }
 
-        _timer?.Stop();
-        _timer = null;
+        ShowCore(message, actionText, actualDuration, onAction);
+    }
 
-        if (_current is not null)
-        {
-            _current.ActionClicked -= OnSnackbarAction;
-        }
+    private void ShowCore(string message, string? actionText, TimeSpan duration, Action? onAction)
+    {
+        ClearCurrent();
+        var slot = _slot;
+        if (slot is null)
+            return;
 
         _onAction = onAction;
         _current = new Snackbar { Message = message, ActionText = actionText };
         _current.ActionClicked += OnSnackbarAction;
 
-        _slot.Content = _current;
-        _slot.Classes.Set("open", true);
+        slot.Content = _current;
+        slot.Classes.Set("open", true);
 
-        _timer = new DispatcherTimer { Interval = duration ?? TimeSpan.FromSeconds(4) };
+        _timer = new DispatcherTimer { Interval = duration };
         _timer.Tick += OnTimerTick;
         _timer.Start();
     }
 
     private void OnTimerTick(object? sender, EventArgs e)
     {
-        _timer?.Stop();
-        _timer = null;
         Dismiss();
     }
 
     private void OnSnackbarAction(object? sender, EventArgs e)
     {
-        _onAction?.Invoke();
-        _timer?.Stop();
-        _timer = null;
-        Dismiss();
+        try
+        {
+            _onAction?.Invoke();
+        }
+        finally
+        {
+            Dismiss();
+        }
     }
 
     private void Dismiss()
     {
+        ClearCurrent();
+    }
+
+    private void ClearCurrent()
+    {
+        if (_timer is not null)
+        {
+            _timer.Stop();
+            _timer.Tick -= OnTimerTick;
+            _timer = null;
+        }
+
         if (_current is not null)
         {
             _current.ActionClicked -= OnSnackbarAction;
@@ -93,4 +137,19 @@ public class SnackbarHost : ContentControl
             _slot.Content = null;
         }
     }
+
+    private void ShowPending()
+    {
+        if (_slot is null || _pending is not { } pending)
+            return;
+
+        _pending = null;
+        ShowCore(pending.Message, pending.ActionText, pending.Duration, pending.OnAction);
+    }
+
+    private sealed record PendingSnackbar(
+        string Message,
+        string? ActionText,
+        TimeSpan Duration,
+        Action? OnAction);
 }

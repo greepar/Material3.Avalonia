@@ -22,7 +22,7 @@ Picker.SelectedTimeChanged += (_, _) => Preview(Picker.SelectedTime);
 |---|---|---|---|
 | `SelectedHour` | `int` | `0` | 0–23, two-way |
 | `SelectedMinute` | `int` | `0` | 0–59, two-way |
-| `SelectedTime` | `TimeSpan` | — | CLR convenience accessor |
+| `SelectedTime` | `TimeSpan` | `00:00` | Two-way styled property; updates hour and minute as one notification batch |
 | `Is24Hour` | `bool` | `false` | Hides AM/PM, dial gets a double ring |
 | `IsInputMode` | `bool` | `false` | `false` = "Select time" dial · `true` = "Enter time" text boxes |
 | `Title` | `string?` | `null` | `null` shows the mode-appropriate default title |
@@ -47,7 +47,7 @@ Use the dial standalone when you build your own chrome:
 | `SelectedTimeChanged` | event | Fires on every value change |
 | `SelectionCommitted` | event | Fires on pointer release — hook this to auto-advance |
 
-Interaction: dragging tracks the finger 1:1 (no tick snapping mid-drag) and settles to the nearest tick with a 150 ms decelerate animation on release; clicks animate along the shortest arc; arrow keys nudge ±1.
+Interaction: dragging tracks the finger 1:1 (no tick snapping mid-drag) and settles to the nearest tick with a 150 ms decelerate animation on release; clicks animate along the shortest arc; arrow keys nudge ±1. In 12-hour mode, arrow-key wrapping stays within the current AM or PM half-day.
 
 ## Built-in TimePicker / DatePicker
 

@@ -17,6 +17,8 @@ namespace Material3.Avalonia.Colors;
 /// </summary>
 public sealed class ViewingConditions
 {
+    private readonly double[] _rgbD;
+
     /// <summary>sRGB-like viewing conditions.</summary>
     public static readonly ViewingConditions Default = Make();
 
@@ -26,7 +28,7 @@ public sealed class ViewingConditions
     public double Ncb { get; }
     public double C { get; }
     public double Nc { get; }
-    public double[] RgbD { get; }
+    public double[] RgbD => (double[])_rgbD.Clone();
     public double Fl { get; }
     public double FLRoot { get; }
     public double Z { get; }
@@ -59,7 +61,9 @@ public sealed class ViewingConditions
         double surround = 2.0,
         bool discountingIlluminant = false)
     {
-        whitePoint ??= ColorUtils.WhitePointD65();
+        whitePoint = whitePoint is null
+            ? ColorUtils.WhitePointD65()
+            : (double[])whitePoint.Clone();
         var adaptingLuminanceValue =
             adaptingLuminance ?? (200.0 / Math.PI) * ColorUtils.YFromLstar(50.0) / 100.0;
 
@@ -125,9 +129,11 @@ public sealed class ViewingConditions
         Ncb = ncb;
         C = c;
         Nc = nc;
-        RgbD = rgbD;
+        _rgbD = (double[])rgbD.Clone();
         Fl = fl;
         FLRoot = fLRoot;
         Z = z;
     }
+
+    internal double GetRgbD(int index) => _rgbD[index];
 }

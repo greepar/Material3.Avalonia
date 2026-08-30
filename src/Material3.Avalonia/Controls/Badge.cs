@@ -12,10 +12,11 @@ namespace Material3.Avalonia.Controls;
 public class Badge : TemplatedControl
 {
     public static readonly StyledProperty<int> ValueProperty =
-        AvaloniaProperty.Register<Badge, int>(nameof(Value));
+        AvaloniaProperty.Register<Badge, int>(nameof(Value), coerce: static (_, value) => Math.Max(0, value));
 
     public static readonly StyledProperty<int> MaxValueProperty =
-        AvaloniaProperty.Register<Badge, int>(nameof(MaxValue), 99);
+        AvaloniaProperty.Register<Badge, int>(nameof(MaxValue), 99,
+            coerce: static (_, value) => Math.Max(0, value));
 
     public static readonly StyledProperty<bool> IsDotBadgeProperty =
         AvaloniaProperty.Register<Badge, bool>(nameof(IsDotBadge));

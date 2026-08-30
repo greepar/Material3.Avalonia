@@ -92,4 +92,14 @@ public class ExpandableSettingItem : ContentControl
             e.Handled = true;
         }
     }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!e.Handled && e.Key is Key.Space or Key.Enter)
+        {
+            SetCurrentValue(IsExpandedProperty, !IsExpanded);
+            e.Handled = true;
+        }
+    }
 }

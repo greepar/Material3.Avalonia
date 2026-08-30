@@ -1,6 +1,6 @@
 # Material3.Avalonia
 
-A standalone Material Design 3 theme and component library for Avalonia 12.1 on .NET 10. It does not depend on FluentTheme or SimpleTheme and is designed for desktop, Android, iOS, WebAssembly, trimming, and NativeAOT.
+A standalone Material Design 3 theme and component library for Avalonia 12.1 on .NET 8 or later. It does not depend on FluentTheme or SimpleTheme and is designed for desktop, Android, iOS, WebAssembly, trimming, and NativeAOT.
 
 [Documentation](https://greepar.github.io/Material3.Avalonia/) | [WASM gallery](https://greepar.github.io/Material3.Avalonia/demo/) | [Releases](https://github.com/greepar/Material3.Avalonia/releases)
 
@@ -16,12 +16,24 @@ A standalone Material Design 3 theme and component library for Avalonia 12.1 on 
 
 ## Requirements
 
-- .NET SDK 10
-- Avalonia 12.1.0
+- .NET 8 or later
+- Avalonia 12.1.1 or later
 
 ## Install
 
-Until the NuGet package is published, reference `src/Material3.Avalonia/Material3.Avalonia.csproj`. Then replace FluentTheme with `MaterialTheme`:
+Install the preview package:
+
+```bash
+dotnet add package Material3.Avalonia --version 0.2.0-preview.1
+```
+
+Or add an explicit package reference:
+
+```xml
+<PackageReference Include="Material3.Avalonia" Version="0.2.0-preview.1" />
+```
+
+Keep the Avalonia platform package used by your application, such as `Avalonia.Desktop`, `Avalonia.Browser`, `Avalonia.Android`, or `Avalonia.iOS`. Then replace FluentTheme with `MaterialTheme`:
 
 ```xml
 <Application xmlns="https://github.com/avaloniaui"
@@ -33,6 +45,8 @@ Until the NuGet package is published, reference `src/Material3.Avalonia/Material
   </Application.Styles>
 </Application>
 ```
+
+Material-specific controls use `xmlns:m3c="using:Material3.Avalonia.Controls"`. See the [controls overview](https://greepar.github.io/Material3.Avalonia/controls/overview.html) for chips, FABs, navigation, sheets, settings rows, progress indicators, and other components.
 
 ## RangeSlider
 

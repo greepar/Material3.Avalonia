@@ -263,7 +263,7 @@ public static class ColorUtils
     /// </summary>
     public static double[] WhitePointD65()
     {
-        return WhitePointD65Values;
+        return (double[])WhitePointD65Values.Clone();
     }
 
     private static double LabF(double t)

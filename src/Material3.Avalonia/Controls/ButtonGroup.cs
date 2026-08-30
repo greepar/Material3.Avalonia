@@ -6,6 +6,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Threading;
 
 namespace Material3.Avalonia.Controls;
@@ -61,6 +62,9 @@ public class ButtonGroup : ItemsControl
     // pass re-flow the button content, so labels stay centered while squeezing.
     private readonly Dictionary<Control, double> _naturalWidths = new();
     private readonly Dictionary<Control, Thickness> _naturalPaddings = new();
+    private readonly Dictionary<Control, IDisposable> _widthOverrides = new();
+    private readonly Dictionary<Button, IDisposable> _paddingOverrides = new();
+    private readonly Dictionary<Button, IDisposable> _cornerOverrides = new();
     private bool _widthsForced;
     private bool _frameRequested;
     private StackPanel? _itemsPanel;
@@ -108,6 +112,7 @@ public class ButtonGroup : ItemsControl
         {
             // AOT-safe: strongly typed property-change subscription, no reflection.
             button.PropertyChanged += OnChildPropertyChanged;
+            button.DetachedFromVisualTree += OnChildDetachedFromVisualTree;
             UpdatePressTarget(button);
             ApplyShape(button, e.Index, ItemCount);
         }
@@ -117,17 +122,28 @@ public class ButtonGroup : ItemsControl
 
     private void OnContainerClearing(object? sender, ContainerClearingEventArgs e)
     {
+        // Stop the current group-wide width morph before ItemsControl changes the
+        // realized container set. Otherwise a queued animation frame can reapply a
+        // stale override to the button after ContainerClearing released it.
+        ReleaseInteractionOverrides();
+
         if (e.Container is Button button)
         {
             button.PropertyChanged -= OnChildPropertyChanged;
-            button.ClearValue(Button.CornerRadiusProperty);
-            button.ClearValue(WidthProperty);
+            button.DetachedFromVisualTree -= OnChildDetachedFromVisualTree;
+            ClearOverride(_cornerOverrides, button);
+            ClearOverride(_paddingOverrides, button);
         }
+
+        ClearOverride(_widthOverrides, e.Container);
 
         _anims.Remove(e.Container);
         _naturalWidths.Remove(e.Container);
         _naturalPaddings.Remove(e.Container);
-        UpdateShapes();
+
+        // ContainerClearing is raised before ItemsControl removes the container. Updating
+        // shapes here would immediately reapply animation-priority values to the button
+        // that is being cleared; ContainerIndexChanged updates the remaining buttons.
     }
 
     private void OnChildPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -139,6 +155,21 @@ public class ButtonGroup : ItemsControl
             EnsureCornerTransition(button);
             UpdateShapes();
         }
+    }
+
+    private void OnChildDetachedFromVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is not Button button)
+            return;
+
+        button.PropertyChanged -= OnChildPropertyChanged;
+        button.DetachedFromVisualTree -= OnChildDetachedFromVisualTree;
+        ClearOverride(_widthOverrides, button);
+        ClearOverride(_paddingOverrides, button);
+        ClearOverride(_cornerOverrides, button);
+        _anims.Remove(button);
+        _naturalWidths.Remove(button);
+        _naturalPaddings.Remove(button);
     }
 
     private static void EnsureCornerTransition(Button button)
@@ -309,11 +340,13 @@ public class ButtonGroup : ItemsControl
             {
                 for (var i = 0; i < count; i++)
                 {
-                    ContainerFromIndex(i)?.ClearValue(WidthProperty);
-                    if (ContainerFromIndex(i) is Button button
-                        && _naturalPaddings.TryGetValue(button, out var padding))
+                    if (ContainerFromIndex(i) is { } child)
                     {
-                        button.SetCurrentValue(Button.PaddingProperty, padding);
+                        ClearOverride(_widthOverrides, child);
+                        if (child is Button button)
+                        {
+                            ClearOverride(_paddingOverrides, button);
+                        }
                     }
                 }
 
@@ -372,15 +405,15 @@ public class ButtonGroup : ItemsControl
         {
             var baseWidth = _naturalWidths.TryGetValue(children[i], out var nat) ? nat : widths[i];
             var w = Math.Max(widths[i], Math.Min(baseWidth, MinSqueezedWidth));
-            children[i].SetCurrentValue(WidthProperty, w);
+            SetOverride(_widthOverrides, children[i], Control.WidthProperty, w, BindingPriority.Animation);
             if (children[i] is Button button
                 && _naturalPaddings.TryGetValue(button, out var padding))
             {
                 var shrink = Math.Max(0, baseWidth - w);
                 var left = Math.Max(8, padding.Left - shrink / 2);
                 var right = Math.Max(8, padding.Right - shrink / 2);
-                button.SetCurrentValue(Button.PaddingProperty,
-                    new Thickness(left, padding.Top, right, padding.Bottom));
+                SetOverride(_paddingOverrides, button, Button.PaddingProperty,
+                    new Thickness(left, padding.Top, right, padding.Bottom), BindingPriority.Animation);
             }
         }
 
@@ -460,21 +493,62 @@ public class ButtonGroup : ItemsControl
     {
         if (Variant != ButtonGroupVariant.Connected)
         {
-            button.ClearValue(Button.CornerRadiusProperty);
+            ClearOverride(_cornerOverrides, button);
             return;
         }
 
         if (button.IsPressed || button is ToggleButton { IsChecked: true })
         {
             var activeRadius = GetFullRadius(button);
-            button.CornerRadius = new CornerRadius(activeRadius);
+            SetOverride(_cornerOverrides, button, Button.CornerRadiusProperty,
+                new CornerRadius(activeRadius), BindingPriority.Animation);
             return;
         }
 
         var fullRadius = GetFullRadius(button);
         var left = index == 0 ? fullRadius : InnerCorner;
         var right = index == count - 1 ? fullRadius : InnerCorner;
-        button.CornerRadius = new CornerRadius(left, right, right, left);
+        SetOverride(_cornerOverrides, button, Button.CornerRadiusProperty,
+            new CornerRadius(left, right, right, left), BindingPriority.Animation);
+    }
+
+    private static void SetOverride<TKey, TValue>(Dictionary<TKey, IDisposable> overrides, TKey key,
+        StyledProperty<TValue> property, TValue value, BindingPriority priority)
+        where TKey : AvaloniaObject
+    {
+        ClearOverride(overrides, key);
+        overrides[key] = key.SetValue(property, value, priority)!;
+    }
+
+    private static void ClearOverride<TKey>(Dictionary<TKey, IDisposable> overrides, TKey key)
+        where TKey : notnull
+    {
+        if (overrides.Remove(key, out var disposable))
+        {
+            disposable.Dispose();
+        }
+    }
+
+    private void ReleaseInteractionOverrides()
+    {
+        foreach (var disposable in _widthOverrides.Values)
+            disposable.Dispose();
+        foreach (var disposable in _paddingOverrides.Values)
+            disposable.Dispose();
+
+        _widthOverrides.Clear();
+        _paddingOverrides.Clear();
+        _widthsForced = false;
+        _naturalWidths.Clear();
+        _naturalPaddings.Clear();
+
+        foreach (var anim in _anims.Values)
+        {
+            anim.Current = 0;
+            anim.From = 0;
+            anim.Target = 0;
+            anim.Animating = false;
+        }
     }
 
     private static double GetFullRadius(Button button) =>

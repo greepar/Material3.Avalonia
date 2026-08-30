@@ -106,6 +106,15 @@ public class FabMenu : ItemsControl
         base.OnKeyDown(e);
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsOpenProperty && change.NewValue is false)
+        {
+            _primaryFab?.Focus();
+        }
+    }
+
     private void OnAnyButtonClick(object? sender, RoutedEventArgs e)
     {
         if (IsOpen && e.Source is Button button && !ReferenceEquals(button, _primaryFab))

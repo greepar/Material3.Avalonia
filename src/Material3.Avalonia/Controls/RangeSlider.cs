@@ -62,27 +62,32 @@ public class RangeSlider : TemplatedControl
     private const double SegmentInset = 8;
 
     public static readonly StyledProperty<double> MinimumProperty =
-        AvaloniaProperty.Register<RangeSlider, double>(nameof(Minimum), 0.0);
+        AvaloniaProperty.Register<RangeSlider, double>(nameof(Minimum), 0.0,
+            validate: double.IsFinite);
 
     public static readonly StyledProperty<double> MaximumProperty =
-        AvaloniaProperty.Register<RangeSlider, double>(nameof(Maximum), 100.0);
+        AvaloniaProperty.Register<RangeSlider, double>(nameof(Maximum), 100.0,
+            validate: double.IsFinite);
 
     public static readonly StyledProperty<double> LowerValueProperty =
         AvaloniaProperty.Register<RangeSlider, double>(nameof(LowerValue), 20.0,
-            defaultBindingMode: BindingMode.TwoWay, coerce: CoerceLowerValue);
+            defaultBindingMode: BindingMode.TwoWay, validate: double.IsFinite, coerce: CoerceLowerValue);
 
     public static readonly StyledProperty<double> UpperValueProperty =
         AvaloniaProperty.Register<RangeSlider, double>(nameof(UpperValue), 80.0,
-            defaultBindingMode: BindingMode.TwoWay, coerce: CoerceUpperValue);
+            defaultBindingMode: BindingMode.TwoWay, validate: double.IsFinite, coerce: CoerceUpperValue);
 
     public static readonly StyledProperty<double> SmallChangeProperty =
-        AvaloniaProperty.Register<RangeSlider, double>(nameof(SmallChange), 1.0);
+        AvaloniaProperty.Register<RangeSlider, double>(nameof(SmallChange), 1.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<double> LargeChangeProperty =
-        AvaloniaProperty.Register<RangeSlider, double>(nameof(LargeChange), 10.0);
+        AvaloniaProperty.Register<RangeSlider, double>(nameof(LargeChange), 10.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<double> TickFrequencyProperty =
-        AvaloniaProperty.Register<RangeSlider, double>(nameof(TickFrequency), 1.0);
+        AvaloniaProperty.Register<RangeSlider, double>(nameof(TickFrequency), 1.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<bool> IsSnapToTickEnabledProperty =
         AvaloniaProperty.Register<RangeSlider, bool>(nameof(IsSnapToTickEnabled));
@@ -200,7 +205,7 @@ public class RangeSlider : TemplatedControl
         value = slider.Snap(value);
         var min = slider.Minimum;
         var max = Math.Min(slider.Maximum, slider.UpperValue);
-        return double.IsNaN(value) ? min : Math.Clamp(value, min, Math.Max(min, max));
+        return Math.Clamp(value, min, Math.Max(min, max));
     }
 
     private static double CoerceUpperValue(AvaloniaObject sender, double value)
@@ -209,7 +214,7 @@ public class RangeSlider : TemplatedControl
         value = slider.Snap(value);
         var max = slider.Maximum;
         var min = Math.Max(slider.Minimum, slider.LowerValue);
-        return double.IsNaN(value) ? max : Math.Clamp(value, Math.Min(min, max), max);
+        return Math.Clamp(value, Math.Min(min, max), max);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -289,6 +294,11 @@ public class RangeSlider : TemplatedControl
 
         if (change.Property == MinimumProperty || change.Property == MaximumProperty)
         {
+            if (change.Property == MinimumProperty && Minimum > Maximum)
+                SetCurrentValue(MaximumProperty, Minimum);
+            else if (change.Property == MaximumProperty && Maximum < Minimum)
+                SetCurrentValue(MinimumProperty, Maximum);
+
             CoerceValue(LowerValueProperty);
             CoerceValue(UpperValueProperty);
             UpdateVisuals();
@@ -429,7 +439,7 @@ public class RangeSlider : TemplatedControl
 
     private double Snap(double value)
     {
-        if (!IsSnapToTickEnabled || TickFrequency <= 0 || double.IsNaN(TickFrequency))
+        if (!IsSnapToTickEnabled)
             return value;
         return Minimum + Math.Round((value - Minimum) / TickFrequency) * TickFrequency;
     }

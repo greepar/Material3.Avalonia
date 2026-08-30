@@ -58,10 +58,17 @@
                       RenderTransformOrigin="50%,50%"
                       Opacity="0"
                       IsHitTestVisible="False" />
-              <Border Name="PART_StateLayer"
-                      Background="{TemplateBinding Foreground}"
+               <Border Name="PART_StateLayer"
+                       Background="{TemplateBinding Foreground}"
+                       CornerRadius="{StaticResource Md3CornerLarge}"
+                       Opacity="0"
+                       IsHitTestVisible="False" />
+              <Border Name="PART_FocusRing"
+                      BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                      BorderThickness="{StaticResource Md3FocusRingThickness}"
                       CornerRadius="{StaticResource Md3CornerLarge}"
-                      Opacity="0"
+                      Margin="2"
+                      IsVisible="False"
                       IsHitTestVisible="False" />
               <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
                               RippleOpacity="{StaticResource Md3StatePressedOpacity}"
@@ -93,6 +100,9 @@
     </Style>
     <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
 
     <!-- pill entrance: scaleX 0.6 -> 1 with fade (cf. TabItem indicator) -->
@@ -180,10 +190,17 @@
                       RenderTransformOrigin="50%,50%"
                       Opacity="0"
                       IsHitTestVisible="False" />
-              <Border Name="PART_StateLayer"
-                      Background="{TemplateBinding Foreground}"
+               <Border Name="PART_StateLayer"
+                       Background="{TemplateBinding Foreground}"
+                       CornerRadius="{StaticResource Md3CornerLarge}"
+                       Opacity="0"
+                       IsHitTestVisible="False" />
+              <Border Name="PART_FocusRing"
+                      BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                      BorderThickness="{StaticResource Md3FocusRingThickness}"
                       CornerRadius="{StaticResource Md3CornerLarge}"
-                      Opacity="0"
+                      Margin="2"
+                      IsVisible="False"
                       IsHitTestVisible="False" />
               <m3p:RippleHost RippleBrush="{TemplateBinding Foreground}"
                               RippleOpacity="{StaticResource Md3StatePressedOpacity}"
@@ -215,6 +232,9 @@
     </Style>
     <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
 
     <!-- pill entrance: scaleX 0.6 -> 1 with fade (cf. TabItem indicator) -->

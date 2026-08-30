@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Material3.Avalonia
   text: Material Design 3 for Avalonia
-  tagline: Standalone M3 theme with dynamic color, 80+ themed controls, ripples, and Material-specific components. Avalonia 12.1 · net10.0 · AOT-ready.
+  tagline: Standalone M3 theme with dynamic color, 80+ themed controls, ripples, and Material-specific components. Avalonia 12.1 · .NET 8+ · AOT-ready.
   actions:
     - theme: brand
       text: Get Started

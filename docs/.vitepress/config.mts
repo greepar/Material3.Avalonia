@@ -35,8 +35,16 @@ export default defineConfig({
         {
           text: 'Controls',
           items: [
-            { text: 'Overview & Style Classes', link: '/controls/overview' },
-            { text: 'Sliders & RangeSlider', link: '/controls/sliders' },
+             { text: 'Overview & Style Classes', link: '/controls/overview' },
+            { text: 'Chips', link: '/controls/chips' },
+            { text: 'Buttons, FABs & Groups', link: '/controls/buttons-fabs' },
+            { text: 'Navigation', link: '/controls/navigation' },
+            { text: 'App Bars & Toolbar', link: '/controls/app-bars' },
+            { text: 'Cards, Avatars & Badges', link: '/controls/cards-badges' },
+            { text: 'Sheets, Scrim & Dialogs', link: '/controls/sheets-dialogs' },
+            { text: 'Snackbar, Tooltip & Search', link: '/controls/feedback-search' },
+            { text: 'Settings Items', link: '/controls/settings' },
+             { text: 'Sliders & RangeSlider', link: '/controls/sliders' },
             { text: 'Progress Indicators', link: '/controls/progress' },
             { text: 'Time Picker (Dial & Pane)', link: '/controls/time-picker' },
             { text: 'Ripple & Entrance Animations', link: '/controls/primitives' },

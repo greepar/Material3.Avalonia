@@ -1,4 +1,4 @@
-name: Release Gallery
+name: Release
 
 on:
   push:
@@ -23,6 +23,128 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet run --project tests/Material3.Screenshots -c Release
+
+  publish-nuget:
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Resolve and validate version
+        id: version
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        shell: pwsh
+        run: |
+          if ($env:RELEASE_TAG -notmatch '^v(?<version>\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)$') {
+            throw "Release tag '$env:RELEASE_TAG' is not a supported SemVer tag."
+          }
+          $version = $Matches.version
+          [xml]$project = Get-Content 'src/Material3.Avalonia/Material3.Avalonia.csproj'
+          $projectVersion = $project.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          if ($projectVersion -ne $version) {
+            throw "Tag version '$version' does not match project version '$projectVersion'."
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Pack NuGet package
+        run: >-
+          dotnet pack src/Material3.Avalonia/Material3.Avalonia.csproj
+          -c Release
+          -o artifacts/nuget
+
+      - name: Verify package payload
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          $package = "artifacts/nuget/Material3.Avalonia.$version.nupkg"
+          $symbols = "artifacts/nuget/Material3.Avalonia.$version.snupkg"
+          if (-not (Test-Path $package)) { throw "Missing $package" }
+          if (-not (Test-Path $symbols)) { throw "Missing $symbols" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path $package))
+          try {
+            $required = @(
+              'lib/net8.0/Material3.Avalonia.dll',
+              'lib/net8.0/Material3.Avalonia.xml',
+              'README.md',
+              'NOTICE'
+            )
+            foreach ($entry in $required) {
+              if ($archive.Entries.FullName -notcontains $entry) { throw "Package is missing $entry" }
+            }
+          }
+          finally {
+            $archive.Dispose()
+          }
+
+      - name: Compile an independent package consumer
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          New-Item -ItemType Directory -Path package-smoke | Out-Null
+          @'
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <TargetFramework>net8.0</TargetFramework>
+              <Nullable>enable</Nullable>
+            </PropertyGroup>
+            <ItemGroup>
+              <PackageReference Include="Material3.Avalonia" Version="PACKAGE_VERSION" />
+            </ItemGroup>
+          </Project>
+          '@.Replace('PACKAGE_VERSION', $version) | Set-Content package-smoke/PackageSmoke.csproj
+          @'
+          <Application xmlns="https://github.com/avaloniaui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:m3="using:Material3.Avalonia"
+                       x:Class="PackageSmoke.App">
+            <Application.Styles>
+              <m3:MaterialTheme SeedColor="#6750A4" />
+            </Application.Styles>
+          </Application>
+          '@ | Set-Content package-smoke/App.axaml
+          @'
+          using Avalonia;
+          namespace PackageSmoke;
+          public sealed partial class App : Application { }
+          '@ | Set-Content package-smoke/App.axaml.cs
+          dotnet restore package-smoke/PackageSmoke.csproj --source artifacts/nuget --source https://api.nuget.org/v3/index.json
+          dotnet build package-smoke/PackageSmoke.csproj -c Release --no-restore
+
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: greepar
+
+      - name: Push package to NuGet.org
+        run: >-
+          dotnet nuget push
+          artifacts/nuget/Material3.Avalonia.${{ steps.version.outputs.version }}.nupkg
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      - name: Push symbols to NuGet.org
+        run: >-
+          dotnet nuget push
+          artifacts/nuget/Material3.Avalonia.${{ steps.version.outputs.version }}.snupkg
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget
+          path: artifacts/nuget/*.*nupkg
+          if-no-files-found: error
 
   publish-desktop:
     needs: verify
@@ -176,6 +298,7 @@ jobs:
 
   release:
     needs:
+      - publish-nuget
       - publish-desktop
       - publish-musl
       - publish-wasm

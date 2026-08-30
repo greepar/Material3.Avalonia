@@ -4,7 +4,22 @@ Every built-in Avalonia control has an implicit Material 3 `ControlTheme` — yo
 
 Covered (80+): `Button` family, `CheckBox`, `RadioButton`, `ToggleSwitch`, `Slider`, `ProgressBar`, `TextBox`, `AutoCompleteBox`, `NumericUpDown`, `ComboBox`, `ListBox`, `TreeView`, `TabControl`, `Menu`/`ContextMenu`/flyouts, `Calendar`, `DatePicker`, `TimePicker`, `TableView`, `Expander`, `SplitView`, `NotificationCard`, window chrome, pages, and more.
 
-Material-specific APIs include `RangeSlider`, `CircularProgressIndicator`, `WavyProgressBar`, `LoadingIndicator`, chips, FABs and FAB menus, segmented and expressive button groups, cards, sheets, search, snackbar, dialog panes, and time-picker controls. See [Sliders](./sliders) for the complete lower/upper value API.
+Material-specific APIs include `RangeSlider`, progress indicators, chips, FABs and button groups, navigation, cards, sheets, search, snackbar, settings rows, and time-picker controls.
+
+| Family | Documentation |
+|---|---|
+| Chips | [Chips](./chips) |
+| Icon buttons, FABs, button groups | [Buttons, FABs, and Groups](./buttons-fabs) |
+| Navigation bar, rail, drawer items | [Navigation](./navigation) |
+| Top/bottom app bars and toolbar | [App Bars and Toolbar](./app-bars) |
+| Cards, surfaces, avatars, badges | [Cards, Surfaces, Avatars, and Badges](./cards-badges) |
+| Bottom/side sheets, scrim, dialogs | [Sheets, Scrim, and Dialogs](./sheets-dialogs) |
+| Snackbar, tooltip, search, divider | [Snackbar, Tooltip, Search, and Divider](./feedback-search) |
+| Settings rows | [Settings Items](./settings) |
+| Sliders | [Sliders](./sliders) |
+| Progress | [Progress Indicators](./progress) |
+| Time picker | [Time Picker](./time-picker) |
+| Ripple and entrance animation | [Ripple and Entrance Animations](./primitives) |
 
 ## Button style classes
 

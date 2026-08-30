@@ -18,19 +18,23 @@ public class CircularProgressIndicator : RangeBase
         AvaloniaProperty.Register<CircularProgressIndicator, bool>(nameof(IsIndeterminate));
 
     public static readonly StyledProperty<double> StrokeWidthProperty =
-        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(StrokeWidth), 4.0);
+        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(StrokeWidth), 4.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<double> TrackGapProperty =
-        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(TrackGap), 4.0);
+        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(TrackGap), 4.0,
+            validate: static value => double.IsFinite(value) && value >= 0);
 
     public static readonly StyledProperty<bool> IsWavyProperty =
         AvaloniaProperty.Register<CircularProgressIndicator, bool>(nameof(IsWavy));
 
     public static readonly StyledProperty<double> AmplitudeProperty =
-        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(Amplitude), 2.0);
+        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(Amplitude), 2.0,
+            validate: static value => double.IsFinite(value) && value >= 0);
 
     public static readonly StyledProperty<double> WaveCountProperty =
-        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(WaveCount), 12.0);
+        AvaloniaProperty.Register<CircularProgressIndicator, double>(nameof(WaveCount), 12.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     // Motion: M3 progress value animation, ~0.5s decelerate (implementation choice, visually calibrated).
     private const double ValueAnimationSeconds = 0.5;
@@ -127,7 +131,8 @@ public class CircularProgressIndicator : RangeBase
         // Snap to current value on attach; no animation from stale state.
         _valueAnimating = false;
         _animTo = Value;
-        RequestFrame();
+        if (IsIndeterminate)
+            RequestFrame();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -199,6 +204,9 @@ public class CircularProgressIndicator : RangeBase
 
         if (!IsEffectivelyVisible)
         {
+            if (!IsIndeterminate)
+                return;
+
             // Hidden (e.g. a collapsed ancestor): Render is not invoked for hidden visuals,
             // which would kill the frame loop. Poll cheaply until shown again, then resume.
             _frameRequested = true;

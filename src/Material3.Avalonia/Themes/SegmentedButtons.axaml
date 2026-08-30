@@ -85,10 +85,17 @@
             </Panel>
           </Border>
           <!-- outline overlay: independent opacity so the disabled border does not dim the label -->
-          <Border Name="PART_Outline"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
+           <Border Name="PART_Outline"
+                   BorderBrush="{TemplateBinding BorderBrush}"
+                   BorderThickness="{TemplateBinding BorderThickness}"
+                   CornerRadius="{TemplateBinding CornerRadius}"
+                   IsHitTestVisible="False" />
+          <Border Name="PART_FocusRing"
+                  BorderBrush="{DynamicResource Md3PrimaryBrush}"
+                  BorderThickness="{StaticResource Md3FocusRingThickness}"
                   CornerRadius="{TemplateBinding CornerRadius}"
+                  Margin="2"
+                  IsVisible="False"
                   IsHitTestVisible="False" />
         </Panel>
       </ControlTemplate>
@@ -158,6 +165,9 @@
 
     <Style Selector="^:pointerover /template/ Border#PART_StateLayer">
       <Setter Property="Opacity" Value="{StaticResource Md3StateHoverOpacity}" />
+    </Style>
+    <Style Selector="^:focus-visible /template/ Border#PART_FocusRing">
+      <Setter Property="IsVisible" Value="True" />
     </Style>
 
     <!-- checked: borderless SecondaryContainer fill + checkmark scale+fade in

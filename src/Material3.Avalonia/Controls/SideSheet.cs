@@ -21,23 +21,18 @@ public class SideSheet : ContentControl
     public static readonly StyledProperty<bool> IsOpenProperty =
         AvaloniaProperty.Register<SideSheet, bool>(nameof(IsOpen), defaultBindingMode: BindingMode.TwoWay);
 
-    public static readonly StyledProperty<bool> ShowDragHandleProperty =
-        AvaloniaProperty.Register<SideSheet, bool>(nameof(ShowDragHandle), true);
-
     private Border? _scrim;
+
+    public SideSheet()
+    {
+        AddHandler(KeyDownEvent, OnSheetKeyDown, handledEventsToo: true);
+    }
 
     /// <summary>Whether the sheet is open. Two-way bindable.</summary>
     public bool IsOpen
     {
         get => GetValue(IsOpenProperty);
         set => SetValue(IsOpenProperty, value);
-    }
-
-    /// <summary>Whether the drag handle is shown. Defaults to true.</summary>
-    public bool ShowDragHandle
-    {
-        get => GetValue(ShowDragHandleProperty);
-        set => SetValue(ShowDragHandleProperty, value);
     }
 
     /// <summary>Raised when <see cref="IsOpen"/> transitions to false.</summary>
@@ -69,6 +64,20 @@ public class SideSheet : ContentControl
 
     private void OnScrimPressed(object? sender, PointerPressedEventArgs e)
     {
-        SetCurrentValue(IsOpenProperty, false);
+        if (sender is Border scrim
+            && e.GetCurrentPoint(scrim).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+        {
+            SetCurrentValue(IsOpenProperty, false);
+            e.Handled = true;
+        }
+    }
+
+    private void OnSheetKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (IsOpen && e.Key == Key.Escape)
+        {
+            SetCurrentValue(IsOpenProperty, false);
+            e.Handled = true;
+        }
     }
 }

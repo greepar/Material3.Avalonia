@@ -92,9 +92,9 @@ public sealed class Cam16
         var gC = -0.250268 * x + 1.204414 * y + 0.045854 * z;
         var bC = -0.002079 * x + 0.048952 * y + 0.953127 * z;
 
-        var rD = viewingConditions.RgbD[0] * rC;
-        var gD = viewingConditions.RgbD[1] * gC;
-        var bD = viewingConditions.RgbD[2] * bC;
+        var rD = viewingConditions.GetRgbD(0) * rC;
+        var gD = viewingConditions.GetRgbD(1) * gC;
+        var bD = viewingConditions.GetRgbD(2) * bC;
 
         var rAF = Math.Pow((viewingConditions.Fl * Math.Abs(rD)) / 100.0, 0.42);
         var gAF = Math.Pow((viewingConditions.Fl * Math.Abs(gD)) / 100.0, 0.42);
@@ -260,9 +260,9 @@ public sealed class Cam16
         var bCBase = Math.Max(0, (27.13 * Math.Abs(bA)) / (400.0 - Math.Abs(bA)));
         var bC = MathUtils.Signum(bA) * (100.0 / viewingConditions.Fl) *
             Math.Pow(bCBase, 1.0 / 0.42);
-        var rF = rC / viewingConditions.RgbD[0];
-        var gF = gC / viewingConditions.RgbD[1];
-        var bF = bC / viewingConditions.RgbD[2];
+        var rF = rC / viewingConditions.GetRgbD(0);
+        var gF = gC / viewingConditions.GetRgbD(1);
+        var bF = bC / viewingConditions.GetRgbD(2);
 
         var x = 1.86206786 * rF - 1.01125463 * gF + 0.14918677 * bF;
         var y = 0.38752654 * rF + 0.62144744 * gF - 0.00897398 * bF;
@@ -285,9 +285,9 @@ public sealed class Cam16
         var bC = -0.002079 * x + 0.048952 * y + 0.953127 * z;
 
         // Discount illuminant
-        var rD = viewingConditions.RgbD[0] * rC;
-        var gD = viewingConditions.RgbD[1] * gC;
-        var bD = viewingConditions.RgbD[2] * bC;
+        var rD = viewingConditions.GetRgbD(0) * rC;
+        var gD = viewingConditions.GetRgbD(1) * gC;
+        var bD = viewingConditions.GetRgbD(2) * bC;
 
         // chromatic adaptation
         var rAF = Math.Pow(viewingConditions.Fl * Math.Abs(rD) / 100.0, 0.42);
@@ -390,9 +390,9 @@ public sealed class Cam16
         var bCBase = Math.Max(0, (27.13 * Math.Abs(bA)) / (400.0 - Math.Abs(bA)));
         var bC = MathUtils.Signum(bA) * (100.0 / viewingConditions.Fl) *
             Math.Pow(bCBase, 1.0 / 0.42);
-        var rF = rC / viewingConditions.RgbD[0];
-        var gF = gC / viewingConditions.RgbD[1];
-        var bF = bC / viewingConditions.RgbD[2];
+        var rF = rC / viewingConditions.GetRgbD(0);
+        var gF = gC / viewingConditions.GetRgbD(1);
+        var bF = bC / viewingConditions.GetRgbD(2);
 
         var x = 1.86206786 * rF - 1.01125463 * gF + 0.14918677 * bF;
         var y = 0.38752654 * rF + 0.62144744 * gF - 0.00897398 * bF;

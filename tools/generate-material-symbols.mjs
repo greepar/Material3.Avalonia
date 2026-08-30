@@ -116,7 +116,9 @@ for (const [index, entry] of entries.entries()) {
 catalogLines.push(
   '    ];',
   '',
-  '    public static IReadOnlyList<MaterialSymbolInfo> All => s_all;',
+  '    private static readonly IReadOnlyList<MaterialSymbolInfo> s_allView = Array.AsReadOnly(s_all);',
+  '',
+  '    public static IReadOnlyList<MaterialSymbolInfo> All => s_allView;',
   '',
   '    public static Geometry GetGeometry(int index, bool filled = false) => filled',
   '        ? GetFilledGeometry(index)',

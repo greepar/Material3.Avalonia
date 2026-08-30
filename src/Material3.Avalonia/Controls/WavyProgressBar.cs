@@ -19,16 +19,20 @@ public class WavyProgressBar : RangeBase
         AvaloniaProperty.Register<WavyProgressBar, bool>(nameof(IsIndeterminate));
 
     public static readonly StyledProperty<double> AmplitudeProperty =
-        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(Amplitude), 3.0);
+        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(Amplitude), 3.0,
+            validate: static value => double.IsFinite(value) && value >= 0);
 
     public static readonly StyledProperty<double> WavelengthProperty =
-        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(Wavelength), 40.0);
+        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(Wavelength), 40.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<double> StrokeWidthProperty =
-        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(StrokeWidth), 4.0);
+        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(StrokeWidth), 4.0,
+            validate: static value => double.IsFinite(value) && value > 0);
 
     public static readonly StyledProperty<double> TrackGapProperty =
-        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(TrackGap), 4.0);
+        AvaloniaProperty.Register<WavyProgressBar, double>(nameof(TrackGap), 4.0,
+            validate: static value => double.IsFinite(value) && value >= 0);
 
     // Motion (implementation choices, visually calibrated):
     // - value changes animate over ~0.5s with decelerate easing;
@@ -110,7 +114,8 @@ public class WavyProgressBar : RangeBase
         _clockStart = Stopwatch.GetTimestamp();
         _valueAnimating = false;
         _animTo = Value;
-        RequestFrame();
+        if (IsIndeterminate)
+            RequestFrame();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -180,6 +185,9 @@ public class WavyProgressBar : RangeBase
 
         if (!IsEffectivelyVisible)
         {
+            if (!IsIndeterminate)
+                return;
+
             // Hidden (e.g. a collapsed ancestor): Render is not invoked for hidden visuals,
             // which would kill the frame loop. Poll cheaply until shown again, then resume.
             _frameRequested = true;

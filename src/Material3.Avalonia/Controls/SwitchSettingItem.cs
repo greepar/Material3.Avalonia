@@ -42,4 +42,14 @@ public class SwitchSettingItem : SettingItem
             e.Handled = true;
         }
     }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!e.Handled && e.Key is Key.Space or Key.Enter)
+        {
+            SetCurrentValue(IsCheckedProperty, !IsChecked);
+            e.Handled = true;
+        }
+    }
 }

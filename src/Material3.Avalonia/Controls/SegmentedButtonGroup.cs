@@ -45,11 +45,21 @@ public class SegmentedButtonGroup : ItemsControl
         set => SetValue(SelectionModeProperty, value);
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SelectionModeProperty && SelectionMode == SegmentedSelectionMode.Single)
+        {
+            NormalizeSelection();
+        }
+    }
+
     private void OnContainerPrepared(object? sender, ContainerPreparedEventArgs e)
     {
         if (e.Container is SegmentedButton segment)
         {
             segment.IsCheckedChanged += OnSegmentCheckedChanged;
+            NormalizeSelection();
         }
 
         UpdateEdgeClasses();
@@ -106,6 +116,29 @@ public class SegmentedButtonGroup : ItemsControl
             return;
         }
 
+        NormalizeSelection(checkedSegment);
+    }
+
+    private void NormalizeSelection(SegmentedButton? winner = null)
+    {
+        if (_syncingSelection || SelectionMode != SegmentedSelectionMode.Single)
+        {
+            return;
+        }
+
+        if (winner is null)
+        {
+            var count = ItemCount;
+            for (var i = 0; i < count; i++)
+            {
+                if (ContainerFromIndex(i) is SegmentedButton { IsChecked: true } checkedSegment)
+                {
+                    winner = checkedSegment;
+                    break;
+                }
+            }
+        }
+
         _syncingSelection = true;
         try
         {
@@ -113,7 +146,7 @@ public class SegmentedButtonGroup : ItemsControl
             for (var i = 0; i < count; i++)
             {
                 if (ContainerFromIndex(i) is SegmentedButton other &&
-                    other != checkedSegment &&
+                    other != winner &&
                     other.IsChecked == true)
                 {
                     other.SetCurrentValue(SegmentedButton.IsCheckedProperty, false);
