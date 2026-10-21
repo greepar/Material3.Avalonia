@@ -39,7 +39,7 @@ jobs:
       # ---------- WASM gallery demo ----------
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.402
 
       - name: Install wasm-tools workload
         run: dotnet workload install wasm-tools
